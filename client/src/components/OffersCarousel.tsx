@@ -70,7 +70,7 @@ export default function OffersCarousel({ offers, onOfferClick }: OffersCarouselP
           onClick={() => onOfferClick?.(currentOffer.id)}
           data-testid={`card-offer-${currentOffer.id}`}
         >
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid md:grid-cols-2">
             <div className="relative aspect-video overflow-hidden md:aspect-auto">
               <img
                 src={currentOffer.image}
@@ -85,7 +85,7 @@ export default function OffersCarousel({ offers, onOfferClick }: OffersCarouselP
                 {currentOffer.discount}
               </Badge>
             </div>
-            <div className="flex flex-col justify-center p-6">
+            <div className="flex flex-col justify-center p-6 bg-muted/30">
               <h3 className="mb-2 text-2xl font-bold" data-testid={`text-offer-title-${currentOffer.id}`}>
                 {currentOffer.title}
               </h3>

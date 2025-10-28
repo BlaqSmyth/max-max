@@ -1,14 +1,20 @@
-import { Apple, Beef, Cake, Wine, PackageOpen, Droplet } from "lucide-react";
+import { LayoutGrid, Package, TrendingUp, Lightbulb, Milk, Croissant, Apple, Salad, UtensilsCrossed, Wine, Candy, Cookie } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 const categories = [
-  { name: "Fresh Produce", icon: Apple, id: "produce" },
-  { name: "Meat & Fish", icon: Beef, id: "meat" },
-  { name: "Bakery", icon: Cake, id: "bakery" },
-  { name: "Dairy", icon: Droplet, id: "dairy" },
-  { name: "Alcohol", icon: Wine, id: "alcohol" },
-  { name: "Ready Meals", icon: PackageOpen, id: "ready-meals" },
+  { name: "Aisles", icon: LayoutGrid, id: "all" },
+  { name: "My orders", icon: Package, id: "orders" },
+  { name: "Top deals", icon: TrendingUp, id: "deals" },
+  { name: "Inspiration", icon: Lightbulb, id: "inspiration" },
+  { name: "Fresh milk", icon: Milk, id: "milk" },
+  { name: "Bread", icon: Croissant, id: "bread" },
+  { name: "Fresh fruit", icon: Apple, id: "fruit" },
+  { name: "Fresh vegetables", icon: Salad, id: "vegetables" },
+  { name: "Ready meals", icon: UtensilsCrossed, id: "ready-meals" },
+  { name: "Beer and wine", icon: Wine, id: "beer-wine" },
+  { name: "Chocolate", icon: Candy, id: "chocolate" },
+  { name: "Crisps", icon: Cookie, id: "crisps" },
 ];
 
 interface CategoryNavProps {

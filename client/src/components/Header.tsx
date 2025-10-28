@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import SearchAutocomplete from "./SearchAutocomplete";
 import maxMaxLogo from '@assets/generated_images/Max_&_Max_grocery_logo_622859de.png';
-import mmLogo from '@assets/generated_images/Max_&_Max_MM_monogram_logo_d3d23c3c.png';
+import mmLogo from '@assets/generated_images/Bold_MM_logo_Max_&_Max_92236a64.png';
 
 interface SearchResult {
   id: string;
@@ -46,11 +46,11 @@ export default function Header({
               <Menu className="h-5 w-5" />
             </Button>
             
-            <a href="/" className="flex items-center gap-3" data-testid="link-home">
+            <a href="/" className="flex items-center gap-1.5" data-testid="link-home">
               <img 
                 src={mmLogo} 
                 alt="MM Logo" 
-                className="h-14 w-14 object-contain"
+                className="h-8 w-8 object-contain lg:h-9 lg:w-9"
               />
               <span className="text-2xl font-black tracking-tight text-primary lg:text-3xl">
                 MAX & MAX

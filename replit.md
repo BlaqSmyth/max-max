@@ -207,8 +207,10 @@ Preferred communication style: Simple, everyday language.
 - Complete rebrand from Co-op to Max & Max
 - Updated color scheme to Max & Max green (#228B5C / HSL 140, 55%, 40%)
 - Replaced all Co-op branding and logo with Max & Max branding
-- Created fancy MM monogram logo with intertwined letters in emerald green
+- Created bold, geometric MM monogram logo with thick strokes for maximum impact
 - Enhanced header with larger, bolder "MAX & MAX" text (font-black, 2xl-3xl size)
+- Logo and text sized to match exactly: 32px mobile, 36px desktop
+- Tight spacing (6px gap) creates unified, cohesive brand mark
 - MM logo and brand text displayed side by side in header
 - Increased header height to 80px to accommodate enhanced branding
 - Updated all references throughout the codebase

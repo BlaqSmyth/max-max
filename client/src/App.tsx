@@ -6,11 +6,17 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import HomePage from "./pages/HomePage";
+import CheckoutPage from "./pages/CheckoutPage";
 
 function Router() {
+  const [cartItems] = useState([]); // todo: remove mock functionality - would use context or state management
+  
   return (
     <Switch>
       <Route path="/" component={HomePage} />
+      <Route path="/checkout">
+        <CheckoutPage cartItems={cartItems} deliveryType="delivery" />
+      </Route>
       <Route component={NotFound} />
     </Switch>
   );

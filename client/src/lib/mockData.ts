@@ -10,12 +10,13 @@ import steakImage from '@assets/generated_images/British_beef_steak_a4049cd2.png
 import bakeryImage from '@assets/generated_images/Fresh_bakery_products_f24133a0.png';
 import dairyImage from '@assets/generated_images/Dairy_products_collection_6d15fc58.png';
 import wineImage from '@assets/generated_images/Wine_bottles_collection_1ff2a298.png';
+import deliveryImage from '@assets/generated_images/Home_delivery_service_image_af86caa0.png';
 
 export const mockProducts = [
   {
     id: '1',
     name: 'Co-op Organic Whole Milk 2L',
-    description: 'Fresh organic milk from British farms',
+    description: 'Fresh organic milk from British farms, rich and creamy',
     category: 'dairy',
     price: 2.50,
     memberPrice: 2.25,
@@ -25,7 +26,7 @@ export const mockProducts = [
   {
     id: '2',
     name: 'Artisan Sourdough Bread',
-    description: 'Freshly baked sourdough with a crispy crust',
+    description: 'Freshly baked sourdough with a crispy crust and soft interior',
     category: 'bakery',
     price: 2.80,
     memberPrice: 2.50,
@@ -35,7 +36,7 @@ export const mockProducts = [
   {
     id: '3',
     name: 'British Red Apples (6 pack)',
-    description: 'Crisp and sweet British-grown apples',
+    description: 'Crisp and sweet British-grown apples, perfect for snacking',
     category: 'produce',
     price: 2.00,
     memberPrice: 1.80,
@@ -45,7 +46,7 @@ export const mockProducts = [
   {
     id: '4',
     name: 'Ready Meal Pasta Carbonara',
-    description: 'Restaurant-quality pasta ready in minutes',
+    description: 'Restaurant-quality pasta ready in minutes, made with British bacon',
     category: 'ready-meals',
     price: 4.50,
     memberPrice: 4.00,
@@ -55,7 +56,7 @@ export const mockProducts = [
   {
     id: '5',
     name: 'Free Range Eggs (12 pack)',
-    description: 'Large free-range eggs from British farms',
+    description: 'Large free-range eggs from British farms, perfect for any meal',
     category: 'dairy',
     price: 3.20,
     memberPrice: 2.90,
@@ -65,7 +66,7 @@ export const mockProducts = [
   {
     id: '6',
     name: 'Fresh Broccoli',
-    description: 'Tender green broccoli florets',
+    description: 'Tender green broccoli florets, packed with nutrients',
     category: 'produce',
     price: 1.50,
     memberPrice: 1.30,
@@ -75,7 +76,7 @@ export const mockProducts = [
   {
     id: '7',
     name: 'Mixed Seasonal Vegetables',
-    description: 'Fresh selection of seasonal produce',
+    description: 'Fresh selection of seasonal produce including carrots, peppers, and tomatoes',
     category: 'produce',
     price: 3.50,
     memberPrice: 3.20,
@@ -85,7 +86,7 @@ export const mockProducts = [
   {
     id: '8',
     name: 'British Beef Steak 400g',
-    description: '100% British beef, expertly aged',
+    description: '100% British beef, expertly aged for 21 days for maximum flavor',
     category: 'meat',
     price: 8.50,
     memberPrice: 7.90,
@@ -95,7 +96,7 @@ export const mockProducts = [
   {
     id: '9',
     name: 'Bakery Selection Box',
-    description: 'Assorted fresh baked goods',
+    description: 'Assorted fresh baked goods including croissants and pastries',
     category: 'bakery',
     price: 5.00,
     memberPrice: 4.50,
@@ -105,7 +106,7 @@ export const mockProducts = [
   {
     id: '10',
     name: 'Dairy Essentials Bundle',
-    description: 'Milk, butter, cheese, and yogurt',
+    description: 'Complete dairy collection: milk, butter, cheese, and yogurt',
     category: 'dairy',
     price: 9.00,
     memberPrice: 8.00,
@@ -115,7 +116,7 @@ export const mockProducts = [
   {
     id: '11',
     name: 'Red Wine Selection',
-    description: 'Premium red wine varieties',
+    description: 'Premium red wine varieties from around the world',
     category: 'alcohol',
     price: 12.00,
     memberPrice: 10.50,
@@ -125,11 +126,78 @@ export const mockProducts = [
   {
     id: '12',
     name: 'White Wine Selection',
-    description: 'Crisp and refreshing white wines',
+    description: 'Crisp and refreshing white wines, perfect for any occasion',
     category: 'alcohol',
     price: 11.00,
     memberPrice: 9.50,
     image: wineImage,
     inStock: 1,
+  },
+  {
+    id: '13',
+    name: 'Organic Semi-Skimmed Milk 1L',
+    description: 'Light and healthy organic milk from British cows',
+    category: 'dairy',
+    price: 1.40,
+    memberPrice: 1.20,
+    image: milkImage,
+    inStock: 1,
+  },
+  {
+    id: '14',
+    name: 'Wholemeal Bread Loaf',
+    description: 'Nutritious wholemeal bread, high in fiber',
+    category: 'bakery',
+    price: 1.20,
+    memberPrice: 1.00,
+    image: breadImage,
+    inStock: 1,
+  },
+  {
+    id: '15',
+    name: 'Green Apples (6 pack)',
+    description: 'Tart and crispy Granny Smith apples',
+    category: 'produce',
+    price: 1.90,
+    memberPrice: 1.70,
+    image: applesImage,
+    inStock: 1,
+  },
+  {
+    id: '16',
+    name: 'Ready Meal Lasagne',
+    description: 'Classic Italian lasagne with rich meat sauce',
+    category: 'ready-meals',
+    price: 4.80,
+    memberPrice: 4.30,
+    image: readyMealImage,
+    inStock: 1,
+  },
+];
+
+export const mockOffers = [
+  {
+    id: 'offer-1',
+    title: 'Fresh Produce Flash Sale',
+    description: 'Save big on fresh fruits and vegetables. Stock up on your favorites while supplies last!',
+    discount: '25% OFF',
+    image: produceImage,
+    validUntil: '31 Oct 2025',
+  },
+  {
+    id: 'offer-2',
+    title: 'Free Delivery This Week',
+    description: 'Get free home delivery on all orders over £15. No code needed, discount applied automatically.',
+    discount: 'FREE',
+    image: deliveryImage,
+    validUntil: '3 Nov 2025',
+  },
+  {
+    id: 'offer-3',
+    title: 'Bakery Bundle Deal',
+    description: 'Buy 2 bakery items and get 1 free. Perfect for breakfast and lunch!',
+    discount: 'Buy 2 Get 1 Free',
+    image: bakeryImage,
+    validUntil: '7 Nov 2025',
   },
 ];

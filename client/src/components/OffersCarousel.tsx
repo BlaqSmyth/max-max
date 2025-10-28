@@ -23,22 +23,72 @@ export default function OffersCarousel({ offers, onOfferClick }: OffersCarouselP
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const pauseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isAutoScrollingRef = useRef(false);
+
+  const pauseAutoPlay = () => {
+    if (pauseTimeoutRef.current) {
+      clearTimeout(pauseTimeoutRef.current);
+    }
+    
+    setIsAutoPlaying(false);
+    
+    // Resume auto-play after 10 seconds of inactivity
+    pauseTimeoutRef.current = setTimeout(() => {
+      setIsAutoPlaying(true);
+    }, 10000);
+  };
 
   const checkScroll = () => {
     if (scrollContainerRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
-      setCanScrollLeft(scrollLeft > 0);
-      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+      setCanScrollLeft(scrollLeft > 5);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 5);
+      
+      // If scroll is happening and it's not from auto-scroll, pause auto-play
+      if (!isAutoScrollingRef.current) {
+        pauseAutoPlay();
+      }
     }
   };
 
   useEffect(() => {
-    checkScroll();
+    // Check scroll position after a small delay to ensure content is rendered
+    const timer = setTimeout(() => checkScroll(), 100);
+    
     const container = scrollContainerRef.current;
     if (container) {
+      // User interaction event listeners to pause auto-play
+      const handleUserInteraction = () => {
+        if (!isAutoScrollingRef.current) {
+          pauseAutoPlay();
+        }
+      };
+
       container.addEventListener('scroll', checkScroll);
-      return () => container.removeEventListener('scroll', checkScroll);
+      container.addEventListener('wheel', handleUserInteraction);
+      container.addEventListener('touchstart', handleUserInteraction);
+      container.addEventListener('pointerdown', handleUserInteraction);
+      window.addEventListener('resize', checkScroll);
+      
+      return () => {
+        container.removeEventListener('scroll', checkScroll);
+        container.removeEventListener('wheel', handleUserInteraction);
+        container.removeEventListener('touchstart', handleUserInteraction);
+        container.removeEventListener('pointerdown', handleUserInteraction);
+        window.removeEventListener('resize', checkScroll);
+        clearTimeout(timer);
+        if (pauseTimeoutRef.current) {
+          clearTimeout(pauseTimeoutRef.current);
+        }
+      };
     }
+    return () => {
+      clearTimeout(timer);
+      if (pauseTimeoutRef.current) {
+        clearTimeout(pauseTimeoutRef.current);
+      }
+    };
   }, []);
 
   // Auto-scroll effect
@@ -49,6 +99,8 @@ export default function OffersCarousel({ offers, onOfferClick }: OffersCarouselP
       if (scrollContainerRef.current) {
         const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
         
+        isAutoScrollingRef.current = true;
+        
         // If at the end, scroll back to start
         if (scrollLeft >= scrollWidth - clientWidth - 10) {
           scrollContainerRef.current.scrollTo({ left: 0, behavior: 'smooth' });
@@ -57,6 +109,11 @@ export default function OffersCarousel({ offers, onOfferClick }: OffersCarouselP
           const cardWidth = 320; // approximate card width + gap
           scrollContainerRef.current.scrollBy({ left: cardWidth, behavior: 'smooth' });
         }
+        
+        // Reset flag after scroll animation completes
+        setTimeout(() => {
+          isAutoScrollingRef.current = false;
+        }, 500);
       }
     }, 3000); // Auto-scroll every 3 seconds
 
@@ -64,7 +121,7 @@ export default function OffersCarousel({ offers, onOfferClick }: OffersCarouselP
   }, [isAutoPlaying]);
 
   const scroll = (direction: 'left' | 'right') => {
-    setIsAutoPlaying(false); // Pause auto-play when user interacts
+    pauseAutoPlay(); // Pause auto-play when user clicks arrows
     
     if (scrollContainerRef.current) {
       const scrollAmount = 320; // Width of one card + gap
@@ -72,14 +129,17 @@ export default function OffersCarousel({ offers, onOfferClick }: OffersCarouselP
         ? scrollContainerRef.current.scrollLeft - scrollAmount
         : scrollContainerRef.current.scrollLeft + scrollAmount;
       
+      isAutoScrollingRef.current = true;
       scrollContainerRef.current.scrollTo({
         left: newScrollLeft,
         behavior: 'smooth'
       });
+      
+      // Reset flag after scroll animation
+      setTimeout(() => {
+        isAutoScrollingRef.current = false;
+      }, 500);
     }
-
-    // Resume auto-play after 10 seconds of inactivity
-    setTimeout(() => setIsAutoPlaying(true), 10000);
   };
 
   if (offers.length === 0) return null;

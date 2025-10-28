@@ -85,7 +85,7 @@ export default function OffersCarousel({ offers, onOfferClick }: OffersCarouselP
 
         <div className="relative overflow-hidden">
           <Card
-            className="relative overflow-hidden hover-elevate cursor-pointer transition-all duration-500 ease-in-out shadow-lg"
+            className="group relative overflow-hidden hover-elevate cursor-pointer transition-all duration-500 ease-in-out shadow-lg"
             onClick={() => onOfferClick?.(currentOffer.id)}
             data-testid={`card-offer-${currentOffer.id}`}
             style={{
@@ -97,7 +97,7 @@ export default function OffersCarousel({ offers, onOfferClick }: OffersCarouselP
                 <img
                   src={currentOffer.image}
                   alt={currentOffer.title}
-                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
                   data-testid={`img-offer-${currentOffer.id}`}
                 />
                 <Badge

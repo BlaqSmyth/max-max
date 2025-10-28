@@ -179,7 +179,7 @@ export const mockOffers = [
   {
     id: 'offer-1',
     title: 'Fresh Produce Flash Sale',
-    description: 'Save big on fresh fruits and vegetables. Stock up on your favorites while supplies last!',
+    description: 'Save big on fresh fruits and vegetables.',
     discount: '25% OFF',
     image: produceImage,
     validUntil: '31 Oct 2025',
@@ -187,7 +187,7 @@ export const mockOffers = [
   {
     id: 'offer-2',
     title: 'Free Delivery This Week',
-    description: 'Get free home delivery on all orders over £15. No code needed, discount applied automatically.',
+    description: 'Get free home delivery on all orders over £15.',
     discount: 'FREE',
     image: deliveryImage,
     validUntil: '3 Nov 2025',
@@ -195,9 +195,33 @@ export const mockOffers = [
   {
     id: 'offer-3',
     title: 'Bakery Bundle Deal',
-    description: 'Buy 2 bakery items and get 1 free. Perfect for breakfast and lunch!',
-    discount: 'Buy 2 Get 1 Free',
+    description: 'Buy 2 bakery items and get 1 free.',
+    discount: 'Buy 2 Get 1',
     image: bakeryImage,
     validUntil: '7 Nov 2025',
+  },
+  {
+    id: 'offer-4',
+    title: 'Premium Beef Steak',
+    description: 'Quality British beef at incredible prices.',
+    discount: '30% OFF',
+    image: steakImage,
+    validUntil: '10 Nov 2025',
+  },
+  {
+    id: 'offer-5',
+    title: 'Dairy Savings',
+    description: 'Member exclusive prices on all dairy products.',
+    discount: '20% OFF',
+    image: dairyImage,
+    validUntil: '14 Nov 2025',
+  },
+  {
+    id: 'offer-6',
+    title: 'Wine Selection',
+    description: 'Premium wines at member prices.',
+    discount: '15% OFF',
+    image: wineImage,
+    validUntil: '17 Nov 2025',
   },
 ];

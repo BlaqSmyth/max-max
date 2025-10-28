@@ -13,8 +13,9 @@ import ProductFilters from "@/components/ProductFilters";
 import OffersCarousel from "@/components/OffersCarousel";
 import MembershipCard from "@/components/MembershipCard";
 import SearchAutocomplete from "@/components/SearchAutocomplete";
+import MobileMenu from "@/components/MobileMenu";
 import { mockProducts, mockOffers } from "@/lib/mockData";
-import { Filter, X } from "lucide-react";
+import { Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroImage from '@assets/generated_images/Family_grocery_shopping_scene_a6507caa.png';
 
@@ -37,6 +38,7 @@ export default function HomePage() {
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState("featured");
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleAddToCart = (productId: string, quantity: number) => {
     console.log(`Adding product ${productId} with quantity ${quantity} to cart`);
@@ -111,6 +113,13 @@ export default function HomePage() {
       <Header
         cartItemCount={cartItemCount}
         onCartClick={() => setIsCartOpen(true)}
+        onMenuClick={() => setIsMobileMenuOpen(true)}
+        isMember={isMember}
+      />
+      
+      <MobileMenu
+        isOpen={isMobileMenuOpen}
+        onClose={() => setIsMobileMenuOpen(false)}
         isMember={isMember}
       />
       

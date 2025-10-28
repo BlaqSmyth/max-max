@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight, Tag } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -19,35 +19,70 @@ interface OffersCarouselProps {
 }
 
 export default function OffersCarousel({ offers, onOfferClick }: OffersCarouselProps) {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
-  // Auto-play animation
-  useEffect(() => {
-    const interval = setInterval(() => {
-      next();
-    }, 4000); // Change slide every 4 seconds
-
-    return () => clearInterval(interval);
-  }, [currentIndex, offers.length]);
-
-  const next = () => {
-    if (isAnimating) return;
-    setIsAnimating(true);
-    setCurrentIndex((prev) => (prev + 1) % offers.length);
-    setTimeout(() => setIsAnimating(false), 500);
+  const checkScroll = () => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+      setCanScrollLeft(scrollLeft > 0);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+    }
   };
 
-  const prev = () => {
-    if (isAnimating) return;
-    setIsAnimating(true);
-    setCurrentIndex((prev) => (prev - 1 + offers.length) % offers.length);
-    setTimeout(() => setIsAnimating(false), 500);
+  useEffect(() => {
+    checkScroll();
+    const container = scrollContainerRef.current;
+    if (container) {
+      container.addEventListener('scroll', checkScroll);
+      return () => container.removeEventListener('scroll', checkScroll);
+    }
+  }, []);
+
+  // Auto-scroll effect
+  useEffect(() => {
+    if (!isAutoPlaying) return;
+
+    const interval = setInterval(() => {
+      if (scrollContainerRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+        
+        // If at the end, scroll back to start
+        if (scrollLeft >= scrollWidth - clientWidth - 10) {
+          scrollContainerRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          // Scroll by one card width
+          const cardWidth = 320; // approximate card width + gap
+          scrollContainerRef.current.scrollBy({ left: cardWidth, behavior: 'smooth' });
+        }
+      }
+    }, 3000); // Auto-scroll every 3 seconds
+
+    return () => clearInterval(interval);
+  }, [isAutoPlaying]);
+
+  const scroll = (direction: 'left' | 'right') => {
+    setIsAutoPlaying(false); // Pause auto-play when user interacts
+    
+    if (scrollContainerRef.current) {
+      const scrollAmount = 320; // Width of one card + gap
+      const newScrollLeft = direction === 'left' 
+        ? scrollContainerRef.current.scrollLeft - scrollAmount
+        : scrollContainerRef.current.scrollLeft + scrollAmount;
+      
+      scrollContainerRef.current.scrollTo({
+        left: newScrollLeft,
+        behavior: 'smooth'
+      });
+    }
+
+    // Resume auto-play after 10 seconds of inactivity
+    setTimeout(() => setIsAutoPlaying(true), 10000);
   };
 
   if (offers.length === 0) return null;
-
-  const currentOffer = offers[currentIndex];
 
   return (
     <section className="py-6">
@@ -64,8 +99,8 @@ export default function OffersCarousel({ offers, onOfferClick }: OffersCarouselP
               variant="outline"
               size="icon"
               className="h-8 w-8"
-              onClick={prev}
-              disabled={isAnimating}
+              onClick={() => scroll('left')}
+              disabled={!canScrollLeft}
               data-testid="button-offer-prev"
             >
               <ChevronLeft className="h-4 w-4" />
@@ -74,8 +109,8 @@ export default function OffersCarousel({ offers, onOfferClick }: OffersCarouselP
               variant="outline"
               size="icon"
               className="h-8 w-8"
-              onClick={next}
-              disabled={isAnimating}
+              onClick={() => scroll('right')}
+              disabled={!canScrollRight}
               data-testid="button-offer-next"
             >
               <ChevronRight className="h-4 w-4" />
@@ -83,94 +118,70 @@ export default function OffersCarousel({ offers, onOfferClick }: OffersCarouselP
           </div>
         </div>
 
-        <div className="relative overflow-hidden">
-          <Card
-            className="group relative overflow-hidden hover-elevate cursor-pointer transition-all duration-500 ease-in-out shadow-lg"
-            onClick={() => onOfferClick?.(currentOffer.id)}
-            data-testid={`card-offer-${currentOffer.id}`}
-            style={{
-              animation: isAnimating ? 'slideIn 0.5s ease-in-out' : 'none',
-            }}
-          >
-            <div className="grid md:grid-cols-[300px_1fr] h-[180px] md:h-[200px]">
-              <div className="relative overflow-hidden">
+        <div 
+          ref={scrollContainerRef}
+          className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-2"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
+          {offers.map((offer) => (
+            <Card
+              key={offer.id}
+              className="group relative flex-shrink-0 w-[300px] overflow-hidden hover-elevate cursor-pointer transition-all duration-300"
+              onClick={() => onOfferClick?.(offer.id)}
+              data-testid={`card-offer-${offer.id}`}
+            >
+              <div className="relative h-[160px] overflow-hidden bg-gradient-to-br from-muted to-muted/50">
                 <img
-                  src={currentOffer.image}
-                  alt={currentOffer.title}
-                  className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
-                  data-testid={`img-offer-${currentOffer.id}`}
+                  src={offer.image}
+                  alt={offer.title}
+                  className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+                  data-testid={`img-offer-${offer.id}`}
                 />
                 <Badge
                   variant="destructive"
-                  className="absolute right-3 top-3 text-sm px-2 py-1 shadow-lg font-semibold"
+                  className="absolute right-3 top-3 text-xs px-2 py-1 shadow-md font-semibold"
                 >
-                  {currentOffer.discount}
+                  {offer.discount}
                 </Badge>
               </div>
-              <div className="relative flex flex-col justify-center p-4 md:p-6 overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/95 to-primary/80"></div>
-                <div className="absolute inset-0 opacity-10">
-                  <div className="absolute top-0 right-0 w-40 h-40 bg-white rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-                  <div className="absolute bottom-0 left-0 w-32 h-32 bg-white rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
-                </div>
-                <div className="relative z-10">
-                  <h3 className="mb-2 text-xl md:text-2xl font-bold text-white" data-testid={`text-offer-title-${currentOffer.id}`}>
-                    {currentOffer.title}
-                  </h3>
-                  <p className="mb-3 text-white/90 text-sm md:text-base leading-relaxed line-clamp-2" data-testid={`text-offer-desc-${currentOffer.id}`}>
-                    {currentOffer.description}
+              
+              <div className="p-4 bg-gradient-to-br from-primary/5 to-transparent">
+                <h3 
+                  className="mb-2 text-base font-bold line-clamp-1" 
+                  data-testid={`text-offer-title-${offer.id}`}
+                >
+                  {offer.title}
+                </h3>
+                <p 
+                  className="mb-3 text-sm text-muted-foreground line-clamp-2 leading-relaxed min-h-[2.5rem]" 
+                  data-testid={`text-offer-desc-${offer.id}`}
+                >
+                  {offer.description}
+                </p>
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-xs text-muted-foreground">
+                    Until {offer.validUntil}
                   </p>
-                  <div className="flex items-center justify-between flex-wrap gap-2">
-                    <p className="text-xs md:text-sm text-white/80">
-                      Valid until: {currentOffer.validUntil}
-                    </p>
-                    <Button 
-                      size="sm"
-                      variant="secondary" 
-                      className="bg-white text-primary hover:bg-white/90 font-semibold shadow-lg" 
-                      data-testid={`button-offer-shop-${currentOffer.id}`}
-                    >
-                      Shop Now
-                    </Button>
-                  </div>
+                  <Button 
+                    size="sm"
+                    variant="default"
+                    className="text-xs h-7 px-3"
+                    data-testid={`button-offer-shop-${offer.id}`}
+                  >
+                    Shop
+                  </Button>
                 </div>
               </div>
-            </div>
-          </Card>
-
-          <div className="mt-3 flex justify-center gap-2">
-            {offers.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => {
-                  if (!isAnimating) {
-                    setIsAnimating(true);
-                    setCurrentIndex(index);
-                    setTimeout(() => setIsAnimating(false), 500);
-                  }
-                }}
-                className={`h-1.5 rounded-full transition-all duration-300 ${
-                  index === currentIndex ? "w-8 bg-primary" : "w-1.5 bg-muted-foreground/30"
-                }`}
-                data-testid={`indicator-offer-${index}`}
-              />
-            ))}
-          </div>
+            </Card>
+          ))}
         </div>
-      </div>
 
-      <style>{`
-        @keyframes slideIn {
-          0% {
-            opacity: 0.7;
-            transform: translateX(20px);
+        <style>{`
+          .scrollbar-hide::-webkit-scrollbar {
+            display: none;
           }
-          100% {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-      `}</style>
+        `}</style>
+      </div>
     </section>
   );
 }

@@ -85,19 +85,30 @@ export default function OffersCarousel({ offers, onOfferClick }: OffersCarouselP
                 {currentOffer.discount}
               </Badge>
             </div>
-            <div className="flex flex-col justify-center p-6 bg-muted/30">
-              <h3 className="mb-2 text-2xl font-bold" data-testid={`text-offer-title-${currentOffer.id}`}>
-                {currentOffer.title}
-              </h3>
-              <p className="mb-4 text-muted-foreground" data-testid={`text-offer-desc-${currentOffer.id}`}>
-                {currentOffer.description}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                Valid until: {currentOffer.validUntil}
-              </p>
-              <Button className="mt-6 w-fit" data-testid={`button-offer-shop-${currentOffer.id}`}>
-                Shop Now
-              </Button>
+            <div className="relative flex flex-col justify-center p-8 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/90 to-blue-700"></div>
+              <div className="absolute inset-0 opacity-10">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-white rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+                <div className="absolute bottom-0 left-0 w-48 h-48 bg-white rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
+              </div>
+              <div className="relative z-10">
+                <h3 className="mb-3 text-3xl font-bold text-white" data-testid={`text-offer-title-${currentOffer.id}`}>
+                  {currentOffer.title}
+                </h3>
+                <p className="mb-4 text-white/90 text-lg leading-relaxed" data-testid={`text-offer-desc-${currentOffer.id}`}>
+                  {currentOffer.description}
+                </p>
+                <p className="text-sm text-white/80 mb-6">
+                  Valid until: {currentOffer.validUntil}
+                </p>
+                <Button 
+                  variant="secondary" 
+                  className="mt-2 w-fit bg-white text-primary hover:bg-white/90 font-semibold shadow-lg" 
+                  data-testid={`button-offer-shop-${currentOffer.id}`}
+                >
+                  Shop Now
+                </Button>
+              </div>
             </div>
           </div>
         </Card>

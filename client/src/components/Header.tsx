@@ -46,12 +46,7 @@ export default function Header({
               <Menu className="h-5 w-5" />
             </Button>
             
-            <a href="/" className="flex items-center gap-1.5" data-testid="link-home">
-              <img 
-                src={mmLogo} 
-                alt="MM Logo" 
-                className="h-8 w-8 object-contain lg:h-9 lg:w-9"
-              />
+            <a href="/" className="flex items-center" data-testid="link-home">
               <span className="text-2xl font-black tracking-tight text-primary lg:text-3xl">
                 MAX & MAX
               </span>

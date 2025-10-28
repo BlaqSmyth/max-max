@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
+import { useCart } from "@/contexts/CartContext";
 import Header from "@/components/Header";
 import CategoryNav from "@/components/CategoryNav";
 import HeroSection from "@/components/HeroSection";
@@ -12,27 +13,18 @@ import ProductDetailModal from "@/components/ProductDetailModal";
 import ProductFilters from "@/components/ProductFilters";
 import OffersCarousel from "@/components/OffersCarousel";
 import MembershipCard from "@/components/MembershipCard";
-import SearchAutocomplete from "@/components/SearchAutocomplete";
 import MobileMenu from "@/components/MobileMenu";
 import { mockProducts, mockOffers } from "@/lib/mockData";
 import { Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroImage from '@assets/generated_images/Family_grocery_shopping_scene_a6507caa.png';
 
-interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-  image: string;
-}
-
 export default function HomePage() {
   const [, setLocation] = useLocation();
+  const { cartItems, addToCart, updateQuantity, getProductQuantity } = useCart();
   const [isMember, setIsMember] = useState(true); // todo: remove mock functionality
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedDelivery, setSelectedDelivery] = useState<string>("delivery");
-  const [cartItems, setCartItems] = useState<CartItem[]>([]); // todo: remove mock functionality
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
@@ -46,32 +38,24 @@ export default function HomePage() {
     const product = mockProducts.find(p => p.id === productId);
     if (!product) return;
 
+    const price = isMember && product.memberPrice ? product.memberPrice : product.price;
+    
     if (quantity === 0) {
-      setCartItems(prev => prev.filter(item => item.id !== productId));
+      updateQuantity(productId, 0);
     } else {
-      setCartItems(prev => {
-        const existing = prev.find(item => item.id === productId);
-        const price = isMember && product.memberPrice ? product.memberPrice : product.price;
-        
-        if (existing) {
-          return prev.map(item =>
-            item.id === productId ? { ...item, quantity, price } : item
-          );
-        }
-        return [...prev, {
-          id: productId,
-          name: product.name,
-          price,
-          quantity,
-          image: product.image,
-        }];
+      addToCart({
+        id: productId,
+        name: product.name,
+        price,
+        quantity,
+        image: product.image,
       });
     }
   };
 
   const handleUpdateCartQuantity = (productId: string, quantity: number) => {
     console.log(`Updating cart item ${productId} to quantity ${quantity}`);
-    handleAddToCart(productId, quantity);
+    updateQuantity(productId, quantity);
   };
 
   const handleProductClick = (productId: string) => {
@@ -100,10 +84,6 @@ export default function HomePage() {
 
   const cartItemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
-  const getProductQuantity = (productId: string): number => {
-    return cartItems.find(item => item.id === productId)?.quantity || 0;
-  };
-
   const selectedProduct = selectedProductId 
     ? mockProducts.find(p => p.id === selectedProductId)
     : null;
@@ -115,6 +95,14 @@ export default function HomePage() {
         onCartClick={() => setIsCartOpen(true)}
         onMenuClick={() => setIsMobileMenuOpen(true)}
         isMember={isMember}
+        products={mockProducts.map(p => ({
+          id: p.id,
+          name: p.name,
+          category: p.category,
+          price: p.price,
+          image: p.image,
+        }))}
+        onProductSelect={handleProductClick}
       />
       
       <MobileMenu
@@ -177,19 +165,6 @@ export default function HomePage() {
             </div>
 
             <div className="flex items-center gap-2">
-              <div className="hidden md:block flex-1 max-w-md">
-                <SearchAutocomplete
-                  products={mockProducts.map(p => ({
-                    id: p.id,
-                    name: p.name,
-                    category: p.category,
-                    price: p.price,
-                    image: p.image,
-                  }))}
-                  onSelectProduct={handleProductClick}
-                />
-              </div>
-
               <Button
                 variant="outline"
                 size="sm"

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
+import { useCart } from "@/contexts/CartContext";
 import { ArrowLeft, CreditCard, MapPin, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -9,12 +10,9 @@ import { Separator } from "@/components/ui/separator";
 import TimeSlotPicker from "@/components/TimeSlotPicker";
 import { Badge } from "@/components/ui/badge";
 
-interface CheckoutPageProps {
-  cartItems?: Array<{ id: string; name: string; price: number; quantity: number; image: string }>;
-  deliveryType?: "delivery" | "collect";
-}
-
-export default function CheckoutPage({ cartItems = [], deliveryType = "delivery" }: CheckoutPageProps) {
+export default function CheckoutPage() {
+  const { cartItems, clearCart } = useCart();
+  const deliveryType = "delivery";
   const [, setLocation] = useLocation();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedSlot, setSelectedSlot] = useState<string>("");
@@ -26,6 +24,7 @@ export default function CheckoutPage({ cartItems = [], deliveryType = "delivery"
 
   const handlePlaceOrder = () => {
     console.log("Placing order", { cartItems, deliveryType, selectedDate, selectedSlot });
+    clearCart();
     alert("Order placed successfully! (Demo)");
     setLocation("/");
   };

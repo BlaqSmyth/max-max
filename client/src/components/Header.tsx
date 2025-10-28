@@ -1,20 +1,33 @@
-import { ShoppingCart, Search, MapPin, User, Menu } from "lucide-react";
+import { ShoppingCart, MapPin, User, Menu, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import SearchAutocomplete from "./SearchAutocomplete";
+
+interface SearchResult {
+  id: string;
+  name: string;
+  category: string;
+  price: number;
+  image: string;
+}
 
 interface HeaderProps {
   cartItemCount?: number;
   onCartClick?: () => void;
   onMenuClick?: () => void;
   isMember?: boolean;
+  products?: SearchResult[];
+  onProductSelect?: (productId: string) => void;
 }
 
 export default function Header({ 
   cartItemCount = 0, 
   onCartClick,
   onMenuClick,
-  isMember = false
+  isMember = false,
+  products = [],
+  onProductSelect,
 }: HeaderProps) {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background">
@@ -39,15 +52,23 @@ export default function Header({
           </div>
 
           <div className="hidden flex-1 md:flex md:max-w-md lg:max-w-xl">
-            <div className="relative w-full">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                type="search"
+            {products.length > 0 ? (
+              <SearchAutocomplete
+                products={products}
+                onSelectProduct={onProductSelect}
                 placeholder="Search for products..."
-                className="w-full pl-10"
-                data-testid="input-search"
               />
-            </div>
+            ) : (
+              <div className="relative w-full">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  type="search"
+                  placeholder="Search for products..."
+                  className="w-full pl-10"
+                  data-testid="input-search"
+                />
+              </div>
+            )}
           </div>
 
           <div className="flex items-center gap-2">

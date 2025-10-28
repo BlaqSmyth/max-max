@@ -1,10 +1,10 @@
-# Co-op Grocery Store E-commerce Platform
+# Max & Max Grocery Store E-commerce Platform
 
 ## Overview
 
-This is a complete clone of the Co-op grocery store website (shop.coop.co.uk) featuring all the sophistication and features of the original site. The application provides a comprehensive online grocery shopping experience with home delivery, click & collect, membership benefits, time slot booking, advanced search with autocomplete, product filtering, and a complete checkout flow.
+This is a complete grocery store e-commerce website featuring all the sophistication and features needed for online grocery shopping. The application provides a comprehensive online grocery shopping experience with home delivery, click & collect, membership benefits, time slot booking, advanced search with autocomplete, product filtering, and a complete checkout flow.
 
-The platform is built as a monorepo with a React frontend and Express backend, using PostgreSQL for data persistence. The application features Co-op's signature blue (#0086CE) and white branding with a clean, modern design optimized for both desktop and mobile shopping experiences.
+The platform is built as a monorepo with a React frontend and Express backend, using PostgreSQL for data persistence. The application features Max & Max's signature green (#228B5C / HSL 140, 55%, 40%) branding with a clean, modern design optimized for both desktop and mobile shopping experiences.
 
 ## User Preferences
 
@@ -198,10 +198,30 @@ Preferred communication style: Simple, everyday language.
 - **Hero Section**: Featured promotional banner with call-to-action
 - **Category Navigation**: Horizontal scrollable category selector
 - **Product Filters**: Sidebar filters with dietary preferences and sorting options
-- **Offers Carousel**: Auto-scrolling promotional offers with manual navigation
+- **Offers Carousel**: Horizontal scrolling layout with 3-4 cards visible, auto-scroll every 3 seconds, pauses on user interaction
 - **Footer**: Links to help, company info, and social media
 
 ## Recent Changes (October 28, 2025)
+
+**Max & Max Rebrand:**
+- Complete rebrand from Co-op to Max & Max
+- Updated color scheme to Max & Max green (#228B5C / HSL 140, 55%, 40%)
+- Replaced all Co-op branding and logo with Max & Max branding
+- Updated all references throughout the codebase
+
+**Weekly Offers Carousel Redesign:**
+- Completely redesigned from single large card to horizontal scrolling multi-card layout
+- Now displays multiple compact cards (300px width) side by side
+- Each card has image on top (160px height) and content below
+- Shows 3-4 cards at once depending on viewport size
+- Added navigation arrows that scroll by one card width
+- Previous button disables at start, next button disables at end
+- Expanded offers from 3 to 6 weekly deals
+- Auto-scroll advances one card every 3 seconds
+- Auto-scroll loops back to start when reaching the end
+- User interactions (wheel, touch, pointer, arrow clicks) pause auto-play for 10 seconds
+- Auto-play resumes automatically after inactivity period
+- Reduced carousel height from full-screen to compact 280-320px total
 
 **Cart Context Implementation:**
 - Created CartContext to share cart state across all pages
@@ -223,6 +243,7 @@ Preferred communication style: Simple, everyday language.
 
 **End-to-End Testing:**
 - Verified complete checkout flow with Playwright tests
+- Verified carousel functionality including auto-scroll and user interaction pause
 - Cart operations work correctly: add, update, checkout, clear
 - All user interactions tested: product selection, cart management, order placement
 

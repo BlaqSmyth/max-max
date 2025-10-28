@@ -15,7 +15,7 @@ import deliveryImage from '@assets/generated_images/Home_delivery_service_image_
 export const mockProducts = [
   {
     id: '1',
-    name: 'Co-op Organic Whole Milk 2L',
+    name: 'Organic Whole Milk 2L',
     description: 'Fresh organic milk from British farms, rich and creamy',
     category: 'dairy',
     price: 2.50,

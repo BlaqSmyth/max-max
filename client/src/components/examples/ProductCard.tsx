@@ -6,7 +6,7 @@ export default function ProductCardExample() {
     <div className="max-w-xs p-4">
       <ProductCard
         id="milk-1"
-        name="Co-op Organic Whole Milk 2L"
+        name="Organic Whole Milk 2L"
         price={2.50}
         memberPrice={2.25}
         image={milkImage}

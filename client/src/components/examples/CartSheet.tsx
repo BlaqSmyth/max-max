@@ -8,7 +8,7 @@ export default function CartSheetExample() {
   const [isOpen, setIsOpen] = useState(true);
   
   const mockItems = [
-    { id: '1', name: 'Co-op Organic Whole Milk 2L', price: 2.25, quantity: 2, image: milkImage },
+    { id: '1', name: 'Organic Whole Milk 2L', price: 2.25, quantity: 2, image: milkImage },
     { id: '2', name: 'Artisan Sourdough Bread', price: 2.50, quantity: 1, image: breadImage },
   ];
 

@@ -47,24 +47,26 @@ export default function ProductCard({
   };
 
   return (
-    <Card className="group relative overflow-hidden p-4 hover-elevate" data-testid={`card-product-${id}`}>
-      <div className="relative mb-3 aspect-[3/4] overflow-hidden rounded-md bg-muted">
-        <img
-          src={image}
-          alt={name}
-          className="h-full w-full object-cover"
-          data-testid={`img-product-${id}`}
-        />
-        {hasMemberDiscount && isMember && (
-          <Badge
-            variant="secondary"
-            className="absolute left-2 top-2"
-            data-testid={`badge-member-price-${id}`}
-          >
-            Member Price
-          </Badge>
-        )}
-      </div>
+    <Card className="group relative overflow-hidden hover-elevate" data-testid={`card-product-${id}`}>
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/3 opacity-50"></div>
+      <div className="relative p-4">
+        <div className="relative mb-3 aspect-[3/4] overflow-hidden rounded-md bg-gradient-to-br from-muted to-muted/50 shadow-sm">
+          <img
+            src={image}
+            alt={name}
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            data-testid={`img-product-${id}`}
+          />
+          {hasMemberDiscount && isMember && (
+            <Badge
+              variant="secondary"
+              className="absolute left-2 top-2 bg-primary text-primary-foreground shadow-md"
+              data-testid={`badge-member-price-${id}`}
+            >
+              Member Price
+            </Badge>
+          )}
+        </div>
 
       <div className="space-y-2">
         <h3 className="line-clamp-2 min-h-[2.5rem] text-sm font-medium" data-testid={`text-name-${id}`}>
@@ -120,6 +122,7 @@ export default function ProductCard({
           </div>
         )}
       </div>
+    </div>
     </Card>
   );
 }

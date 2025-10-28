@@ -78,7 +78,7 @@ export default function StoreLocatorPage() {
       <div className="mx-auto max-w-7xl px-4 py-8">
         <div className="mb-8">
           <h1 className="mb-2 text-3xl font-bold" data-testid="text-store-locator-title">
-            Find Your Local Co-op Store
+            Find Your Local Max & Max Store
           </h1>
           <p className="text-muted-foreground">
             Discover stores near you offering Click & Collect and home delivery services

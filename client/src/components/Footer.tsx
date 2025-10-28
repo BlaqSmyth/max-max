@@ -13,11 +13,9 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-4">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-5">
           <div className="lg:col-span-1">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary">
-              <span className="text-lg font-bold text-primary-foreground">Co-op</span>
-            </div>
+            <h3 className="text-2xl font-bold text-primary">Max & Max</h3>
             <p className="mt-4 text-sm text-muted-foreground" data-testid="text-footer-tagline">
-              Owned by our members. Making a difference in our communities.
+              Fresh quality groceries delivered to your door.
             </p>
             <div className="mt-4 flex gap-3">
               <a href="#" className="text-muted-foreground hover:text-foreground" data-testid="link-facebook">
@@ -56,7 +54,7 @@ export default function Footer() {
 
         <div className="mt-8 border-t pt-8 text-center text-sm text-muted-foreground">
           <p data-testid="text-footer-copyright">
-            © 2025 Co-op. All rights reserved. | Privacy Policy | Terms of Service
+            © 2025 Max & Max. All rights reserved. | Privacy Policy | Terms of Service
           </p>
         </div>
       </div>

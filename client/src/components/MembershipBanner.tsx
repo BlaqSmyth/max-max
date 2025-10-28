@@ -8,10 +8,10 @@ export default function MembershipBanner() {
         <div className="flex flex-col items-center gap-6 md:flex-row md:justify-between">
           <div className="space-y-2 text-center md:text-left">
             <h3 className="text-2xl font-bold" data-testid="text-membership-title">
-              Join Co-op Membership for just £1
+              Join Max & Max Membership for just £1
             </h3>
             <p className="text-muted-foreground" data-testid="text-membership-subtitle">
-              Get exclusive member prices, personalised offers, and support your local community
+              Get exclusive member prices, personalised offers, and amazing savings
             </p>
           </div>
 

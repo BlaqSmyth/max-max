@@ -32,11 +32,8 @@ export default function MobileMenu({ isOpen, onClose, isMember = false }: Mobile
         <div className="flex h-full flex-col">
           <div className="flex items-center justify-between border-b p-4">
             <div className="flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary">
-                <span className="text-lg font-bold text-primary-foreground">Co-op</span>
-              </div>
               <div>
-                <p className="text-sm font-semibold">Co-op Grocery</p>
+                <p className="text-lg font-bold text-primary">Max & Max</p>
                 {isMember && (
                   <p className="text-xs text-muted-foreground">Member Account</p>
                 )}

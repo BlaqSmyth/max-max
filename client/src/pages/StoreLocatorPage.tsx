@@ -23,7 +23,7 @@ interface Store {
 const mockStores: Store[] = [
   {
     id: "1",
-    name: "Co-op Food - Central London",
+    name: "Max & Max - Central London",
     address: "123 Oxford Street",
     postcode: "W1D 2HG",
     phone: "020 7123 4567",
@@ -33,7 +33,7 @@ const mockStores: Store[] = [
   },
   {
     id: "2",
-    name: "Co-op Food - Camden",
+    name: "Max & Max - Camden",
     address: "45 Camden High Street",
     postcode: "NW1 7JG",
     phone: "020 7234 5678",
@@ -43,7 +43,7 @@ const mockStores: Store[] = [
   },
   {
     id: "3",
-    name: "Co-op Food - Shoreditch",
+    name: "Max & Max - Shoreditch",
     address: "78 Shoreditch High Street",
     postcode: "E1 6JJ",
     phone: "020 7345 6789",

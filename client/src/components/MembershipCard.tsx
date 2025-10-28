@@ -19,7 +19,7 @@ export default function MembershipCard({
         <div className="space-y-4">
           <div className="flex items-center gap-2">
             <Crown className="h-6 w-6" />
-            <h3 className="text-xl font-bold">Co-op Member</h3>
+            <h3 className="text-xl font-bold">Max & Max Member</h3>
           </div>
 
           <div className="space-y-1">

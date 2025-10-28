@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import SearchAutocomplete from "./SearchAutocomplete";
+import maxMaxLogo from '@assets/generated_images/Max_&_Max_grocery_logo_622859de.png';
 
 interface SearchResult {
   id: string;
@@ -45,9 +46,11 @@ export default function Header({
             </Button>
             
             <a href="/" className="flex items-center gap-2" data-testid="link-home">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary">
-                <span className="text-lg font-bold text-primary-foreground">Co-op</span>
-              </div>
+              <img 
+                src={maxMaxLogo} 
+                alt="Max & Max" 
+                className="h-12 w-auto object-contain"
+              />
             </a>
           </div>
 

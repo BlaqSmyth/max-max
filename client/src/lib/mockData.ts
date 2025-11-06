@@ -12,16 +12,11 @@ import dairyImage from '@assets/generated_images/Dairy_products_collection_6d15f
 import wineImage from '@assets/generated_images/Wine_bottles_collection_1ff2a298.png';
 import deliveryImage from '@assets/generated_images/Home_delivery_service_image_af86caa0.png';
 
-import pepsiImage from '@assets/stock_images/pepsi_cola_2_liter_b_079c3aab.jpg';
-import cokeImage from '@assets/stock_images/coca_cola_2_liter_bo_88017767.jpg';
-import redBullImage from '@assets/stock_images/red_bull_energy_drin_340ba973.jpg';
-import lucozadeImage from '@assets/stock_images/lucozade_sport_energ_514652af.jpg';
-import volvicImage from '@assets/stock_images/volvic_natural_miner_c29b3412.jpg';
-import mountainDewImage from '@assets/stock_images/mountain_dew_soda_bo_08354f65.jpg';
-import sevenUpImage from '@assets/stock_images/7up_lemon_lime_soda__2c3a7564.jpg';
-import irnBruImage from '@assets/stock_images/irn_bru_orange_soda__0bfc5dd9.jpg';
-import rubiconImage from '@assets/stock_images/rubicon_mango_juice__1568aea3.jpg';
-import monsterImage from '@assets/stock_images/monster_energy_drink_6623cfd4.jpg';
+// Using REAL product images from your catalogue photos
+import cataloguePage1 from '@assets/IMG_5618_1762448960767.jpg';
+import cataloguePage2 from '@assets/IMG_5619_1762448960768.jpg';
+import cataloguePage3 from '@assets/IMG_5620_1762448960768.jpg';
+import cataloguePage4 from '@assets/IMG_5621_1762448960768.jpg';
 
 export const mockProducts = [
   {
@@ -185,7 +180,7 @@ export const mockProducts = [
     inStock: 1,
   },
 
-  // Soft Drinks - Individual Bottles & Cans
+  // Soft Drinks - Individual Bottles & Cans (Using REAL catalogue images)
   {
     id: '17',
     name: 'Pepsi Cola 2L Bottle',
@@ -193,103 +188,101 @@ export const mockProducts = [
     category: 'beverages',
     price: 2.29,
     memberPrice: 1.99,
-    image: pepsiImage,
+    image: cataloguePage1,
     inStock: 1,
   },
   {
     id: '18',
-    name: 'Coca Cola 2L Bottle',
-    description: 'Original Coca-Cola, the iconic cola taste',
+    name: 'Tango Orange 500ml Bottle',
+    description: 'Fizzy orange soft drink with real fruit juice',
     category: 'beverages',
-    price: 2.29,
-    memberPrice: 1.99,
-    image: cokeImage,
+    price: 1.25,
+    memberPrice: 1.00,
+    image: cataloguePage1,
     inStock: 1,
   },
   {
     id: '19',
-    name: 'Mountain Dew 500ml Bottle',
-    description: 'Citrus-flavored energizing soda',
-    category: 'beverages',
-    price: 1.49,
-    memberPrice: 1.29,
-    image: mountainDewImage,
-    inStock: 1,
-  },
-  {
-    id: '20',
     name: '7up Lemon & Lime 2L Bottle',
     description: 'Crisp lemon and lime flavored soda',
     category: 'beverages',
     price: 2.19,
     memberPrice: 1.89,
-    image: sevenUpImage,
+    image: cataloguePage1,
+    inStock: 1,
+  },
+  {
+    id: '20',
+    name: 'Mountain Dew 500ml Bottle',
+    description: 'Citrus-flavored energizing soda',
+    category: 'beverages',
+    price: 1.49,
+    memberPrice: 1.29,
+    image: cataloguePage2,
     inStock: 1,
   },
   {
     id: '21',
-    name: 'IRN BRU 500ml Bottle',
-    description: 'Scotland\'s iconic orange flavored drink',
+    name: 'Barr Drinks 500ml Bottle',
+    description: 'Scottish soft drinks in various flavours',
     category: 'beverages',
-    price: 1.39,
-    memberPrice: 1.19,
-    image: irnBruImage,
+    price: 1.00,
+    memberPrice: 0.85,
+    image: cataloguePage2,
     inStock: 1,
   },
 
   // Juices & Fruit Drinks
   {
     id: '22',
+    name: 'Vimto 500ml Bottle',
+    description: 'Mixed fruit flavored soft drink',
+    category: 'beverages',
+    price: 1.25,
+    memberPrice: 1.10,
+    image: cataloguePage2,
+    inStock: 1,
+  },
+  {
+    id: '23',
     name: 'Rubicon Mango 500ml Bottle',
     description: 'Exotic mango flavored fruit drink',
     category: 'beverages',
-    price: 1.29,
-    memberPrice: 1.09,
-    image: rubiconImage,
+    price: 1.19,
+    memberPrice: 1.00,
+    image: cataloguePage3,
     inStock: 1,
   },
 
   // Sports & Energy Drinks
   {
-    id: '23',
+    id: '24',
     name: 'Lucozade Sport 500ml Bottle',
     description: 'Isotonic sports drink for hydration and energy',
     category: 'beverages',
     price: 1.39,
     memberPrice: 1.19,
-    image: lucozadeImage,
-    inStock: 1,
-  },
-  {
-    id: '24',
-    name: 'Red Bull Energy Drink 250ml Can',
-    description: 'Original Red Bull energy drink with caffeine and taurine',
-    category: 'beverages',
-    price: 1.69,
-    memberPrice: 1.49,
-    image: redBullImage,
+    image: cataloguePage4,
     inStock: 1,
   },
   {
     id: '25',
+    name: 'Boost Energy 500ml Bottle',
+    description: 'Energy drink for maximum boost',
+    category: 'beverages',
+    price: 1.00,
+    memberPrice: 0.89,
+    image: cataloguePage4,
+    inStock: 1,
+  },
+  {
+    id: '26',
     name: 'Monster Energy 500ml Can',
     description: 'Monster energy drink for maximum energy boost',
     category: 'beverages',
     price: 1.79,
     memberPrice: 1.59,
-    image: monsterImage,
-    inStock: 1,
-  },
-
-  // Water - Packs allowed per user request
-  {
-    id: '26',
-    name: 'Volvic Natural Water 6x1.5L Pack',
-    description: 'Pure natural mineral water from volcanic France',
-    category: 'beverages',
-    price: 4.49,
-    memberPrice: 3.99,
-    image: volvicImage,
+    image: cataloguePage4,
     inStock: 1,
   },
   

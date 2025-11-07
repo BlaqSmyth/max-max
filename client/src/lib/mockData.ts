@@ -12,11 +12,13 @@ import dairyImage from '@assets/generated_images/Dairy_products_collection_6d15f
 import wineImage from '@assets/generated_images/Wine_bottles_collection_1ff2a298.png';
 import deliveryImage from '@assets/generated_images/Home_delivery_service_image_af86caa0.png';
 
-// Using REAL product images from your catalogue photos
-import cataloguePage1 from '@assets/IMG_5618_1762448960767.jpg';
-import cataloguePage2 from '@assets/IMG_5619_1762448960768.jpg';
-import cataloguePage3 from '@assets/IMG_5620_1762448960768.jpg';
-import cataloguePage4 from '@assets/IMG_5621_1762448960768.jpg';
+// Using REAL individual product images downloaded from the web
+import pepsiBottle from '@assets/pepsi_2l.png';
+import cokeBottle from '@assets/coca_cola_2l.png';
+import tangoBottle from '@assets/tango_orange_500ml.png';
+import vimtoBottle from '@assets/vimto_500ml.png';
+import monsterCan from '@assets/monster_energy_500ml.png';
+import redBullCan from '@assets/red_bull_250ml.png';
 
 export const mockProducts = [
   {
@@ -180,7 +182,7 @@ export const mockProducts = [
     inStock: 1,
   },
 
-  // Soft Drinks - Individual Bottles & Cans (Using REAL catalogue images)
+  // Soft Drinks - Individual Bottles & Cans (Using REAL product images from web)
   {
     id: '17',
     name: 'Pepsi Cola 2L Bottle',
@@ -188,101 +190,59 @@ export const mockProducts = [
     category: 'beverages',
     price: 2.29,
     memberPrice: 1.99,
-    image: cataloguePage1,
+    image: pepsiBottle,
     inStock: 1,
   },
   {
     id: '18',
+    name: 'Coca Cola 2L Bottle',
+    description: 'Original Coca-Cola, the iconic cola taste',
+    category: 'beverages',
+    price: 2.29,
+    memberPrice: 1.99,
+    image: cokeBottle,
+    inStock: 1,
+  },
+  {
+    id: '19',
     name: 'Tango Orange 500ml Bottle',
     description: 'Fizzy orange soft drink with real fruit juice',
     category: 'beverages',
     price: 1.25,
     memberPrice: 1.00,
-    image: cataloguePage1,
-    inStock: 1,
-  },
-  {
-    id: '19',
-    name: '7up Lemon & Lime 2L Bottle',
-    description: 'Crisp lemon and lime flavored soda',
-    category: 'beverages',
-    price: 2.19,
-    memberPrice: 1.89,
-    image: cataloguePage1,
+    image: tangoBottle,
     inStock: 1,
   },
   {
     id: '20',
-    name: 'Mountain Dew 500ml Bottle',
-    description: 'Citrus-flavored energizing soda',
-    category: 'beverages',
-    price: 1.49,
-    memberPrice: 1.29,
-    image: cataloguePage2,
-    inStock: 1,
-  },
-  {
-    id: '21',
-    name: 'Barr Drinks 500ml Bottle',
-    description: 'Scottish soft drinks in various flavours',
-    category: 'beverages',
-    price: 1.00,
-    memberPrice: 0.85,
-    image: cataloguePage2,
-    inStock: 1,
-  },
-
-  // Juices & Fruit Drinks
-  {
-    id: '22',
     name: 'Vimto 500ml Bottle',
     description: 'Mixed fruit flavored soft drink',
     category: 'beverages',
     price: 1.25,
     memberPrice: 1.10,
-    image: cataloguePage2,
-    inStock: 1,
-  },
-  {
-    id: '23',
-    name: 'Rubicon Mango 500ml Bottle',
-    description: 'Exotic mango flavored fruit drink',
-    category: 'beverages',
-    price: 1.19,
-    memberPrice: 1.00,
-    image: cataloguePage3,
+    image: vimtoBottle,
     inStock: 1,
   },
 
-  // Sports & Energy Drinks
+  // Energy Drinks
   {
-    id: '24',
-    name: 'Lucozade Sport 500ml Bottle',
-    description: 'Isotonic sports drink for hydration and energy',
+    id: '21',
+    name: 'Red Bull Energy Drink 250ml Can',
+    description: 'Original Red Bull energy drink with caffeine and taurine',
     category: 'beverages',
-    price: 1.39,
-    memberPrice: 1.19,
-    image: cataloguePage4,
+    price: 1.69,
+    memberPrice: 1.49,
+    image: redBullCan,
     inStock: 1,
   },
   {
-    id: '25',
-    name: 'Boost Energy 500ml Bottle',
-    description: 'Energy drink for maximum boost',
-    category: 'beverages',
-    price: 1.00,
-    memberPrice: 0.89,
-    image: cataloguePage4,
-    inStock: 1,
-  },
-  {
-    id: '26',
+    id: '22',
     name: 'Monster Energy 500ml Can',
     description: 'Monster energy drink for maximum energy boost',
     category: 'beverages',
     price: 1.79,
     memberPrice: 1.59,
-    image: cataloguePage4,
+    image: monsterCan,
     inStock: 1,
   },
   

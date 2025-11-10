@@ -256,6 +256,259 @@ export const mockProducts = [
     image: monsterCan,
     inStock: 1,
   },
+
+  // Additional Soft Drinks from United UK Catalog (Pages 1-3)
+  // TODO: Replace placeholder images with real manufacturer PNGs
+  {
+    id: '24',
+    name: '4Kings Mojo Blackcurrant De Coco Drink 500ml',
+    description: 'Refreshing coconut water drink with blackcurrant flavor',
+    category: 'beverages',
+    price: 1.99,
+    memberPrice: 1.79,
+    image: milkImage, // Placeholder - needs real manufacturer PNG
+    inStock: 1,
+  },
+  {
+    id: '25',
+    name: '7UP Zero 500ml Bottle',
+    description: 'Zero sugar lemon-lime soda, crisp and refreshing',
+    category: 'beverages',
+    price: 1.30,
+    memberPrice: 1.15,
+    image: spriteBottle, // Using Sprite as similar product placeholder
+    inStock: 1,
+  },
+  {
+    id: '26',
+    name: '7UP Regular 330ml Can',
+    description: 'Classic lemon-lime soda in convenient can size',
+    category: 'beverages',
+    price: 0.75,
+    memberPrice: 0.65,
+    image: spriteBottle, // Placeholder - needs real 7UP can PNG
+    inStock: 1,
+  },
+  {
+    id: '27',
+    name: '7UP Regular 500ml Bottle',
+    description: 'Classic lemon-lime refreshment in 500ml bottle',
+    category: 'beverages',
+    price: 1.30,
+    memberPrice: 1.15,
+    image: spriteBottle, // Placeholder - needs real 7UP bottle PNG
+    inStock: 1,
+  },
+  {
+    id: '28',
+    name: '7UP Regular 2L Bottle',
+    description: 'Large 2-liter bottle of classic 7UP',
+    category: 'beverages',
+    price: 1.99,
+    memberPrice: 1.79,
+    image: spriteBottle, // Placeholder - needs real 7UP 2L PNG
+    inStock: 1,
+  },
+  {
+    id: '29',
+    name: '7UP Tropical American 600ml',
+    description: 'Tropical fruit flavored 7UP variant',
+    category: 'beverages',
+    price: 1.49,
+    memberPrice: 1.29,
+    image: tangoBottle, // Placeholder - needs real 7UP Tropical PNG
+    inStock: 1,
+  },
+  {
+    id: '30',
+    name: '7UP Tropical 2L Bottle',
+    description: 'Large bottle of tropical 7UP flavor',
+    category: 'beverages',
+    price: 1.99,
+    memberPrice: 1.79,
+    image: tangoBottle, // Placeholder - needs real 7UP Tropical PNG
+    inStock: 1,
+  },
+  {
+    id: '31',
+    name: '7UP Zero 330ml Can',
+    description: 'Zero sugar 7UP in convenient can format',
+    category: 'beverages',
+    price: 0.79,
+    memberPrice: 0.69,
+    image: spriteBottle, // Placeholder - needs real 7UP Zero can PNG
+    inStock: 1,
+  },
+  {
+    id: '32',
+    name: '7UP Zero Pink Lemonade 330ml Can',
+    description: 'Zero sugar pink lemonade flavored 7UP',
+    category: 'beverages',
+    price: 0.75,
+    memberPrice: 0.65,
+    image: vimtoBottle, // Placeholder - needs real 7UP Pink Lemonade PNG
+    inStock: 1,
+  },
+  {
+    id: '33',
+    name: '7UP Zero Pink Lemonade 500ml',
+    description: 'Refreshing pink lemonade with zero sugar',
+    category: 'beverages',
+    price: 1.30,
+    memberPrice: 1.15,
+    image: vimtoBottle, // Placeholder - needs real 7UP Pink Lemonade PNG
+    inStock: 1,
+  },
+  {
+    id: '34',
+    name: '7UP Zero 2L Bottle',
+    description: 'Large zero sugar 7UP bottle',
+    category: 'beverages',
+    price: 1.99,
+    memberPrice: 1.79,
+    image: spriteBottle, // Placeholder - needs real 7UP Zero 2L PNG
+    inStock: 1,
+  },
+  {
+    id: '35',
+    name: 'Aloe Can American Grape 500ml',
+    description: 'Aloe vera drink with grape flavor',
+    category: 'beverages',
+    price: 1.49,
+    memberPrice: 1.29,
+    image: monsterCan, // Placeholder - needs real Aloe Can PNG
+    inStock: 1,
+  },
+  {
+    id: '36',
+    name: 'Aloe Can Blue Lagoon 500ml',
+    description: 'Refreshing blue lagoon flavored aloe drink',
+    category: 'beverages',
+    price: 1.49,
+    memberPrice: 1.29,
+    image: monsterCan, // Placeholder - needs real Aloe Can PNG
+    inStock: 1,
+  },
+  {
+    id: '37',
+    name: 'Aloe Can Energy 500ml',
+    description: 'Aloe vera energy drink for extra boost',
+    category: 'beverages',
+    price: 1.49,
+    memberPrice: 1.29,
+    image: monsterCan, // Placeholder - needs real Aloe Can PNG
+    inStock: 1,
+  },
+  {
+    id: '38',
+    name: 'Aloe Can Fruit Candy 500ml',
+    description: 'Sweet fruit candy flavored aloe drink',
+    category: 'beverages',
+    price: 1.49,
+    memberPrice: 1.29,
+    image: monsterCan, // Placeholder - needs real Aloe Can PNG
+    inStock: 1,
+  },
+  {
+    id: '39',
+    name: 'Amigo Apple and Strawberry 200ml',
+    description: 'Kids fruit drink with apple and strawberry',
+    category: 'beverages',
+    price: 0.79,
+    memberPrice: 0.69,
+    image: tangoBottle, // Placeholder - needs real Amigo PNG
+    inStock: 1,
+  },
+  {
+    id: '40',
+    name: 'Amigo Multivitamin 200ml 8-Pack',
+    description: 'Multivitamin fruit drinks for kids, 8 pack',
+    category: 'beverages',
+    price: 5.49,
+    memberPrice: 4.99,
+    image: milkImage, // Placeholder - needs real Amigo multipack PNG
+    inStock: 1,
+  },
+  {
+    id: '41',
+    name: 'Appletiser 275ml Bottle',
+    description: 'Sparkling apple juice made from 100% pressed apples',
+    category: 'beverages',
+    price: 1.79,
+    memberPrice: 1.59,
+    image: milkImage, // Placeholder - needs real Appletiser PNG
+    inStock: 1,
+  },
+  {
+    id: '42',
+    name: 'Appletiser 250ml Bottle',
+    description: 'Sparkling apple juice in convenient 250ml size',
+    category: 'beverages',
+    price: 1.09,
+    memberPrice: 0.99,
+    image: milkImage, // Placeholder - needs real Appletiser PNG
+    inStock: 1,
+  },
+  {
+    id: '43',
+    name: 'AQUA Carpatica Still Natural Mineral Water 330ml 6-Pack',
+    description: 'Premium natural mineral water from Romania, pack of 6',
+    category: 'beverages',
+    price: 9.60,
+    memberPrice: 8.99,
+    image: milkImage, // Placeholder - needs real AQUA Carpatica PNG
+    inStock: 1,
+  },
+  {
+    id: '44',
+    name: 'AQUA Carpatica Sparkling Natural Mineral Water 500ml',
+    description: 'Naturally carbonated mineral water',
+    category: 'beverages',
+    price: 0.80,
+    memberPrice: 0.70,
+    image: milkImage, // Placeholder - needs real AQUA Carpatica PNG
+    inStock: 1,
+  },
+  {
+    id: '45',
+    name: 'AQUA Carpatica Sparkling Natural Mineral Water 1L',
+    description: 'Large bottle of sparkling mineral water',
+    category: 'beverages',
+    price: 1.60,
+    memberPrice: 1.45,
+    image: milkImage, // Placeholder - needs real AQUA Carpatica PNG
+    inStock: 1,
+  },
+  {
+    id: '46',
+    name: 'AQUA Carpatica Sportscap Still Mineral Water 750ml',
+    description: 'Still mineral water with sport cap',
+    category: 'beverages',
+    price: 1.10,
+    memberPrice: 0.99,
+    image: milkImage, // Placeholder - needs real AQUA Carpatica PNG
+    inStock: 1,
+  },
+  {
+    id: '47',
+    name: 'AQUA Carpatica Still Natural Mineral Water 1L',
+    description: 'Premium still mineral water in 1 liter bottle',
+    category: 'beverages',
+    price: 1.69,
+    memberPrice: 1.49,
+    image: milkImage, // Placeholder - needs real AQUA Carpatica PNG
+    inStock: 1,
+  },
+  {
+    id: '48',
+    name: 'AQUA Carpatica Still Natural Mineral Water 2L',
+    description: 'Large 2-liter bottle of still mineral water',
+    category: 'beverages',
+    price: 1.18,
+    memberPrice: 1.05,
+    image: milkImage, // Placeholder - needs real AQUA Carpatica PNG
+    inStock: 1,
+  },
   
 ];
 

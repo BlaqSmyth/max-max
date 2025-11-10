@@ -3,6 +3,11 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { ObjectStorageService } from "./objectStorage";
 import { insertProductSchema } from "@shared/schema";
+import { 
+  adminAuthMiddleware, 
+  adminAuthService, 
+  verifyAdminPassword 
+} from "./adminAuth";
 import multer from "multer";
 
 const upload = multer({ storage: multer.memoryStorage() });
@@ -25,19 +30,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Simple admin password middleware
-  const adminAuth = (req: any, res: any, next: any) => {
-    const authHeader = req.headers.authorization;
-    const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
-    
-    if (!authHeader || authHeader !== `Bearer ${adminPassword}`) {
-      return res.status(401).json({ error: "Unauthorized" });
+  // Admin login endpoint - verifies password and returns session token
+  app.post("/api/admin/login", async (req, res) => {
+    try {
+      const { password } = req.body;
+      
+      if (!password || !verifyAdminPassword(password)) {
+        return res.status(401).json({ error: "Invalid password" });
+      }
+
+      const token = adminAuthService.createSession();
+      res.json({ token });
+    } catch (error) {
+      console.error("Login error:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
-    next();
-  };
+  });
+
+  // Admin logout endpoint
+  app.post("/api/admin/logout", async (req, res) => {
+    try {
+      const authHeader = req.headers.authorization;
+      if (authHeader && authHeader.startsWith("Bearer ")) {
+        const token = authHeader.substring(7);
+        adminAuthService.revokeToken(token);
+      }
+      res.status(204).send();
+    } catch (error) {
+      console.error("Logout error:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
 
   // Admin: Get all products
-  app.get("/api/admin/products", adminAuth, async (req, res) => {
+  app.get("/api/admin/products", adminAuthMiddleware, async (req, res) => {
     try {
       const products = await storage.getAllProducts();
       res.json(products);
@@ -48,7 +74,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin: Create product
-  app.post("/api/admin/products", adminAuth, async (req, res) => {
+  app.post("/api/admin/products", adminAuthMiddleware, async (req, res) => {
     try {
       const validated = insertProductSchema.parse(req.body);
       const product = await storage.createProduct(validated);
@@ -60,7 +86,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin: Update product
-  app.put("/api/admin/products/:id", adminAuth, async (req, res) => {
+  app.put("/api/admin/products/:id", adminAuthMiddleware, async (req, res) => {
     try {
       const { id } = req.params;
       const product = await storage.updateProduct(id, req.body);
@@ -75,7 +101,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin: Delete product
-  app.delete("/api/admin/products/:id", adminAuth, async (req, res) => {
+  app.delete("/api/admin/products/:id", adminAuthMiddleware, async (req, res) => {
     try {
       const { id } = req.params;
       const deleted = await storage.deleteProduct(id);
@@ -90,7 +116,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin: Upload image
-  app.post("/api/admin/upload", adminAuth, upload.single("image"), async (req, res) => {
+  app.post("/api/admin/upload", adminAuthMiddleware, upload.single("image"), async (req, res) => {
     try {
       if (!req.file) {
         return res.status(400).json({ error: "No file uploaded" });

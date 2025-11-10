@@ -122,10 +122,15 @@ export class ObjectStorageService {
   }
 
   async uploadFile(buffer: Buffer, contentType: string): Promise<string> {
-    const privateObjectDir = this.getPrivateObjectDir();
+    const publicPaths = this.getPublicObjectSearchPaths();
+    if (publicPaths.length === 0) {
+      throw new Error("No public object paths configured");
+    }
+    
+    const publicDir = publicPaths[0]; // Use first public path
     const objectId = randomUUID();
     const extension = this.getExtensionFromMimeType(contentType);
-    const fullPath = `${privateObjectDir}/products/${objectId}${extension}`;
+    const fullPath = `${publicDir}/products/${objectId}${extension}`;
 
     const { bucketName, objectName } = this.parseObjectPath(fullPath);
     const bucket = objectStorageClient.bucket(bucketName);

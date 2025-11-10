@@ -15,6 +15,7 @@ import deliveryImage from '@assets/generated_images/Home_delivery_service_image_
 // Using REAL individual product images downloaded from the web
 import pepsiBottle from '@assets/pepsi_2l.png';
 import cokeBottle from '@assets/coca_cola_2l.png';
+import spriteBottle from '@assets/sprite_2l.png';
 import tangoBottle from '@assets/tango_orange_500ml.png';
 import vimtoBottle from '@assets/vimto_500ml.png';
 import monsterCan from '@assets/monster_energy_500ml.png';
@@ -205,6 +206,16 @@ export const mockProducts = [
   },
   {
     id: '19',
+    name: 'Sprite 2L Bottle',
+    description: 'Crisp lemon-lime flavored soda, refreshingly clear',
+    category: 'beverages',
+    price: 2.19,
+    memberPrice: 1.99,
+    image: spriteBottle,
+    inStock: 1,
+  },
+  {
+    id: '20',
     name: 'Tango Orange 500ml Bottle',
     description: 'Fizzy orange soft drink with real fruit juice',
     category: 'beverages',
@@ -214,7 +225,7 @@ export const mockProducts = [
     inStock: 1,
   },
   {
-    id: '20',
+    id: '21',
     name: 'Vimto 500ml Bottle',
     description: 'Mixed fruit flavored soft drink',
     category: 'beverages',
@@ -226,7 +237,7 @@ export const mockProducts = [
 
   // Energy Drinks
   {
-    id: '21',
+    id: '22',
     name: 'Red Bull Energy Drink 250ml Can',
     description: 'Original Red Bull energy drink with caffeine and taurine',
     category: 'beverages',
@@ -236,7 +247,7 @@ export const mockProducts = [
     inStock: 1,
   },
   {
-    id: '22',
+    id: '23',
     name: 'Monster Energy 500ml Can',
     description: 'Monster energy drink for maximum energy boost',
     category: 'beverages',

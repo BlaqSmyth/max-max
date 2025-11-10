@@ -281,6 +281,16 @@ export const mockProducts = [
   },
   {
     id: '26',
+    name: '7UP Regular 300ml Bottle',
+    description: 'Classic lemon-lime soda in 300ml bottle',
+    category: 'beverages',
+    price: 0.79,
+    memberPrice: 0.69,
+    image: spriteBottle, // Placeholder - needs real 7UP 300ml PNG
+    inStock: 1,
+  },
+  {
+    id: '49',
     name: '7UP Regular 330ml Can',
     description: 'Classic lemon-lime soda in convenient can size',
     category: 'beverages',
@@ -505,7 +515,7 @@ export const mockProducts = [
     description: 'Large 2-liter bottle of still mineral water',
     category: 'beverages',
     price: 1.18,
-    memberPrice: 1.05,
+    memberPrice: 1.09,
     image: milkImage, // Placeholder - needs real AQUA Carpatica PNG
     inStock: 1,
   },

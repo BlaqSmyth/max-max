@@ -16,12 +16,14 @@ import { Plus, Pencil, Trash2, Search } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { ProductDialog } from "@/components/ProductDialog";
+import { useLocation } from "wouter";
 
 export default function AdminProducts() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
 
   const { data: products = [], isLoading } = useQuery<Product[]>({
     queryKey: ["/api/admin/products"],
@@ -32,9 +34,15 @@ export default function AdminProducts() {
           Authorization: `Bearer ${token}`,
         },
       });
+      if (response.status === 401) {
+        localStorage.removeItem("admin_token");
+        setLocation("/admin/login");
+        throw new Error("Authentication failed");
+      }
       if (!response.ok) throw new Error("Failed to fetch products");
       return response.json();
     },
+    retry: false,
   });
 
   const deleteMutation = useMutation({

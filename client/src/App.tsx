@@ -11,6 +11,7 @@ import StoreLocatorPage from "./pages/StoreLocatorPage";
 import AdminLogin from "./pages/AdminLogin";
 import AdminProducts from "./pages/AdminProducts";
 import { AdminLayout } from "./components/AdminLayout";
+import { AdminRouteGuard } from "./components/AdminRouteGuard";
 
 function Router() {
   return (
@@ -21,19 +22,23 @@ function Router() {
       
       <Route path="/admin/login" component={AdminLogin} />
       <Route path="/admin/products">
-        <AdminLayout>
-          <AdminProducts />
-        </AdminLayout>
+        <AdminRouteGuard>
+          <AdminLayout>
+            <AdminProducts />
+          </AdminLayout>
+        </AdminRouteGuard>
       </Route>
       <Route path="/admin">
-        <AdminLayout>
-          <div className="space-y-4">
-            <h2 className="text-3xl font-bold">Dashboard</h2>
-            <p className="text-muted-foreground">
-              Welcome to Max & Max Admin CMS
-            </p>
-          </div>
-        </AdminLayout>
+        <AdminRouteGuard>
+          <AdminLayout>
+            <div className="space-y-4">
+              <h2 className="text-3xl font-bold">Dashboard</h2>
+              <p className="text-muted-foreground">
+                Welcome to Max & Max Admin CMS
+              </p>
+            </div>
+          </AdminLayout>
+        </AdminRouteGuard>
       </Route>
       
       <Route component={NotFound} />

@@ -48,11 +48,11 @@ class AdminAuthService {
 
   private cleanupExpiredSessions(): void {
     const now = Date.now();
-    for (const [token, session] of this.sessions.entries()) {
+    Array.from(this.sessions.entries()).forEach(([token, session]) => {
       if (now > session.expiresAt) {
         this.sessions.delete(token);
       }
-    }
+    });
   }
 }
 

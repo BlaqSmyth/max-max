@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import {
   Sidebar,
@@ -29,20 +28,11 @@ const menuItems = [
 ];
 
 export function AdminLayout({ children }: { children: React.ReactNode }) {
-  const [location, setLocation] = useLocation();
-
-  useEffect(() => {
-    // Check if user is logged in
-    const token = localStorage.getItem("admin_token");
-    if (!token && !location.startsWith("/admin/login")) {
-      setLocation("/admin/login");
-    }
-  }, [location, setLocation]);
+  const [, setLocation] = useLocation();
 
   const handleLogout = async () => {
     const token = localStorage.getItem("admin_token");
     if (token) {
-      // Call logout endpoint to invalidate token
       await fetch("/api/admin/logout", {
         method: "POST",
         headers: {
@@ -53,10 +43,6 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
     localStorage.removeItem("admin_token");
     setLocation("/admin/login");
   };
-
-  if (location === "/admin/login") {
-    return <>{children}</>;
-  }
 
   const style = {
     "--sidebar-width": "16rem",

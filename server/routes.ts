@@ -85,6 +85,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin: Bulk create products
+  app.post("/api/admin/products/bulk", adminAuthMiddleware, async (req, res) => {
+    try {
+      const { products } = req.body;
+      if (!Array.isArray(products) || products.length === 0) {
+        return res.status(400).json({ error: "Invalid products array" });
+      }
+
+      const validatedProducts = products.map((p) => insertProductSchema.parse(p));
+      const createdProducts = await storage.createProducts(validatedProducts);
+      
+      res.status(201).json({ 
+        count: createdProducts.length, 
+        products: createdProducts 
+      });
+    } catch (error) {
+      console.error("Error bulk creating products:", error);
+      res.status(400).json({ error: "Invalid product data" });
+    }
+  });
+
   // Admin: Update product
   app.put("/api/admin/products/:id", adminAuthMiddleware, async (req, res) => {
     try {

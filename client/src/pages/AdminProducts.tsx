@@ -16,12 +16,14 @@ import { Plus, Pencil, Trash2, Search } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { ProductDialog } from "@/components/ProductDialog";
+import { BulkUploadDialog } from "@/components/BulkUploadDialog";
 import { useLocation } from "wouter";
 
 export default function AdminProducts() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isBulkUploadOpen, setIsBulkUploadOpen] = useState(false);
   const { toast } = useToast();
   const [, setLocation] = useLocation();
 
@@ -97,10 +99,20 @@ export default function AdminProducts() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-bold">Products</h2>
-        <Button onClick={handleAdd} data-testid="button-add-product">
-          <Plus className="w-4 h-4 mr-2" />
-          Add Product
-        </Button>
+        <div className="flex gap-2">
+          <Button 
+            variant="outline"
+            onClick={() => setIsBulkUploadOpen(true)} 
+            data-testid="button-bulk-upload"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Bulk Upload
+          </Button>
+          <Button onClick={handleAdd} data-testid="button-add-product">
+            <Plus className="w-4 h-4 mr-2" />
+            Add Product
+          </Button>
+        </div>
       </div>
 
       <Card>
@@ -132,7 +144,7 @@ export default function AdminProducts() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[100px]">Image</TableHead>
+                  <TableHead className="w-[120px]">Image</TableHead>
                   <TableHead>Name</TableHead>
                   <TableHead>Category</TableHead>
                   <TableHead>Price</TableHead>
@@ -148,7 +160,7 @@ export default function AdminProducts() {
                       <img
                         src={product.image}
                         alt={product.name}
-                        className="w-16 h-16 object-cover rounded"
+                        className="w-20 h-20 object-cover rounded-md border"
                         data-testid={`img-product-${product.id}`}
                       />
                     </TableCell>
@@ -193,6 +205,11 @@ export default function AdminProducts() {
         product={selectedProduct}
         open={isDialogOpen}
         onOpenChange={setIsDialogOpen}
+      />
+      
+      <BulkUploadDialog
+        open={isBulkUploadOpen}
+        onOpenChange={setIsBulkUploadOpen}
       />
     </div>
   );

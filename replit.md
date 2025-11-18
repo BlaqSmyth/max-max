@@ -201,7 +201,35 @@ Preferred communication style: Simple, everyday language.
 - **Offers Carousel**: Horizontal scrolling layout with 3-4 cards visible, auto-scroll every 3 seconds, pauses on user interaction
 - **Footer**: Links to help, company info, and social media
 
-## Recent Changes (October 28, 2025)
+## Recent Changes
+
+### November 18, 2025 - Admin CMS Enhancements
+
+**Enhanced Product Image Display:**
+- Increased product image size from 64x64px to 80x80px in admin product table
+- Added border and rounded corners to images for better visibility
+- Widened image column to 120px to accommodate larger images
+- Improved visual hierarchy in the product management interface
+
+**Bulk Upload Feature:**
+- Added CSV-based bulk product upload functionality
+- "Bulk Upload" button positioned next to "Add Product" button in admin toolbar
+- CSV template download available with proper headers and example row
+- Real-time CSV parsing with validation before upload
+- Preview shows product count and names before final submission
+- Support for all 7 product categories: beverages, dairy, bakery, produce, meat, ready-meals, alcohol
+- Validates required fields (name, category, price, image) and optional fields (description, memberPrice)
+- New backend endpoint: POST /api/admin/products/bulk
+- Storage layer updated with createProducts method for multi-product creation
+- E2E tested: authentication, bulk upload flow, CSV parsing, product creation, and display verification
+
+**CSV Format:**
+```csv
+name,description,category,price,memberPrice,image,inStock
+Product Name,Description,beverages,2.50,2.25,/path/to/image.png,1
+```
+
+### October 28, 2025 - Max & Max Rebrand
 
 **Max & Max Rebrand:**
 - Complete rebrand from Co-op to Max & Max

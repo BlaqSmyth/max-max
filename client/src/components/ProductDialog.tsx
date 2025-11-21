@@ -89,16 +89,28 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
         : "/api/admin/products";
       const method = product ? "PUT" : "POST";
 
+      // Prepare payload with proper validation
+      const payload: any = {
+        name: data.name.trim(),
+        description: data.description.trim(),
+        category: data.category,
+        price: data.price.trim(),
+        image: data.image,
+        inStock: parseInt(data.inStock, 10),
+      };
+
+      // Only include memberPrice if it has a value
+      if (data.memberPrice && data.memberPrice.trim()) {
+        payload.memberPrice = data.memberPrice.trim();
+      }
+
       const response = await fetch(url, {
         method,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          ...data,
-          inStock: parseInt(data.inStock),
-        }),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) throw new Error("Failed to save product");
@@ -134,8 +146,42 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
     }
   };
 
+  const validateFormData = (data: typeof formData): string | null => {
+    // Validate price format
+    const priceRegex = /^\d+(\.\d{1,2})?$/;
+    if (!priceRegex.test(data.price.trim())) {
+      return "Price must be a valid number with up to 2 decimal places (e.g., 2.99)";
+    }
+
+    // Validate member price format if provided
+    if (data.memberPrice && data.memberPrice.trim()) {
+      if (!priceRegex.test(data.memberPrice.trim())) {
+        return "Member price must be a valid number with up to 2 decimal places (e.g., 2.49)";
+      }
+    }
+
+    // Validate stock is a positive integer
+    const stock = parseInt(data.inStock, 10);
+    if (isNaN(stock) || stock < 0 || !Number.isInteger(stock)) {
+      return "Stock must be a positive whole number";
+    }
+
+    return null;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate form data before proceeding
+    const validationError = validateFormData(formData);
+    if (validationError) {
+      toast({
+        title: "Validation Error",
+        description: validationError,
+        variant: "destructive",
+      });
+      return;
+    }
     
     // If user selected a new image file, upload it first
     if (imageFile) {
@@ -286,8 +332,9 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
               <Label htmlFor="price">Price (£)</Label>
               <Input
                 id="price"
-                type="number"
-                step="0.01"
+                type="text"
+                inputMode="decimal"
+                pattern="^\d+(\.\d{1,2})?$"
                 value={formData.price}
                 onChange={(e) =>
                   setFormData({ ...formData, price: e.target.value })
@@ -301,8 +348,9 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
               <Label htmlFor="memberPrice">Member Price (£)</Label>
               <Input
                 id="memberPrice"
-                type="number"
-                step="0.01"
+                type="text"
+                inputMode="decimal"
+                pattern="^\d+(\.\d{1,2})?$"
                 value={formData.memberPrice}
                 onChange={(e) =>
                   setFormData({ ...formData, memberPrice: e.target.value })
@@ -315,7 +363,9 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
               <Label htmlFor="inStock">Stock</Label>
               <Input
                 id="inStock"
-                type="number"
+                type="text"
+                inputMode="numeric"
+                pattern="^\d+$"
                 value={formData.inStock}
                 onChange={(e) =>
                   setFormData({ ...formData, inStock: e.target.value })

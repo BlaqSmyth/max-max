@@ -97,8 +97,6 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
         },
         body: JSON.stringify({
           ...data,
-          price: parseFloat(data.price),
-          memberPrice: data.memberPrice ? parseFloat(data.memberPrice) : null,
           inStock: parseInt(data.inStock),
         }),
       });

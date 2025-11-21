@@ -9,11 +9,16 @@ import {
   verifyAdminPassword 
 } from "./adminAuth";
 import multer from "multer";
+import express from "express";
+import path from "path";
 
 const upload = multer({ storage: multer.memoryStorage() });
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const objectStorageService = new ObjectStorageService();
+
+  // Serve attached assets (images, etc.)
+  app.use("/attached_assets", express.static(path.join(process.cwd(), "attached_assets")));
 
   // Serve public objects from object storage
   app.get("/public-objects/:filePath(*)", async (req, res) => {

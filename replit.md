@@ -62,3 +62,65 @@ Preferred communication style: Simple, everyday language.
 
 ### Development Tools
 - Replit Plugins (Cartographer, dev banner, runtime error modal), Drizzle Kit, tsx.
+
+## Recent Changes (November 21, 2025)
+
+### Admin CMS Decimal Validation & Image Upload Fixes
+
+**Object Storage Configuration:**
+- Configured object storage for product image uploads
+- Environment variables set: `PUBLIC_OBJECT_SEARCH_PATHS`, `PRIVATE_OBJECT_DIR`, `DEFAULT_OBJECT_STORAGE_BUCKET_ID`
+- Added static file serving for `/attached_assets/` directory to serve seeded product images
+- Images upload to `/public-objects/products/` for newly created products
+
+**Decimal Precision Fixes:**
+- Fixed critical decimal precision loss issue in ProductDialog.tsx
+- Changed price and memberPrice inputs from `type="number"` to `type="text"` with pattern validation
+- Pattern: `^\d+(\.\d{1,2})?$` ensures proper decimal format with up to 2 decimal places
+- Added `inputMode="decimal"` for optimal mobile keyboard experience
+- Decimal values now preserve trailing zeros (e.g., "5.10" stays "5.10" not "5.1")
+
+**Comprehensive Form Validation:**
+- Implemented `validateFormData()` function with runtime validation before submission
+- Price validation: Must match regex `/^\d+(\.\d{1,2})?$/` with clear error messages
+- Member price validation: Same format validation when provided (optional field)
+- Stock validation: `parseInt(value, 10)` with NaN check, must be positive integer
+- Empty memberPrice properly omitted from payload instead of sending empty string
+- All text fields trimmed before submission to prevent whitespace issues
+
+**Data Integrity:**
+- Fixed schema mismatch: Backend decimal type expects strings, not numbers
+- Proper handling of optional memberPrice field (omitted when empty)
+- parseInt now uses explicit radix (10) to prevent unexpected parsing behavior
+- Validation errors display user-friendly toast messages
+
+**Image Upload UX Improvement:**
+- Simplified workflow: Images auto-upload when clicking "Save Product"
+- Removed confusing separate "Upload" button
+- Clear upload progress indicators ("Uploading image..." state)
+
+**Testing:**
+- Comprehensive E2E test validates decimal precision preservation
+- Verified invalid input rejection (non-decimal, invalid stock)
+- Confirmed data persists correctly across edits
+- All validation working as expected
+
+### Technical Details
+
+**Product Schema (shared/schema.ts):**
+- `price`: decimal type (string format, e.g., "5.10")
+- `memberPrice`: optional decimal type (string format)
+- `inStock`: integer type (0 or 1)
+
+**Validation Flow:**
+1. User enters data in form (type="text" inputs with HTML5 pattern hints)
+2. On submit, `validateFormData()` runs runtime validation
+3. Invalid data blocked with toast error message
+4. Valid data trimmed and formatted into payload
+5. Optional fields omitted if empty
+6. Mutation sends validated data to backend
+
+**Key Files Modified:**
+- `client/src/components/ProductDialog.tsx`: Validation and input type fixes
+- `server/routes.ts`: Static file serving for attached_assets
+- Product data preserved with exact decimal precision as required for retail pricing

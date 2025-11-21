@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useLocation } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 import { useCart } from "@/contexts/CartContext";
 import Header from "@/components/Header";
 import CategoryNav from "@/components/CategoryNav";
@@ -14,9 +15,10 @@ import ProductFilters from "@/components/ProductFilters";
 import OffersCarousel from "@/components/OffersCarousel";
 import MembershipCard from "@/components/MembershipCard";
 import MobileMenu from "@/components/MobileMenu";
-import { mockProducts, mockOffers } from "@/lib/mockData";
+import { mockOffers } from "@/lib/mockData";
 import { Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import type { Product } from "@shared/schema";
 import heroImage from '@assets/generated_images/Family_grocery_shopping_scene_a6507caa.png';
 
 export default function HomePage() {
@@ -32,13 +34,20 @@ export default function HomePage() {
   const [sortBy, setSortBy] = useState("featured");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  // Fetch products from API
+  const { data: products = [], isLoading, error } = useQuery<Product[]>({
+    queryKey: ["/api/products"],
+  });
+
   const handleAddToCart = (productId: string, quantity: number) => {
     console.log(`Adding product ${productId} with quantity ${quantity} to cart`);
     
-    const product = mockProducts.find(p => p.id === productId);
+    const product = products.find(p => p.id === productId);
     if (!product) return;
 
-    const price = isMember && product.memberPrice ? product.memberPrice : product.price;
+    const price = isMember && product.memberPrice 
+      ? Number(product.memberPrice) 
+      : Number(product.price);
     
     if (quantity === 0) {
       updateQuantity(productId, 0);
@@ -69,24 +78,52 @@ export default function HomePage() {
     setLocation("/checkout");
   };
 
-  let filteredProducts = selectedCategory === "all" 
-    ? mockProducts 
-    : mockProducts.filter(p => p.category === selectedCategory);
+  // Memoized filtered and sorted products
+  const filteredProducts = useMemo(() => {
+    let filtered = selectedCategory === "all" 
+      ? products 
+      : products.filter(p => p.category === selectedCategory);
 
-  // Apply sorting
-  if (sortBy === "price-low") {
-    filteredProducts = [...filteredProducts].sort((a, b) => a.price - b.price);
-  } else if (sortBy === "price-high") {
-    filteredProducts = [...filteredProducts].sort((a, b) => b.price - a.price);
-  } else if (sortBy === "name") {
-    filteredProducts = [...filteredProducts].sort((a, b) => a.name.localeCompare(b.name));
-  }
+    // Apply sorting
+    if (sortBy === "price-low") {
+      filtered = [...filtered].sort((a, b) => Number(a.price) - Number(b.price));
+    } else if (sortBy === "price-high") {
+      filtered = [...filtered].sort((a, b) => Number(b.price) - Number(a.price));
+    } else if (sortBy === "name") {
+      filtered = [...filtered].sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    return filtered;
+  }, [products, selectedCategory, sortBy]);
 
   const cartItemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   const selectedProduct = selectedProductId 
-    ? mockProducts.find(p => p.id === selectedProductId)
+    ? products.find(p => p.id === selectedProductId)
     : null;
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-lg text-muted-foreground">Loading products...</div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-lg text-destructive">Failed to load products</div>
+          <div className="text-sm text-muted-foreground mt-2">Please try refreshing the page</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -95,11 +132,11 @@ export default function HomePage() {
         onCartClick={() => setIsCartOpen(true)}
         onMenuClick={() => setIsMobileMenuOpen(true)}
         isMember={isMember}
-        products={mockProducts.map(p => ({
+        products={products.map(p => ({
           id: p.id,
           name: p.name,
           category: p.category,
-          price: p.price,
+          price: Number(p.price),
           image: p.image,
         }))}
         onProductSelect={handleProductClick}
@@ -210,8 +247,8 @@ export default function HomePage() {
                     <ProductCard
                       id={product.id}
                       name={product.name}
-                      price={product.price}
-                      memberPrice={product.memberPrice}
+                      price={Number(product.price)}
+                      memberPrice={product.memberPrice ? Number(product.memberPrice) : undefined}
                       image={product.image}
                       inStock={product.inStock === 1}
                       isMember={isMember}
@@ -255,9 +292,9 @@ export default function HomePage() {
         <ProductDetailModal
           id={selectedProduct.id}
           name={selectedProduct.name}
-          description={selectedProduct.description}
-          price={selectedProduct.price}
-          memberPrice={selectedProduct.memberPrice}
+          description={selectedProduct.description || ""}
+          price={Number(selectedProduct.price)}
+          memberPrice={selectedProduct.memberPrice ? Number(selectedProduct.memberPrice) : undefined}
           image={selectedProduct.image}
           category={selectedProduct.category}
           inStock={selectedProduct.inStock === 1}

@@ -29,8 +29,12 @@ export default function ProductCard({
 }: ProductCardProps) {
   const [quantity, setQuantity] = useState(initialQuantity);
 
-  const displayPrice = isMember && memberPrice ? memberPrice : price;
-  const hasMemberDiscount = memberPrice && memberPrice < price;
+  // Ensure prices are numbers (defensive programming)
+  const numericPrice = typeof price === 'number' ? price : Number(price);
+  const numericMemberPrice = memberPrice && typeof memberPrice === 'number' ? memberPrice : memberPrice ? Number(memberPrice) : undefined;
+
+  const displayPrice = isMember && numericMemberPrice ? numericMemberPrice : numericPrice;
+  const hasMemberDiscount = numericMemberPrice && numericMemberPrice < numericPrice;
 
   const handleAdd = () => {
     const newQuantity = quantity + 1;
@@ -79,7 +83,7 @@ export default function ProductCard({
           </span>
           {hasMemberDiscount && isMember && (
             <span className="text-sm text-muted-foreground line-through" data-testid={`text-original-price-${id}`}>
-              £{price.toFixed(2)}
+              £{numericPrice.toFixed(2)}
             </span>
           )}
         </div>

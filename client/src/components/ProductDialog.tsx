@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Upload, Image as ImageIcon } from "lucide-react";
+import { Image as ImageIcon } from "lucide-react";
 
 interface ProductDialogProps {
   product: Product | null;
@@ -136,54 +136,55 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
     }
   };
 
-  const handleUploadImage = async () => {
-    if (!imageFile) return;
-
-    setUploading(true);
-    try {
-      const token = localStorage.getItem("admin_token");
-      const formData = new FormData();
-      formData.append("image", imageFile);
-
-      const response = await fetch("/api/admin/upload", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
-
-      if (!response.ok) throw new Error("Upload failed");
-
-      const { url } = await response.json();
-      setFormData((prev) => ({ ...prev, image: url }));
-      setImagePreview(url);
-      toast({
-        title: "Image uploaded",
-        description: "Image has been successfully uploaded",
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to upload image",
-        variant: "destructive",
-      });
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.image) {
-      toast({
-        title: "Error",
-        description: "Please upload an image",
-        variant: "destructive",
-      });
-      return;
+    
+    // If user selected a new image file, upload it first
+    if (imageFile) {
+      setUploading(true);
+      try {
+        const token = localStorage.getItem("admin_token");
+        const uploadFormData = new FormData();
+        uploadFormData.append("image", imageFile);
+
+        const response = await fetch("/api/admin/upload", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: uploadFormData,
+        });
+
+        if (!response.ok) {
+          throw new Error("Upload failed");
+        }
+
+        const { url } = await response.json();
+        // Update formData with the uploaded image URL
+        const updatedFormData = { ...formData, image: url };
+        setFormData(updatedFormData);
+        saveMutation.mutate(updatedFormData);
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to upload image",
+          variant: "destructive",
+        });
+      } finally {
+        setUploading(false);
+      }
+    } else {
+      // No new image selected, check if we have an existing image URL
+      if (!formData.image) {
+        toast({
+          title: "Error",
+          description: "Please select an image",
+          variant: "destructive",
+        });
+        return;
+      }
+      saveMutation.mutate(formData);
     }
-    saveMutation.mutate(formData);
   };
 
   return (
@@ -220,24 +221,17 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
                   type="button"
                   variant="outline"
                   onClick={() => fileInputRef.current?.click()}
-                  className="flex-1"
                   data-testid="button-select-image"
                 >
                   <ImageIcon className="w-4 h-4 mr-2" />
-                  Select Image
+                  {imageFile ? "Change Image" : "Select Image"}
                 </Button>
-                {imageFile && (
-                  <Button
-                    type="button"
-                    onClick={handleUploadImage}
-                    disabled={uploading}
-                    data-testid="button-upload-image"
-                  >
-                    <Upload className="w-4 h-4 mr-2" />
-                    {uploading ? "Uploading..." : "Upload"}
-                  </Button>
-                )}
               </div>
+              {imageFile && (
+                <p className="text-sm text-muted-foreground">
+                  Image will be uploaded when you save the product
+                </p>
+              )}
             </div>
           </div>
 
@@ -345,10 +339,14 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
             </Button>
             <Button
               type="submit"
-              disabled={saveMutation.isPending}
+              disabled={saveMutation.isPending || uploading}
               data-testid="button-save-product"
             >
-              {saveMutation.isPending ? "Saving..." : "Save Product"}
+              {uploading
+                ? "Uploading image..."
+                : saveMutation.isPending
+                ? "Saving..."
+                : "Save Product"}
             </Button>
           </div>
         </form>

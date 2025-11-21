@@ -1,319 +1,64 @@
 # Max & Max Grocery Store E-commerce Platform
 
 ## Overview
-
-This is a complete grocery store e-commerce website featuring all the sophistication and features needed for online grocery shopping. The application provides a comprehensive online grocery shopping experience with home delivery, click & collect, membership benefits, time slot booking, advanced search with autocomplete, product filtering, and a complete checkout flow.
-
-The platform is built as a monorepo with a React frontend and Express backend, using PostgreSQL for data persistence. The application features Max & Max's signature green (#228B5C / HSL 140, 55%, 40%) branding with a clean, modern design optimized for both desktop and mobile shopping experiences.
+This project is an e-commerce platform for Max & Max Grocery Store, offering a comprehensive online shopping experience. Key features include home delivery, click & collect, membership benefits, time slot booking, advanced search with autocomplete, product filtering, and a complete checkout flow. The platform utilizes Max & Max's signature green branding, providing a clean, modern, and responsive design for both desktop and mobile users. The business vision is to provide a sophisticated and user-friendly online grocery solution with significant market potential for enhancing customer convenience and expanding reach.
 
 ## User Preferences
-
 Preferred communication style: Simple, everyday language.
 
 ## System Architecture
 
-### Frontend Architecture
+### Frontend
+- **Technology Stack**: React 18 (TypeScript), Wouter for routing, React Context API for cart, TanStack Query for server state, Tailwind CSS with a custom design system, Radix UI and shadcn/ui for components.
+- **Design System**: Custom color theming (Max & Max green: #228B5C) with light/dark modes, Inter font, responsive grid layouts, consistent spacing, and defined container max-widths.
+- **Key Patterns**: Component-based architecture, global cart state via CartContext, mock data layer for development, path aliases, and form validation with React Hook Form/Zod.
+- **Cart Management**: Global state managed by `CartContext` for operations like adding, updating, clearing items, and persistence through checkout.
 
-**Technology Stack:**
-- **Framework**: React 18 with TypeScript
-- **Routing**: Wouter (lightweight client-side routing)
-- **State Management**: 
-  - React Context API for cart management (`CartProvider`)
-  - TanStack Query (React Query) for server state and data fetching
-- **Styling**: Tailwind CSS with custom design system
-- **UI Components**: Radix UI primitives with shadcn/ui component library
-
-**Design System:**
-- Custom color theming with CSS variables supporting light/dark modes
-- Typography based on Inter font family
-- Responsive grid systems for product displays (2-5 columns based on viewport)
-- Consistent spacing using Tailwind units (2, 4, 6, 8, 12, 16, 20, 24)
-- Container max-width of 7xl for main content, 4xl for checkout flows
-
-**Key Frontend Patterns:**
-- Component-based architecture with reusable UI primitives
-- Global cart state management via CartContext (React Context API)
-- Mock data layer (`mockData.ts`) for development without backend
-- Path aliases for clean imports (`@/`, `@shared/`, `@assets/`)
-- Form validation using React Hook Form with Zod resolvers
-
-**Cart State Management:**
-- CartContext provides global cart state across all pages
-- CartProvider wraps the entire application in App.tsx
-- Cart operations: addToCart, updateQuantity, clearCart, getProductQuantity
-- Cart state persists from HomePage to CheckoutPage via context
-- Cart is cleared automatically after successful order placement
-
-### Backend Architecture
-
-**Technology Stack:**
-- **Runtime**: Node.js with Express.js
-- **Language**: TypeScript with ES modules
-- **ORM**: Drizzle ORM with PostgreSQL driver
-- **Database**: PostgreSQL (via @neondatabase/serverless)
-- **Session Management**: connect-pg-simple for PostgreSQL-backed sessions
-
-**API Design:**
-- RESTful API with `/api` prefix for all application routes
-- Centralized route registration in `server/routes.ts`
-- Request/response logging middleware for API endpoints
-- JSON body parsing with raw body preservation for webhook support
-
-**Storage Layer:**
-- Abstract storage interface (`IStorage`) for CRUD operations
-- In-memory implementation (`MemStorage`) for development
-- Database-backed implementation ready via Drizzle ORM
-- Storage abstraction allows easy swapping between implementations
+### Backend
+- **Technology Stack**: Node.js with Express.js (TypeScript), Drizzle ORM with PostgreSQL (via @neondatabase/serverless), and connect-pg-simple for session management.
+- **API Design**: RESTful API (`/api` prefix), centralized route registration, request/response logging, and JSON body parsing.
+- **Storage Layer**: Abstracted `IStorage` interface with an in-memory development implementation and a Drizzle ORM-backed database implementation.
 
 ### Data Architecture
+- **Database Schema**: Defined in `shared/schema.ts`, includes `Users` (id, username, password) and `Products` (id, name, description, category, price, memberPrice, image, inStock).
+- **Type Safety**: Shared schema between frontend and backend, type-safe models using Drizzle ORM, and Zod for API boundary validation.
 
-**Database Schema** (defined in `shared/schema.ts`):
+### Build & Development
+- **Development**: Vite development server with HMR, integrated with Express, TypeScript for type checking.
+- **Production**: Vite builds frontend to `dist/public`, esbuild bundles backend, Drizzle Kit for migrations.
+- **Environment**: Configured with `NODE_ENV` and `DATABASE_URL`.
 
-**Users Table:**
-- `id`: UUID primary key (auto-generated)
-- `username`: Unique text field
-- `password`: Text field (should be hashed in production)
-
-**Products Table:**
-- `id`: Varchar primary key
-- `name`: Product name
-- `description`: Optional product description
-- `category`: Product category (produce, meat, bakery, dairy, alcohol, ready-meals)
-- `price`: Decimal price (10,2 precision)
-- `memberPrice`: Optional member-exclusive price
-- `image`: Image URL/path
-- `inStock`: Integer flag (1 = in stock, 0 = out of stock)
-
-**Additional Types:**
-- `CartItem`: Client-side type combining Product with quantity
-- Zod schemas for insert validation (`insertUserSchema`, `insertProductSchema`)
-
-**Data Flow:**
-- Shared schema between frontend and backend via `shared/` directory
-- Type-safe data models using Drizzle ORM's type inference
-- Validation at API boundaries using Zod schemas
-
-### Build & Development System
-
-**Development:**
-- Vite development server with HMR
-- Custom Vite middleware integration with Express
-- TypeScript compilation without emit (type checking only)
-- Replit-specific plugins for development tooling
-
-**Production Build:**
-- Frontend: Vite build to `dist/public`
-- Backend: esbuild bundling server code to `dist`
-- Database migrations via Drizzle Kit push command
-- Single production process serving static files and API
-
-**Environment:**
-- `NODE_ENV` for environment detection
-- `DATABASE_URL` for PostgreSQL connection (required)
-- Development vs production conditional plugin loading
+### Core Features
+- **Product Browsing**: Responsive grid layout, product cards with details, product detail modals, category navigation, search with autocomplete, and filters (dietary, sort options).
+- **Shopping Cart & Checkout**: Global cart state, cart sheet, persistent cart to checkout, complete checkout flow (address, time slot, payment, order summary), and order confirmation.
+- **Delivery & Collection**: Options for home delivery or click & collect, time slot picker, and store locator.
+- **Membership**: Digital membership card, member-exclusive pricing, and offers carousel.
+- **Mobile Responsiveness**: Optimized for various screen sizes with a mobile menu and touch interactions.
+- **UI Components**: Header with search and cart, hero section, category navigation, product filters, offers carousel, and footer.
 
 ## External Dependencies
 
-### Core Framework Dependencies
-- **React Ecosystem**: React 18, React DOM, React Router (via Wouter)
-- **Build Tools**: Vite, esbuild, TypeScript
-- **Node.js Framework**: Express.js with middleware support
+### Core Technologies
+- **Frontend**: React 18, React DOM, Wouter, Vite, TypeScript.
+- **Backend**: Node.js, Express.js, TypeScript, esbuild.
 
-### UI Component Library
-- **Radix UI**: Complete set of unstyled, accessible UI primitives
-  - Accordion, Alert Dialog, Aspect Ratio, Avatar
-  - Checkbox, Dialog, Dropdown Menu, Popover
-  - Navigation Menu, Select, Slider, Tabs, Toast
-  - And 15+ other accessible components
-- **shadcn/ui**: Pre-styled component implementations using Radix UI
-- **Styling**: Tailwind CSS with PostCSS, Autoprefixer
-- **Utility Libraries**: clsx, class-variance-authority for conditional styling
+### UI/Styling
+- **Components**: Radix UI (unstyled primitives), shadcn/ui (styled components).
+- **Styling**: Tailwind CSS, PostCSS, Autoprefixer.
+- **Utilities**: clsx, class-variance-authority.
 
 ### Data & State Management
-- **TanStack Query v5**: Server state management and data fetching
-- **React Hook Form**: Form state management with @hookform/resolvers
-- **Zod**: Schema validation and type inference
+- **Server State**: TanStack Query v5.
+- **Form Management**: React Hook Form, @hookform/resolvers.
+- **Validation**: Zod, drizzle-zod.
 
-### Database & ORM
-- **Drizzle ORM**: Type-safe ORM with PostgreSQL dialect
-- **drizzle-zod**: Zod schema generation from Drizzle tables
-- **@neondatabase/serverless**: PostgreSQL client for Neon database
-- **connect-pg-simple**: PostgreSQL session store for Express
+### Database
+- **ORM**: Drizzle ORM.
+- **PostgreSQL**: @neondatabase/serverless.
+- **Session Store**: connect-pg-simple.
 
 ### Utility Libraries
-- **date-fns**: Date manipulation and formatting
-- **nanoid**: Unique ID generation
-- **cmdk**: Command menu component
-- **embla-carousel-react**: Carousel/slider functionality
+- date-fns, nanoid, cmdk, embla-carousel-react.
 
 ### Development Tools
-- **Replit Plugins**: Cartographer, dev banner, runtime error modal
-- **Drizzle Kit**: Database migration management
-- **tsx**: TypeScript execution for development server
-
-### Asset Management
-- Static assets stored in `attached_assets/generated_images/`
-- Vite alias `@assets` for convenient image imports
-- Product images use PNG format with descriptive generated filenames
-
-## Implemented Features
-
-### Core Shopping Experience
-- **Product Browsing**: Grid layout with 2-5 columns responsive to viewport size
-- **Product Cards**: Display product image, name, price, member price, and quantity selector
-- **Product Detail Modal**: Full product information including nutritional details, ingredients, allergens, and image gallery
-- **Category Navigation**: Browse products by category (Produce, Meat, Bakery, Dairy, Alcohol, Ready Meals)
-- **Search with Autocomplete**: Real-time search with dropdown showing product suggestions, images, and prices
-- **Product Filters**: Filter by dietary preferences (Vegan, Gluten-Free, Organic) and sort by price, name, or featured
-- **Member Pricing**: Toggle to show/hide Co-op member exclusive prices
-
-### Shopping Cart & Checkout
-- **Cart Context**: Global cart state management using React Context API
-- **Cart Sheet**: Slide-out panel showing cart items, quantities, and totals
-- **Persistent Cart**: Cart items persist from HomePage to CheckoutPage via shared context
-- **Complete Checkout Flow**:
-  - Delivery address form with validation
-  - Time slot selection for delivery or collection
-  - Payment details form
-  - Order summary with itemized costs
-  - Order confirmation and cart clearing
-
-### Delivery & Collection
-- **Delivery Options**: Choose between home delivery or click & collect
-- **Time Slot Picker**: Calendar-based interface to select delivery/collection date and available time slots
-- **Store Locator**: Search for nearby Co-op stores with distance information and opening hours
-
-### Membership Features
-- **Digital Membership Card**: Display Co-op membership card with barcode and member number
-- **Member Benefits**: Show member-exclusive pricing and savings
-- **Offers Carousel**: Weekly deals and promotional offers with discount badges
-
-### Mobile Responsiveness
-- **Mobile Menu**: Hamburger menu with navigation links and account options
-- **Touch Interactions**: Optimized touch targets for mobile shopping
-- **Responsive Layout**: Adapts seamlessly from mobile (320px) to desktop (1920px+)
-
-### UI Components
-- **Header**: Logo, search with autocomplete, account menu, cart with item count
-- **Hero Section**: Featured promotional banner with call-to-action
-- **Category Navigation**: Horizontal scrollable category selector
-- **Product Filters**: Sidebar filters with dietary preferences and sorting options
-- **Offers Carousel**: Horizontal scrolling layout with 3-4 cards visible, auto-scroll every 3 seconds, pauses on user interaction
-- **Footer**: Links to help, company info, and social media
-
-## Recent Changes
-
-### November 18, 2025 - Admin CMS Enhancements
-
-**Enhanced Product Image Display:**
-- Increased product image size from 64x64px to 80x80px in admin product table
-- Added border and rounded corners to images for better visibility
-- Widened image column to 120px to accommodate larger images
-- Improved visual hierarchy in the product management interface
-
-**Bulk Upload Feature:**
-- Added CSV-based bulk product upload functionality
-- "Bulk Upload" button positioned next to "Add Product" button in admin toolbar
-- CSV template download available with proper headers and example row
-- Real-time CSV parsing with validation before upload
-- Preview shows product count and names before final submission
-- Support for all 7 product categories: beverages, dairy, bakery, produce, meat, ready-meals, alcohol
-- Validates required fields (name, category, price, image) and optional fields (description, memberPrice)
-- New backend endpoint: POST /api/admin/products/bulk
-- Storage layer updated with createProducts method for multi-product creation
-- E2E tested: authentication, bulk upload flow, CSV parsing, product creation, and display verification
-
-**CSV Format:**
-```csv
-name,description,category,price,memberPrice,image,inStock
-Product Name,Description,beverages,2.50,2.25,/path/to/image.png,1
-```
-
-### October 28, 2025 - Max & Max Rebrand
-
-**Max & Max Rebrand:**
-- Complete rebrand from Co-op to Max & Max
-- Updated color scheme to Max & Max green (#228B5C / HSL 140, 55%, 40%)
-- Replaced all Co-op branding with Max & Max text-only branding
-- Enhanced header with large, bold "MAX & MAX" text (font-black, 2xl-3xl size)
-- Clean, minimalist header design featuring prominent text branding
-- Increased header height to 80px to accommodate enhanced branding
-- Updated all references throughout the codebase
-
-**Weekly Offers Carousel Redesign:**
-- Completely redesigned from single large card to horizontal scrolling multi-card layout
-- Now displays multiple compact cards (300px width) side by side
-- Each card has image on top (160px height) and content below
-- Shows 3-4 cards at once depending on viewport size
-- Added navigation arrows that scroll by one card width
-- Previous button disables at start, next button disables at end
-- Expanded offers from 3 to 6 weekly deals
-- Auto-scroll advances one card every 3 seconds
-- Auto-scroll loops back to start when reaching the end
-- User interactions (wheel, touch, pointer, arrow clicks) pause auto-play for 10 seconds
-- Auto-play resumes automatically after inactivity period
-- Reduced carousel height from full-screen to compact 280-320px total
-
-**Cart Context Implementation:**
-- Created CartContext to share cart state across all pages
-- Wrapped entire app with CartProvider in App.tsx
-- Both HomePage and CheckoutPage now use useCart() hook to access shared cart state
-- Fixed critical issue where checkout wasn't receiving actual cart items
-
-**Search Integration:**
-- Integrated SearchAutocomplete component directly in Header
-- Search now works globally across all pages
-- Autocomplete dropdown shows product images, names, and prices
-- Clicking a search result opens the product detail modal
-
-**Checkout Flow Completion:**
-- Checkout page now displays actual cart items from CartContext
-- Order summary shows live totals matching cart contents
-- Cart is cleared after successful order placement
-- User is redirected back to homepage with empty cart
-
-**End-to-End Testing:**
-- Verified complete checkout flow with Playwright tests
-- Verified carousel functionality including auto-scroll and user interaction pause
-- Cart operations work correctly: add, update, checkout, clear
-- All user interactions tested: product selection, cart management, order placement
-
-### Notable Architectural Decisions
-
-**Monorepo Structure:**
-- Chosen to share TypeScript types between frontend and backend
-- `shared/` directory contains database schema and common types
-- Enables type-safe API development without duplication
-
-**React Context for Cart State:**
-- CartContext provides global cart state instead of prop drilling
-- Single source of truth for cart items across all pages
-- Enables consistent cart operations throughout the application
-- Supports future cart persistence between sessions
-
-**In-Memory Storage Fallback:**
-- Provides development experience without database setup
-- Easy migration path to database-backed storage
-- Interface-based design allows dependency injection
-
-**Mock Data Layer:**
-- Comprehensive mock products and offers for frontend development
-- Marked with `todo: remove mock functionality` comments
-- Enables rapid UI iteration without backend implementation
-- Ready to be replaced with real API calls
-
-**Middleware-Mode Vite:**
-- Integrates Vite dev server with Express in development
-- Single port for both frontend and backend during development
-- Simplifies CORS and authentication workflows
-
-## Next Steps (Optional Improvements)
-
-1. **Cart Persistence**: Consider persisting cart state to localStorage for session recovery
-2. **Automated Testing**: Add more automated tests covering cart context interactions
-3. **Performance Monitoring**: Monitor SearchAutocomplete performance with real data
-4. **Interactive Map**: Add interactive map to store locator page
-5. **Backend Integration**: Replace mock data with real API endpoints
-6. **User Authentication**: Implement full user authentication and account management
-7. **Payment Integration**: Add real payment processing (Stripe/PayPal)
-8. **Order Tracking**: Implement order history and tracking features
+- Replit Plugins (Cartographer, dev banner, runtime error modal), Drizzle Kit, tsx.

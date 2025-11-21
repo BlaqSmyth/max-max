@@ -65,6 +65,37 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (November 21, 2025)
 
+### Frontend Now Uses Live API Data (Evening Update)
+
+**Critical Fix: Products from Admin CMS Now Appear on Site**
+- Refactored HomePage to fetch products from `/api/products` endpoint using TanStack Query
+- Removed dependency on mock data - all products now come from the backend database
+- Products added via Admin CMS now immediately appear on the public-facing site
+- Implemented proper loading and error states for data fetching
+
+**Technical Implementation:**
+- Added `useQuery<Product[]>` hook with queryKey `["/api/products"]`
+- Implemented `useMemo` for filtered and sorted products to optimize performance
+- Type conversions: Decimal strings from database converted to numbers for display (`Number(product.price)`)
+- Updated ProductCard with defensive type handling to prevent runtime errors
+- All components (Header search, ProductDetailModal, CartSheet) now use fetched data
+
+**Data Flow:**
+1. Backend returns products with decimal string prices (e.g., "2.29")
+2. HomePage converts to numbers when passing to display components
+3. Cart operations use converted number prices
+4. Products filter and sort correctly with numeric conversions
+
+**Testing:**
+- E2E test confirmed: Products load from API, filtering works, cart operations functional
+- Verified: Pepsi product added via CMS appears correctly in beverages category
+- Prices display accurately: £2.29 regular, £1.99 member price
+
+**Future Improvements (from Architect):**
+- Consider query invalidation after admin mutations for automatic refresh
+- Monitor API fetch failures in production
+- Incorporate dietary filters when implemented
+
 ### Admin CMS Decimal Validation & Image Upload Fixes
 
 **Object Storage Configuration:**

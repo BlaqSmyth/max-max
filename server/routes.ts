@@ -11,6 +11,7 @@ import {
 import multer from "multer";
 import express from "express";
 import path from "path";
+import AdmZip from "adm-zip";
 
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -108,6 +109,121 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error bulk creating products:", error);
       res.status(400).json({ error: "Invalid product data" });
+    }
+  });
+
+  // Admin: Bulk upload from ZIP (CSV + images)
+  app.post("/api/admin/products/bulk-zip", adminAuthMiddleware, upload.single("zip"), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "No ZIP file uploaded" });
+      }
+
+      // Extract ZIP file
+      const zip = new AdmZip(req.file.buffer);
+      const zipEntries = zip.getEntries();
+
+      // Find CSV file
+      const csvEntry = zipEntries.find(entry => 
+        !entry.isDirectory && entry.entryName.toLowerCase().endsWith('.csv')
+      );
+
+      if (!csvEntry) {
+        return res.status(400).json({ error: "No CSV file found in ZIP" });
+      }
+
+      // Parse CSV
+      const csvContent = csvEntry.getData().toString('utf8');
+      const lines = csvContent.trim().split("\n");
+      
+      if (lines.length < 2) {
+        return res.status(400).json({ error: "CSV file is empty or invalid" });
+      }
+
+      const headers = lines[0].split(",").map(h => h.trim());
+      const imageIndex = headers.indexOf("image");
+      
+      if (imageIndex === -1) {
+        return res.status(400).json({ error: "CSV must have an 'image' column" });
+      }
+
+      // Upload all image files from ZIP and create filename-to-URL mapping
+      const imageUrlMap = new Map<string, string>();
+      
+      for (const entry of zipEntries) {
+        if (!entry.isDirectory && entry.entryName.match(/\.(png|jpg|jpeg|webp|gif)$/i)) {
+          const filename = path.basename(entry.entryName);
+          const imageBuffer = entry.getData();
+          
+          // Determine MIME type from extension
+          const ext = path.extname(filename).toLowerCase();
+          const mimeTypes: { [key: string]: string } = {
+            '.png': 'image/png',
+            '.jpg': 'image/jpeg',
+            '.jpeg': 'image/jpeg',
+            '.webp': 'image/webp',
+            '.gif': 'image/gif'
+          };
+          const mimeType = mimeTypes[ext] || 'image/png';
+          
+          // Upload to object storage
+          const imageUrl = await objectStorageService.uploadFile(imageBuffer, mimeType);
+          imageUrlMap.set(filename, imageUrl);
+        }
+      }
+
+      // Parse products and map image filenames to uploaded URLs
+      const products: any[] = [];
+      
+      for (let i = 1; i < lines.length; i++) {
+        const values = lines[i].split(",").map(v => v.trim());
+        if (values.length !== headers.length) continue;
+
+        const product: any = {};
+        headers.forEach((header, index) => {
+          const value = values[index];
+          if (header === "name") product.name = value;
+          else if (header === "description") product.description = value || null;
+          else if (header === "category") product.category = value;
+          else if (header === "price") product.price = value;
+          else if (header === "memberPrice") product.memberPrice = value || null;
+          else if (header === "image") {
+            // Map image filename to uploaded URL
+            const filename = path.basename(value);
+            const imageUrl = imageUrlMap.get(filename);
+            if (imageUrl) {
+              product.image = imageUrl;
+            } else {
+              // If not found in ZIP, use the value as-is (could be a URL)
+              product.image = value;
+            }
+          }
+          else if (header === "inStock") product.inStock = parseInt(value) || 1;
+        });
+
+        if (product.name && product.category && product.price && product.image) {
+          products.push(product);
+        }
+      }
+
+      if (products.length === 0) {
+        return res.status(400).json({ error: "No valid products found in CSV" });
+      }
+
+      // Validate and create products
+      const validatedProducts = products.map(p => insertProductSchema.parse(p));
+      const createdProducts = await storage.createProducts(validatedProducts);
+      
+      res.status(201).json({ 
+        count: createdProducts.length, 
+        products: createdProducts,
+        imagesUploaded: imageUrlMap.size
+      });
+    } catch (error) {
+      console.error("Error processing ZIP upload:", error);
+      res.status(400).json({ 
+        error: error instanceof Error ? error.message : "Failed to process ZIP file" 
+      });
     }
   });
 

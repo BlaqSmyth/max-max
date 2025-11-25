@@ -155,11 +155,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "CSV file has no data rows" });
       }
 
-      // Verify required columns exist
-      const firstRecord = records[0];
-      if (!firstRecord.hasOwnProperty('image')) {
-        return res.status(400).json({ error: "CSV must have an 'image' column" });
-      }
+      // Image column is optional - we can auto-match based on product name
+      const hasImageColumn = records[0].hasOwnProperty('image');
 
       // Upload all image files from ZIP and create filename-to-URL mapping (case-insensitive)
       const imageUrlMap = new Map<string, string>();
@@ -222,8 +219,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
         };
 
         // Handle image field
-        const imageValue = (record.image || '').trim();
-        if (imageValue) {
+        let imageValue = (record.image || '').trim();
+        
+        // If no image value provided, try to auto-match based on product name
+        if (!imageValue && product.name) {
+          // Convert product name to slug: lowercase, replace spaces/special chars with hyphens
+          const slug = product.name.toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')  // Replace non-alphanumeric with hyphens
+            .replace(/^-+|-+$/g, '');      // Remove leading/trailing hyphens
+          
+          // Look for any image file that starts with this slug
+          for (const [filename, url] of Array.from(imageUrlMap.entries())) {
+            const filenameWithoutExt = filename.replace(/\.(png|jpg|jpeg|webp|gif)$/i, '');
+            if (filenameWithoutExt === slug) {
+              imageValue = filename; // Found a match!
+              product.image = url;
+              break;
+            }
+          }
+          
+          if (!imageValue) {
+            missingImages.push(`Row ${lineNumber}: No image found for "${product.name}" (expected filename like "${slug}.png")`);
+          }
+        } else if (imageValue) {
+          // Image value provided in CSV - try to match from ZIP
           const imageFilename = path.basename(imageValue).trim();
           // Case-insensitive lookup
           const imageUrl = imageUrlMap.get(imageFilename.toLowerCase());

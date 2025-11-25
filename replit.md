@@ -100,18 +100,30 @@ Preferred communication style: Simple, everyday language.
 - Detailed error display with row-specific information
 
 **Usage:**
+
+**Easy Mode (Auto-Match):**
 1. Create a ZIP file containing:
-   - products.csv (with columns: name, description, category, price, memberPrice, image, inStock)
-   - All product images (mountain-dew.png, fanta.png, etc.)
-2. In CSV, reference images by filename: "mountain-dew.png"
-3. Upload ZIP through Admin → Products → Bulk Upload
-4. System automatically uploads images and creates products
+   - products.csv (with columns: name, description, category, price, memberPrice, inStock - **no image column needed!**)
+   - All product images named to match products (e.g., "mountain-dew.png" for product "Mountain Dew")
+2. Upload ZIP through Admin → Products → Bulk Upload
+3. System automatically:
+   - Converts product names to slugs ("Mountain Dew" → "mountain-dew")
+   - Matches images to products by filename
+   - Uploads images and creates products
+
+**Advanced Mode (Custom Mapping):**
+1. Create a ZIP file containing:
+   - products.csv (with image column specifying filenames: "mountain-dew.png")
+   - All product images
+2. Upload ZIP - system uses your specified image mappings
 
 **Benefits:**
 - No need to manually upload images to attached_assets first
 - No need to find direct image URLs
+- **No need to specify image paths in CSV** - auto-matching by product name!
 - All product data and images in one convenient file
 - Automatic image-to-product linking
+- Smart slug conversion (handles spaces, special characters)
 
 ## Recent Changes (November 21, 2025)
 

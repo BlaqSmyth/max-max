@@ -223,8 +223,9 @@ export function BulkUploadDialog({ open, onOpenChange }: BulkUploadDialogProps) 
 
   const downloadTemplate = () => {
     const template = `name,description,category,price,memberPrice,image,inStock
-Example Product 1,This is a description,beverages,2.50,2.25,/path/to/image1.png,1
-Example Product 2,Another description,dairy,3.00,,/path/to/image2.png,1`;
+Mountain Dew,Refreshing citrus soda,beverages,2.50,2.25,,50
+Coca-Cola,Classic cola,beverages,1.99,1.79,coca-cola.png,75
+Example Product 3,With full URL,dairy,3.00,,https://example.com/image.png,30`;
 
     const blob = new Blob([template], { type: "text/csv" });
     const url = window.URL.createObjectURL(blob);
@@ -273,7 +274,13 @@ Example Product 2,Another description,dairy,3.00,,/path/to/image2.png,1`;
                 💡 Recommended: Use ZIP Upload
               </p>
               <p className="text-xs text-blue-700 dark:text-blue-300 mt-1">
-                Create a ZIP file containing your CSV and all product images. In your CSV, reference images by filename (e.g., "mountain-dew.png"). The system will automatically upload images and link them to products.
+                Create a ZIP file containing your CSV and all product images. The system will automatically match images to products by name.
+              </p>
+              <p className="text-xs text-blue-700 dark:text-blue-300 mt-1">
+                <strong>Easy mode:</strong> Just include images (e.g., "mountain-dew.png") - no need for image column in CSV!
+              </p>
+              <p className="text-xs text-blue-700 dark:text-blue-300">
+                <strong>Advanced:</strong> Or specify image filenames in CSV image column for custom mapping.
               </p>
             </div>
           </div>

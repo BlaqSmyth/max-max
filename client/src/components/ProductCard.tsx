@@ -54,11 +54,11 @@ export default function ProductCard({
     <Card className="group relative overflow-hidden hover-elevate" data-testid={`card-product-${id}`}>
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/3 opacity-50"></div>
       <div className="relative p-4">
-        <div className="relative mb-3 aspect-[3/4] overflow-hidden rounded-md bg-gradient-to-br from-muted to-muted/50 shadow-sm">
+        <div className="relative mb-3 aspect-[3/4] overflow-hidden rounded-md bg-white dark:bg-muted shadow-sm p-2">
           <img
             src={image}
             alt={name}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-105"
             data-testid={`img-product-${id}`}
           />
           {hasMemberDiscount && isMember && (

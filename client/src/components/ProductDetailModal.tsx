@@ -91,11 +91,11 @@ export default function ProductDetailModal({
           <div className="flex-1 overflow-y-auto p-6">
             <div className="grid gap-8 md:grid-cols-2">
               <div>
-                <div className="relative aspect-square overflow-hidden rounded-lg bg-muted">
+                <div className="relative aspect-square overflow-hidden rounded-lg bg-white dark:bg-muted p-4">
                   <img
                     src={image}
                     alt={name}
-                    className="h-full w-full object-cover"
+                    className="h-full w-full object-contain"
                     data-testid={`img-detail-${id}`}
                   />
                   {hasMemberDiscount && isMember && (

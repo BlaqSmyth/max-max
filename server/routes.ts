@@ -12,6 +12,7 @@ import multer from "multer";
 import express from "express";
 import path from "path";
 import AdmZip from "adm-zip";
+import { parse } from "csv-parse/sync";
 
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -132,22 +133,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "No CSV file found in ZIP" });
       }
 
-      // Parse CSV
+      // Parse CSV using proper RFC 4180 parser (handles quoted fields, escaped commas, etc.)
       const csvContent = csvEntry.getData().toString('utf8');
-      const lines = csvContent.trim().split("\n");
       
-      if (lines.length < 2) {
-        return res.status(400).json({ error: "CSV file is empty or invalid" });
+      let records: any[];
+      try {
+        records = parse(csvContent, {
+          columns: true, // Use first row as headers
+          skip_empty_lines: true,
+          trim: true,
+          relax_column_count: false, // Strict column count validation
+        });
+      } catch (parseError: any) {
+        return res.status(400).json({ 
+          error: "CSV parsing failed", 
+          details: [parseError.message]
+        });
+      }
+      
+      if (records.length === 0) {
+        return res.status(400).json({ error: "CSV file has no data rows" });
       }
 
-      const headers = lines[0].split(",").map(h => h.trim());
-      const imageIndex = headers.indexOf("image");
-      
-      if (imageIndex === -1) {
+      // Verify required columns exist
+      const firstRecord = records[0];
+      if (!firstRecord.hasOwnProperty('image')) {
         return res.status(400).json({ error: "CSV must have an 'image' column" });
       }
 
-      // Upload all image files from ZIP and create filename-to-URL mapping
+      // Upload all image files from ZIP and create filename-to-URL mapping (case-insensitive)
       const imageUrlMap = new Map<string, string>();
       
       for (const entry of zipEntries) {
@@ -168,46 +182,88 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           // Upload to object storage
           const imageUrl = await objectStorageService.uploadFile(imageBuffer, mimeType);
-          imageUrlMap.set(filename, imageUrl);
+          // Store with normalized filename (lowercase) for case-insensitive matching
+          imageUrlMap.set(filename.toLowerCase(), imageUrl);
         }
+      }
+
+      if (imageUrlMap.size === 0) {
+        return res.status(400).json({ error: "No image files found in ZIP. Include at least one .png, .jpg, .jpeg, .webp, or .gif file." });
       }
 
       // Parse products and map image filenames to uploaded URLs
       const products: any[] = [];
+      const parseErrors: string[] = [];
+      const missingImages: string[] = [];
       
-      for (let i = 1; i < lines.length; i++) {
-        const values = lines[i].split(",").map(v => v.trim());
-        if (values.length !== headers.length) continue;
+      for (let i = 0; i < records.length; i++) {
+        const lineNumber = i + 2; // +2 because of header row and 1-indexed
+        const record = records[i];
 
-        const product: any = {};
-        headers.forEach((header, index) => {
-          const value = values[index];
-          if (header === "name") product.name = value;
-          else if (header === "description") product.description = value || null;
-          else if (header === "category") product.category = value;
-          else if (header === "price") product.price = value;
-          else if (header === "memberPrice") product.memberPrice = value || null;
-          else if (header === "image") {
-            // Map image filename to uploaded URL
-            const filename = path.basename(value);
-            const imageUrl = imageUrlMap.get(filename);
-            if (imageUrl) {
-              product.image = imageUrl;
+        // Parse inStock with strict validation - ONLY accept pure integers (no decimals, no text)
+        let inStockValue = 1;
+        if (record.inStock !== undefined && record.inStock !== null && record.inStock !== '') {
+          const inStockStr = String(record.inStock).trim();
+          // Reject anything that's not a non-negative integer (no decimals, no text)
+          if (!/^\d+$/.test(inStockStr)) {
+            parseErrors.push(`Row ${lineNumber}: Invalid inStock value "${record.inStock}" (must be a non-negative integer like "1" or "100")`);
+            continue; // Skip this product
+          }
+          inStockValue = parseInt(inStockStr, 10);
+        }
+
+        const product: any = {
+          name: record.name || '',
+          description: record.description || null,
+          category: record.category || '',
+          price: record.price || '',
+          memberPrice: record.memberPrice || null,
+          inStock: inStockValue,
+        };
+
+        // Handle image field
+        const imageValue = (record.image || '').trim();
+        if (imageValue) {
+          const imageFilename = path.basename(imageValue).trim();
+          // Case-insensitive lookup
+          const imageUrl = imageUrlMap.get(imageFilename.toLowerCase());
+          if (imageUrl) {
+            product.image = imageUrl;
+          } else {
+            // Check if it's a URL (starts with http:// or https:// or /)
+            if (imageValue.startsWith('http://') || imageValue.startsWith('https://') || imageValue.startsWith('/')) {
+              product.image = imageValue; // Allow external URLs
             } else {
-              // If not found in ZIP, use the value as-is (could be a URL)
-              product.image = value;
+              missingImages.push(`Row ${lineNumber}: Image "${imageFilename}" not found in ZIP`);
+              product.image = imageValue; // Still assign but will fail validation
             }
           }
-          else if (header === "inStock") product.inStock = parseInt(value) || 1;
-        });
+        }
 
         if (product.name && product.category && product.price && product.image) {
           products.push(product);
+        } else {
+          const missing = [];
+          if (!product.name) missing.push('name');
+          if (!product.category) missing.push('category');
+          if (!product.price) missing.push('price');
+          if (!product.image) missing.push('image');
+          parseErrors.push(`Row ${lineNumber}: Missing required fields: ${missing.join(', ')}`);
         }
       }
 
+      // Report errors if any parsing issues occurred
+      if (parseErrors.length > 0 || missingImages.length > 0) {
+        const allErrors = [...parseErrors, ...missingImages];
+        return res.status(400).json({ 
+          error: "Product validation errors",
+          details: allErrors.slice(0, 10), // Limit to first 10 errors
+          totalErrors: allErrors.length
+        });
+      }
+
       if (products.length === 0) {
-        return res.status(400).json({ error: "No valid products found in CSV" });
+        return res.status(400).json({ error: "No valid products found in CSV after parsing" });
       }
 
       // Validate and create products

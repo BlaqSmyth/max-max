@@ -25,6 +25,7 @@ export function BulkUploadDialog({ open, onOpenChange }: BulkUploadDialogProps) 
   const [file, setFile] = useState<File | null>(null);
   const [parsedProducts, setParsedProducts] = useState<Omit<InsertProduct, "id">[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [fileType, setFileType] = useState<'csv' | 'zip' | null>(null);
   const { toast } = useToast();
 
   const bulkUploadMutation = useMutation({
@@ -43,6 +44,7 @@ export function BulkUploadDialog({ open, onOpenChange }: BulkUploadDialogProps) 
     },
     onSuccess: (data: any) => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/products"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/products"] });
       toast({
         title: "Products uploaded",
         description: `Successfully added ${data.count} products`,
@@ -53,6 +55,51 @@ export function BulkUploadDialog({ open, onOpenChange }: BulkUploadDialogProps) 
       toast({
         title: "Upload failed",
         description: "Failed to upload products. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const zipUploadMutation = useMutation({
+    mutationFn: async (zipFile: File) => {
+      const token = localStorage.getItem("admin_token");
+      const formData = new FormData();
+      formData.append("zip", zipFile);
+
+      const response = await fetch("/api/admin/products/bulk-zip", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        // Create detailed error message if available
+        if (errorData.details && Array.isArray(errorData.details)) {
+          const errorList = errorData.details.join('\n');
+          const totalMsg = errorData.totalErrors > errorData.details.length 
+            ? `\n...and ${errorData.totalErrors - errorData.details.length} more errors` 
+            : '';
+          throw new Error(`${errorData.error}:\n${errorList}${totalMsg}`);
+        }
+        throw new Error(errorData.error || "Failed to upload ZIP");
+      }
+      return response.json();
+    },
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/products"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/products"] });
+      toast({
+        title: "Products uploaded",
+        description: `Successfully added ${data.count} products (${data.imagesUploaded} images uploaded)`,
+      });
+      handleClose();
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Upload failed",
+        description: error.message,
         variant: "destructive",
       });
     },
@@ -95,33 +142,47 @@ export function BulkUploadDialog({ open, onOpenChange }: BulkUploadDialogProps) 
     const selectedFile = e.target.files?.[0];
     if (!selectedFile) return;
 
-    if (!selectedFile.name.endsWith(".csv")) {
+    const isCSV = selectedFile.name.endsWith(".csv");
+    const isZIP = selectedFile.name.endsWith(".zip");
+
+    if (!isCSV && !isZIP) {
       toast({
         title: "Invalid file type",
-        description: "Please upload a CSV file",
+        description: "Please upload a CSV or ZIP file",
         variant: "destructive",
       });
       return;
     }
 
     setFile(selectedFile);
+    setFileType(isCSV ? 'csv' : 'zip');
     setIsUploading(true);
 
     try {
-      const text = await selectedFile.text();
-      const products = parseCSV(text);
-      setParsedProducts(products);
-      toast({
-        title: "File parsed",
-        description: `Found ${products.length} valid products`,
-      });
+      if (isCSV) {
+        const text = await selectedFile.text();
+        const products = parseCSV(text);
+        setParsedProducts(products);
+        toast({
+          title: "CSV parsed",
+          description: `Found ${products.length} valid products`,
+        });
+      } else {
+        // For ZIP, we can't parse it client-side easily, just show file info
+        setParsedProducts([]);
+        toast({
+          title: "ZIP file selected",
+          description: `${selectedFile.name} ready to upload`,
+        });
+      }
     } catch (error) {
       toast({
         title: "Parse error",
-        description: error instanceof Error ? error.message : "Failed to parse CSV file",
+        description: error instanceof Error ? error.message : "Failed to parse file",
         variant: "destructive",
       });
       setFile(null);
+      setFileType(null);
       setParsedProducts([]);
     } finally {
       setIsUploading(false);
@@ -129,21 +190,34 @@ export function BulkUploadDialog({ open, onOpenChange }: BulkUploadDialogProps) 
   };
 
   const handleUpload = () => {
-    if (parsedProducts.length === 0) {
+    if (!file) {
       toast({
-        title: "No products to upload",
-        description: "Please select a valid CSV file first",
+        title: "No file selected",
+        description: "Please select a file first",
         variant: "destructive",
       });
       return;
     }
 
-    bulkUploadMutation.mutate(parsedProducts);
+    if (fileType === 'zip') {
+      zipUploadMutation.mutate(file);
+    } else if (fileType === 'csv') {
+      if (parsedProducts.length === 0) {
+        toast({
+          title: "No products to upload",
+          description: "Please select a valid CSV file first",
+          variant: "destructive",
+        });
+        return;
+      }
+      bulkUploadMutation.mutate(parsedProducts);
+    }
   };
 
   const handleClose = () => {
     setFile(null);
     setParsedProducts([]);
+    setFileType(null);
     onOpenChange(false);
   };
 
@@ -167,37 +241,51 @@ Example Product 2,Another description,dairy,3.00,,/path/to/image2.png,1`;
         <DialogHeader>
           <DialogTitle>Bulk Upload Products</DialogTitle>
           <DialogDescription>
-            Upload multiple products at once using a CSV file
+            Upload multiple products using a CSV file or ZIP file (CSV + images)
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
-          <div className="flex items-center justify-between p-4 bg-muted rounded-md">
-            <div>
-              <p className="text-sm font-medium">Need a template?</p>
-              <p className="text-sm text-muted-foreground">
-                Download the CSV template to see the required format
+          <div className="space-y-4">
+            <div className="flex items-center justify-between p-4 bg-muted rounded-md">
+              <div>
+                <p className="text-sm font-medium">Upload Options</p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  <strong>Option 1:</strong> CSV only - images must be URLs or already uploaded
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  <strong>Option 2:</strong> ZIP file - includes CSV + all product images
+                </p>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={downloadTemplate}
+                data-testid="button-download-template"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                CSV Template
+              </Button>
+            </div>
+
+            <div className="p-4 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-md">
+              <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                💡 Recommended: Use ZIP Upload
+              </p>
+              <p className="text-xs text-blue-700 dark:text-blue-300 mt-1">
+                Create a ZIP file containing your CSV and all product images. In your CSV, reference images by filename (e.g., "mountain-dew.png"). The system will automatically upload images and link them to products.
               </p>
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={downloadTemplate}
-              data-testid="button-download-template"
-            >
-              <Download className="w-4 h-4 mr-2" />
-              Download Template
-            </Button>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="csv-file">CSV File</Label>
+            <Label htmlFor="upload-file">Upload File (CSV or ZIP)</Label>
             <Input
-              id="csv-file"
+              id="upload-file"
               type="file"
-              accept=".csv"
+              accept=".csv,.zip"
               onChange={handleFileChange}
-              data-testid="input-csv-file"
+              data-testid="input-upload-file"
             />
           </div>
 
@@ -208,7 +296,10 @@ Example Product 2,Another description,dairy,3.00,,/path/to/image2.png,1`;
                 <div>
                   <p className="text-sm font-medium">{file.name}</p>
                   <p className="text-xs text-muted-foreground">
-                    {parsedProducts.length} products ready to upload
+                    {fileType === 'csv' 
+                      ? `${parsedProducts.length} products ready to upload`
+                      : `ZIP file ready (images will be uploaded automatically)`
+                    }
                   </p>
                 </div>
               </div>
@@ -218,6 +309,7 @@ Example Product 2,Another description,dairy,3.00,,/path/to/image2.png,1`;
                 onClick={() => {
                   setFile(null);
                   setParsedProducts([]);
+                  setFileType(null);
                 }}
               >
                 <X className="w-4 h-4" />
@@ -256,10 +348,14 @@ Example Product 2,Another description,dairy,3.00,,/path/to/image2.png,1`;
           </Button>
           <Button
             onClick={handleUpload}
-            disabled={parsedProducts.length === 0 || bulkUploadMutation.isPending}
+            disabled={!file || bulkUploadMutation.isPending || zipUploadMutation.isPending}
             data-testid="button-confirm-upload"
           >
-            {bulkUploadMutation.isPending ? "Uploading..." : `Upload ${parsedProducts.length} Products`}
+            {bulkUploadMutation.isPending || zipUploadMutation.isPending
+              ? "Uploading..."
+              : fileType === 'zip'
+              ? "Upload ZIP File"
+              : `Upload ${parsedProducts.length} Products`}
           </Button>
         </DialogFooter>
       </DialogContent>

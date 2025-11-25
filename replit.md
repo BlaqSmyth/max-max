@@ -63,6 +63,56 @@ Preferred communication style: Simple, everyday language.
 ### Development Tools
 - Replit Plugins (Cartographer, dev banner, runtime error modal), Drizzle Kit, tsx.
 
+## Recent Changes (November 25, 2025)
+
+### ZIP Bulk Upload Feature (Evening Update)
+
+**New Feature: Bulk Product Upload with ZIP Files**
+- Added comprehensive ZIP upload feature as a third option for bulk product imports
+- Allows uploading a single ZIP file containing CSV + all product images
+- Automatically uploads images to object storage and links them to products
+- No more tedious manual image uploads or finding direct URLs
+
+**Technical Implementation:**
+- Installed and integrated `adm-zip` for ZIP file handling
+- Installed `csv-parse` for RFC 4180 compliant CSV parsing
+- Created new `/api/admin/products/bulk-zip` endpoint that:
+  - Accepts ZIP file upload
+  - Extracts CSV and image files
+  - Uploads images to object storage
+  - Maps image filenames to uploaded URLs (case-insensitive)
+  - Parses CSV with proper quoted field support
+  - Validates and creates products with uploaded images
+
+**CSV Handling:**
+- Proper RFC 4180 CSV parsing (handles quoted fields, commas in values, etc.)
+- Supports both Windows (\r\n) and Unix (\n) line endings
+- Case-insensitive image filename matching
+- Strict inStock validation (must be non-negative integer)
+- Detailed error reporting with row numbers
+- Supports external URLs as fallback (http://, https://, /)
+
+**Frontend Updates:**
+- Updated BulkUploadDialog to accept both .csv and .zip files
+- Clear UI showing both upload options
+- Recommendation banner suggesting ZIP upload for ease of use
+- Different status messages for CSV vs ZIP uploads
+- Detailed error display with row-specific information
+
+**Usage:**
+1. Create a ZIP file containing:
+   - products.csv (with columns: name, description, category, price, memberPrice, image, inStock)
+   - All product images (mountain-dew.png, fanta.png, etc.)
+2. In CSV, reference images by filename: "mountain-dew.png"
+3. Upload ZIP through Admin → Products → Bulk Upload
+4. System automatically uploads images and creates products
+
+**Benefits:**
+- No need to manually upload images to attached_assets first
+- No need to find direct image URLs
+- All product data and images in one convenient file
+- Automatic image-to-product linking
+
 ## Recent Changes (November 21, 2025)
 
 ### Frontend Now Uses Live API Data (Evening Update)

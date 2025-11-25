@@ -157,12 +157,14 @@ export default function AdminProducts() {
                 {filteredProducts.map((product) => (
                   <TableRow key={product.id} data-testid={`row-product-${product.id}`}>
                     <TableCell>
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="w-20 h-20 object-cover rounded-md border"
-                        data-testid={`img-product-${product.id}`}
-                      />
+                      <div className="w-20 h-20 bg-white dark:bg-muted rounded-md border p-1">
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="w-full h-full object-contain"
+                          data-testid={`img-product-${product.id}`}
+                        />
+                      </div>
                     </TableCell>
                     <TableCell className="font-medium" data-testid={`text-name-${product.id}`}>
                       {product.name}

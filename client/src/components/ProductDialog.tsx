@@ -244,7 +244,7 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
             <Label htmlFor="image">Product Image</Label>
             <div className="flex flex-col gap-4">
               {imagePreview && (
-                <div className="relative w-full h-48 bg-muted rounded-lg overflow-hidden">
+                <div className="relative w-full h-48 bg-white dark:bg-muted rounded-lg overflow-hidden p-4">
                   <img
                     src={imagePreview}
                     alt="Preview"

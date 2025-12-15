@@ -1,0 +1,99 @@
+name,description,category,price,memberPrice,image,inStock
+Red Bull Energy 250ml,Energy drink,beverages,1.55,1.49,,50
+Red Bull Sugar Free 250ml,Sugar free energy drink,beverages,1.50,1.46,,50
+Red Bull Tropical 250ml,Tropical flavour energy drink,beverages,1.55,1.42,,30
+Red Bull Coconut 250ml,Coconut flavour energy drink,beverages,1.55,1.42,,30
+Red Bull Watermelon 250ml,Watermelon flavour energy drink,beverages,1.55,1.42,,30
+Red Bull Cactus 250ml,Cactus flavour energy drink,beverages,1.55,1.42,,30
+Red Bull Apricot Strawberry 250ml,Apricot strawberry flavour energy drink,beverages,1.55,1.42,,30
+Red Bull Juneberry 250ml,Juneberry flavour energy drink,beverages,1.55,1.42,,30
+Red Bull Winter Spiced Pear 250ml,Winter spiced pear energy drink,beverages,1.55,1.35,,30
+Innocent Mango Passion Fruit Smoothie 250ml,Fruit smoothie,dairy,2.29,1.51,,20
+Innocent Strawberry Banana Smoothie 250ml,Fruit smoothie,dairy,2.29,1.51,,20
+Innocent Guava Pineapple Smoothie 250ml,Fruit smoothie,dairy,2.29,1.51,,20
+Jacks Meat Feast Pizza 386g,Frozen pizza,frozen,2.39,2.24,,40
+Jacks Cheese Pizza 386g,Frozen pizza,frozen,2.39,2.24,,40
+Jacks Skin On Fries 750g,Frozen fries,frozen,1.99,1.74,,40
+Velvet Classic Quilted Toilet Roll 16 Pack,Toilet tissue,household,7.99,5.99,,30
+Walkers Cheese & Onion Crisps 150g,Potato crisps,crisps,2.25,2.12,,50
+Walkers Ready Salted Crisps 150g,Potato crisps,crisps,2.25,2.12,,50
+Walkers Salt & Vinegar Crisps 150g,Potato crisps,crisps,2.25,2.12,,50
+Cadbury Milk Tray 530g,Chocolate selection box,treats,14.99,10.60,,20
+Hardys Bin 161 Rose Wine 75cl,Rose wine,alcohol,6.99,6.49,,25
+Hardys Bin 161 Sauvignon Blanc 75cl,White wine,alcohol,6.99,6.49,,25
+Hardys Bin 161 Chardonnay 75cl,White wine,alcohol,6.99,6.49,,25
+Hardys Bin 161 Pinot Grigio 75cl,White wine,alcohol,6.99,5.79,,25
+Hardys Bin 161 Shiraz 75cl,Red wine,alcohol,6.99,6.49,,25
+Hardys Bin 161 Merlot 75cl,Red wine,alcohol,6.99,6.49,,25
+Cruzcampo Lager 10x440ml,Spanish lager,alcohol,13.99,7.29,,20
+Inchs Medium Apple Cider 10x440ml,Apple cider,alcohol,12.49,7.09,,20
+Old Mout Pineapple Raspberry Cider 10x330ml,Fruit cider,alcohol,11.09,7.29,,20
+Sol Lager 12x330ml,Mexican lager,alcohol,14.49,7.49,,20
+Strongbow Cider 10x440ml,Apple cider,alcohol,12.49,7.25,,30
+Carling Lager 10x440ml,Lager beer,alcohol,12.69,6.99,,30
+Coors Lager 10x440ml,Premium lager,alcohol,13.99,6.99,,30
+Jacks Cooking Onions 1kg,Fresh vegetables,produce,1.49,0.99,,60
+Jacks Broccoli 350g,Fresh vegetables,produce,1.49,0.99,,60
+Jacks White Potatoes 2kg,Fresh vegetables,produce,1.69,1.29,,60
+Jacks Carrots 500g,Fresh vegetables,produce,0.79,0.59,,60
+Reeses Hollow Easter Egg 252g,Chocolate easter egg,treats,6.99,5.10,,15
+Kit Kat Chunky Biscoff Easter Egg 233g,Chocolate easter egg,treats,7.49,4.88,,15
+Milkybar Giant Egg with Mini Eggs 230g,Chocolate easter egg,treats,7.49,4.88,,15
+Cadbury Mini Eggs XL Shell Egg 232g,Chocolate easter egg,treats,6.99,5.22,,15
+Cadbury Creme Egg XL Easter Egg 235g,Chocolate easter egg,treats,6.99,5.22,,15
+Celebrations Tub 600g,Chocolate selection,treats,12.25,6.49,,25
+Twix White XL Easter Egg 316g,Chocolate easter egg,treats,7.99,6.49,,15
+Cadbury Mini Egg Nests 4 Pack,Chocolate cakes,treats,2.59,2.59,,20
+Mr Kipling Lemon Raspberry Mini Battenburgs 5 Pack,Cakes,bakery,1.25,1.25,,30
+Cathedral City Mature Cheddar 350g,Cheese,dairy,4.50,3.85,,40
+Cathedral City Extra Mature Cheddar 350g,Extra mature cheese,dairy,4.75,4.10,,40
+Cathedral City Lighter Cheddar 350g,Lighter cheese,dairy,4.50,3.85,,40
+Wotsits Giants Prawn Cocktail 105g,Corn snacks,crisps,2.50,2.00,,30
+Wotsits Giants Cheese 130g,Corn snacks,crisps,2.50,1.75,,30
+Wotsits Giants Flamin Hot 130g,Corn snacks,crisps,2.50,2.00,,30
+Mogu Mogu Lychee Drink 320ml,Nata de coco drink,beverages,1.29,1.29,,40
+Mogu Mogu Melon Drink 320ml,Nata de coco drink,beverages,1.29,1.29,,40
+Mogu Mogu Mango Drink 320ml,Nata de coco drink,beverages,1.29,1.29,,40
+Pepsi Max 2L,Sugar free cola,beverages,2.29,2.18,,50
+Pepsi Diet 2L,Diet cola,beverages,2.29,2.18,,50
+Pepsi Max Cherry 2L,Cherry cola sugar free,beverages,2.29,2.18,,40
+Pepsi Regular 2L,Cola,beverages,2.59,2.18,,50
+Monster Energy 4x500ml,Energy drink multipack,beverages,5.49,5.73,,30
+Monster Mango Loco 4x500ml,Mango energy drink,beverages,5.49,5.73,,30
+Monster Ultra Energy 4x500ml,Sugar free energy drink,beverages,4.99,5.06,,30
+Aero Milk Chocolate Bar 36g,Chocolate bar,treats,0.95,0.80,,60
+Aero Peppermint Chocolate Bar 36g,Peppermint chocolate bar,treats,0.95,0.80,,60
+Kit Kat 4 Finger 41.5g,Chocolate wafer bar,treats,0.95,0.80,,60
+Kit Kat 4 Finger Caramel 41.5g,Caramel chocolate wafer,treats,0.95,0.80,,40
+Kit Kat Chunky 40g,Chunky chocolate wafer,treats,0.95,0.80,,60
+Kit Kat Chunky Runny Caramel 43.5g,Caramel filled chocolate wafer,treats,0.95,0.80,,40
+Kit Kat Chunky Peanut Butter 42g,Peanut butter chocolate wafer,treats,0.95,0.80,,40
+Kit Kat 4 Finger Dark 41.5g,Dark chocolate wafer,treats,0.95,0.80,,40
+Kit Kat 4 Finger White 41.5g,White chocolate wafer,treats,0.95,0.80,,40
+Milkybar 25g,White chocolate bar,treats,0.95,0.83,,60
+Rolo Tube 52g,Chocolate caramels,treats,0.95,0.83,,50
+Smarties Tube 38g,Chocolate beans,treats,0.95,0.80,,60
+Smarties White Tube 36g,White chocolate beans,treats,0.95,0.80,,40
+Toffee Crisp Bar 38g,Toffee chocolate bar,treats,0.95,0.80,,50
+Yorkie Milk Chocolate 46g,Milk chocolate bar,treats,0.95,0.80,,50
+Yorkie Raisin Biscuit 44g,Raisin biscuit chocolate bar,treats,0.95,0.80,,40
+Kit Kat Chunky Biscoff White 42g,Biscoff white chocolate wafer,treats,0.95,0.80,,40
+Haribo Tangfastics 140g,Sour sweets,treats,1.25,1.33,,50
+Haribo Starmix 140g,Mixed sweets,treats,1.25,1.33,,50
+Haribo Supermix 140g,Mixed sweets,treats,1.25,1.33,,50
+Haribo Giant Strawbs 140g,Strawberry sweets,treats,1.25,1.33,,50
+Haribo Bubblegum Bottles Zing 160g,Bubblegum sweets,treats,1.25,1.33,,40
+Haribo Twin Snakes 160g,Gummy snakes,treats,1.25,1.33,,40
+Haribo Sour Sparks 160g,Sour sweets,treats,1.25,1.33,,40
+Haribo Soda Twist Zing 160g,Soda flavour sweets,treats,1.25,1.33,,40
+McGuigan Black Label Shiraz 75cl,Australian red wine,alcohol,8.69,6.99,,20
+McGuigan Black Label Chardonnay 75cl,Australian white wine,alcohol,8.69,6.99,,20
+McGuigan Black Label Red 75cl,Australian red wine,alcohol,8.69,6.99,,20
+McGuigan Black Label Pinot Grigio 75cl,Italian style white wine,alcohol,8.69,6.99,,20
+McGuigan Black Label Sauvignon Blanc 75cl,New Zealand style white wine,alcohol,8.69,6.99,,20
+Isla Negra Seashore Rose 75cl,Chilean rose wine,alcohol,6.79,5.99,,20
+Isla Negra Seashore Merlot 75cl,Chilean red wine,alcohol,6.79,5.99,,20
+Isla Negra Seashore Sauvignon Blanc 75cl,Chilean white wine,alcohol,6.79,5.99,,20
+Isla Negra Malbec 75cl,Chilean red wine,alcohol,6.79,5.99,,20
+Birra Moretti 4x440ml,Italian lager,alcohol,7.79,6.00,,25
+Strongbow Dark Fruit Cider 4x440ml,Dark fruit cider,alcohol,6.49,5.87,,30

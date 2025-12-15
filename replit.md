@@ -63,6 +63,46 @@ Preferred communication style: Simple, everyday language.
 ### Development Tools
 - Replit Plugins (Cartographer, dev banner, runtime error modal), Drizzle Kit, tsx.
 
+## Recent Changes (December 15, 2025)
+
+### Automated AI Image Matching for Brochure Products
+
+**Feature: Automated Product Image Matching with Gemini AI**
+- Successfully matched 13 products with real images from the PDF brochure using Gemini AI vision analysis
+- Analyzed 557 extracted images from the brochure automatically
+- No manual image matching required - fully automated process
+
+**Matched Products:**
+- Red Bull Energy 250ml → img106.jpg
+- Cadbury Mini Eggs XL Shell Egg 232g → img1053.jpg
+- Pepsi Max 2L → img1289.jpg
+- Strongbow Dark Fruit Cider 4x440ml → img1382.jpg
+- Cadbury Milk Tray 530g → img1471.jpg
+- Monster Energy 4x500ml → img1961.jpg
+- Hardys Bin 161 Rose Wine 75cl → img1997.jpg
+- Innocent Strawberry Banana Smoothie 250ml → img203.jpg
+- Cathedral City Mature Cheddar 350g → img2161.jpg
+- Jacks Skin On Fries 750g → img218.jpg
+- Velvet Classic Quilted Toilet Roll 16 Pack → img221.jpg
+- Walkers Cheese & Onion Crisps 150g → img224.jpg
+- Walkers Ready Salted Crisps 150g → img227.jpg
+
+**Technical Implementation:**
+- Gemini AI integration for image analysis (gemini-2.5-flash model)
+- Image matching script: `scripts/matchImagesGemini.ts`
+- Rate limiting with p-limit (2 concurrent) and retries with p-retry
+- Product images copied to `attached_assets/product_images/`
+- Seed data updated with matched image paths
+
+**Key Files:**
+- `scripts/matchImagesGemini.ts` - Gemini AI image analysis script
+- `scripts/updateProductImages.ts` - Updates seed data with matched images
+- `attached_assets/product_image_mapping.json` - Image-product mapping
+- `attached_assets/product_images/` - Matched product images
+- `attached_assets/extracted_images/` - All 557 extracted images from PDF
+
+**Note:** OpenAI vision API not compatible with Replit AI integrations proxy (safety_identifier error). Gemini AI was used successfully for image analysis.
+
 ## Recent Changes (November 25, 2025)
 
 ### ZIP Bulk Upload Feature (Evening Update)

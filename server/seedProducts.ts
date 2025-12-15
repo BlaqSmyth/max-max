@@ -451,7 +451,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "beverages",
     price: "1.55",
     memberPrice: "1.49",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "attached_assets/product_images/img106.jpg",
     inStock: 50,
   },
   {
@@ -541,7 +541,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "dairy",
     price: "2.29",
     memberPrice: "1.51",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "attached_assets/product_images/img203.jpg",
     inStock: 20,
   },
   {
@@ -577,7 +577,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "frozen",
     price: "1.99",
     memberPrice: "1.74",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "attached_assets/product_images/img218.jpg",
     inStock: 40,
   },
   {
@@ -586,7 +586,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "household",
     price: "7.99",
     memberPrice: "5.99",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "attached_assets/product_images/img221.jpg",
     inStock: 30,
   },
   {
@@ -595,7 +595,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "crisps",
     price: "2.25",
     memberPrice: "2.12",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "attached_assets/product_images/img224.jpg",
     inStock: 50,
   },
   {
@@ -604,7 +604,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "crisps",
     price: "2.25",
     memberPrice: "2.12",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "attached_assets/product_images/img227.jpg",
     inStock: 50,
   },
   {
@@ -622,7 +622,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "treats",
     price: "14.99",
     memberPrice: "10.60",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "attached_assets/product_images/img1471.jpg",
     inStock: 20,
   },
   {
@@ -631,7 +631,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "alcohol",
     price: "6.99",
     memberPrice: "6.49",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "attached_assets/product_images/img1997.jpg",
     inStock: 25,
   },
   {
@@ -811,7 +811,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "treats",
     price: "6.99",
     memberPrice: "5.22",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "attached_assets/product_images/img1053.jpg",
     inStock: 15,
   },
   {
@@ -865,7 +865,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "dairy",
     price: "4.50",
     memberPrice: "3.85",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "attached_assets/product_images/img2161.jpg",
     inStock: 40,
   },
   {
@@ -946,7 +946,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "beverages",
     price: "2.29",
     memberPrice: "2.18",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "attached_assets/product_images/img1289.jpg",
     inStock: 50,
   },
   {
@@ -982,7 +982,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "beverages",
     price: "5.49",
     memberPrice: "5.73",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "attached_assets/product_images/img1961.jpg",
     inStock: 30,
   },
   {
@@ -1324,7 +1324,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "alcohol",
     price: "6.49",
     memberPrice: "5.87",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "attached_assets/product_images/img1382.jpg",
     inStock: 30,
   },
 ];

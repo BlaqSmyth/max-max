@@ -451,7 +451,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "beverages",
     price: "1.55",
     memberPrice: "1.49",
-    image: "attached_assets/placeholder-product.svg",
+    image: "/attached_assets/product_images/red-bull-energy-250ml-pm.jpg",
     inStock: 50,
   },
   {
@@ -460,7 +460,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "beverages",
     price: "1.50",
     memberPrice: "1.46",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "/attached_assets/product_images/lr-red-bull-sugar-free-250ml-pm.jpg",
     inStock: 50,
   },
   {
@@ -469,7 +469,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "beverages",
     price: "1.55",
     memberPrice: "1.42",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "/attached_assets/product_images/lr-red-bull-tropical-250ml-pm.jpg",
     inStock: 30,
   },
   {
@@ -532,7 +532,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "dairy",
     price: "2.29",
     memberPrice: "1.51",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "/attached_assets/product_images/innocent-mango-pfruit-smooth.jpg",
     inStock: 20,
   },
   {
@@ -541,7 +541,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "dairy",
     price: "2.29",
     memberPrice: "1.51",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "/attached_assets/product_images/innocent-stwbry-banana-smoot.jpg",
     inStock: 20,
   },
   {
@@ -550,7 +550,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "dairy",
     price: "2.29",
     memberPrice: "1.51",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "/attached_assets/product_images/innocent-guava-pnpple-smth.jpg",
     inStock: 20,
   },
   {
@@ -559,7 +559,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "frozen",
     price: "2.39",
     memberPrice: "2.24",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "/attached_assets/product_images/jacks-meat-feast-pizza-pm239.jpg",
     inStock: 40,
   },
   {
@@ -568,7 +568,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "frozen",
     price: "2.39",
     memberPrice: "2.24",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "/attached_assets/product_images/jacks-cheese-pizza-pm239-386g.jpg",
     inStock: 40,
   },
   {
@@ -577,7 +577,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "frozen",
     price: "1.99",
     memberPrice: "1.74",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "/attached_assets/product_images/jacks-skin-on-fries-pm199.jpg",
     inStock: 40,
   },
   {
@@ -595,7 +595,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "crisps",
     price: "2.25",
     memberPrice: "2.12",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "/attached_assets/product_images/walkers-chse-and-onin-150g.jpg",
     inStock: 50,
   },
   {
@@ -604,7 +604,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "crisps",
     price: "2.25",
     memberPrice: "2.12",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "/attached_assets/product_images/end-1-bb-end-1-hc-walkers-ready-salted-150g.jpg",
     inStock: 50,
   },
   {
@@ -613,7 +613,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "crisps",
     price: "2.25",
     memberPrice: "2.12",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "/attached_assets/product_images/end-1-bb-end-1-hc-walkers-salt-vinegar-150g.jpg",
     inStock: 50,
   },
   {
@@ -631,7 +631,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "alcohol",
     price: "6.99",
     memberPrice: "6.49",
-    image: "attached_assets/placeholder-product.svg",
+    image: "/attached_assets/product_images/hardys-bin-161-rose-pm699.jpg",
     inStock: 25,
   },
   {
@@ -685,7 +685,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "alcohol",
     price: "13.99",
     memberPrice: "7.29",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "/attached_assets/product_images/end-1-bb-end-1-hc.jpg",
     inStock: 20,
   },
   {
@@ -784,7 +784,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "treats",
     price: "6.99",
     memberPrice: "5.10",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "/attached_assets/product_images/reeses-hollow-egg-3-creme.jpg",
     inStock: 15,
   },
   {
@@ -793,7 +793,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "treats",
     price: "7.49",
     memberPrice: "4.88",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "/attached_assets/product_images/kit-kat-chunky-biscoff-egg.jpg",
     inStock: 15,
   },
   {
@@ -802,7 +802,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "treats",
     price: "7.49",
     memberPrice: "4.88",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "/attached_assets/product_images/milkybar-gnt-egg-mini-eggs.jpg",
     inStock: 15,
   },
   {

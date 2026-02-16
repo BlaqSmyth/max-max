@@ -478,7 +478,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "beverages",
     price: "1.55",
     memberPrice: "1.42",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "/attached_assets/product_images/red-bull-coconut-250ml.png",
     inStock: 30,
   },
   {
@@ -487,7 +487,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "beverages",
     price: "1.55",
     memberPrice: "1.42",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "/attached_assets/product_images/red-bull-watermelon-250ml.png",
     inStock: 30,
   },
   {
@@ -496,7 +496,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "beverages",
     price: "1.55",
     memberPrice: "1.42",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "/attached_assets/product_images/red-bull-cactus-250ml.png",
     inStock: 30,
   },
   {
@@ -505,7 +505,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "beverages",
     price: "1.55",
     memberPrice: "1.42",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "/attached_assets/product_images/red-bull-apricot-strawberry-250ml.png",
     inStock: 30,
   },
   {
@@ -514,7 +514,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "beverages",
     price: "1.55",
     memberPrice: "1.42",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "/attached_assets/product_images/red-bull-juneberry-250ml.png",
     inStock: 30,
   },
   {
@@ -523,7 +523,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "beverages",
     price: "1.55",
     memberPrice: "1.35",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "/attached_assets/product_images/red-bull-winter-spiced-pear-250ml.png",
     inStock: 30,
   },
   {
@@ -532,7 +532,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "dairy",
     price: "2.29",
     memberPrice: "1.51",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "/attached_assets/product_images/innocent-mango-passion-fruit-smoothie-250ml.png",
     inStock: 20,
   },
   {
@@ -541,7 +541,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "dairy",
     price: "2.29",
     memberPrice: "1.51",
-    image: "attached_assets/placeholder-product.svg",
+    image: "/attached_assets/product_images/innocent-strawberry-banana-smoothie-250ml.png",
     inStock: 20,
   },
   {
@@ -550,7 +550,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "dairy",
     price: "2.29",
     memberPrice: "1.51",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "/attached_assets/product_images/innocent-guava-pineapple-smoothie-250ml.png",
     inStock: 20,
   },
   {
@@ -559,7 +559,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "frozen",
     price: "2.39",
     memberPrice: "2.24",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "/attached_assets/product_images/jacks-meat-feast-pizza-386g.png",
     inStock: 40,
   },
   {
@@ -568,7 +568,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "frozen",
     price: "2.39",
     memberPrice: "2.24",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "/attached_assets/product_images/jacks-cheese-pizza-386g.png",
     inStock: 40,
   },
   {
@@ -577,7 +577,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "frozen",
     price: "1.99",
     memberPrice: "1.74",
-    image: "attached_assets/placeholder-product.svg",
+    image: "/attached_assets/product_images/jacks-skin-on-fries-750g.png",
     inStock: 40,
   },
   {
@@ -586,7 +586,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "household",
     price: "7.99",
     memberPrice: "5.99",
-    image: "attached_assets/placeholder-product.svg",
+    image: "/attached_assets/product_images/velvet-classic-quilted-toilet-roll-16-pack.png",
     inStock: 30,
   },
   {
@@ -595,7 +595,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "crisps",
     price: "2.25",
     memberPrice: "2.12",
-    image: "attached_assets/placeholder-product.svg",
+    image: "/attached_assets/product_images/walkers-cheese-and-onion-crisps-150g.png",
     inStock: 50,
   },
   {
@@ -604,7 +604,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "crisps",
     price: "2.25",
     memberPrice: "2.12",
-    image: "attached_assets/placeholder-product.svg",
+    image: "/attached_assets/product_images/walkers-ready-salted-crisps-150g.png",
     inStock: 50,
   },
   {
@@ -613,7 +613,7 @@ const mockProducts: Omit<InsertProduct, "id">[] = [
     category: "crisps",
     price: "2.25",
     memberPrice: "2.12",
-    image: "/attached_assets/placeholder-product.svg",
+    image: "/attached_assets/product_images/walkers-salt-and-vinegar-crisps-150g.png",
     inStock: 50,
   },
   {

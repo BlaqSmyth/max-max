@@ -29,13 +29,17 @@ interface ProductDialogProps {
 }
 
 const categories = [
-  "beverages",
-  "dairy",
-  "bakery",
-  "produce",
-  "meat",
-  "ready-meals",
   "alcohol",
+  "bakery",
+  "beverages",
+  "crisps",
+  "dairy",
+  "frozen",
+  "household",
+  "meat",
+  "produce",
+  "ready-meals",
+  "treats",
 ];
 
 export function ProductDialog({ product, open, onOpenChange }: ProductDialogProps) {
@@ -55,6 +59,7 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
+    if (!open) return;
     if (product) {
       setFormData({
         name: product.name,
@@ -65,7 +70,7 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
         image: product.image,
         inStock: product.inStock.toString(),
       });
-      setImagePreview(product.image);
+      setImagePreview(product.image.includes("placeholder") ? "" : product.image);
     } else {
       setFormData({
         name: "",
@@ -79,7 +84,7 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
       setImagePreview("");
     }
     setImageFile(null);
-  }, [product, open]);
+  }, [product?.id, open]);
 
   const saveMutation = useMutation({
     mutationFn: async (data: typeof formData) => {

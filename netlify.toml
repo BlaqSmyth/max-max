@@ -10,11 +10,19 @@
   from = "/api/*"
   to = "/.netlify/functions/api"
   status = 200
+  force = true
+
+[[redirects]]
+  from = "/attached_assets/*"
+  to = "/.netlify/functions/api"
+  status = 200
+  force = true
 
 [[redirects]]
   from = "/public-objects/*"
   to = "/.netlify/functions/api"
   status = 200
+  force = true
 
 [[redirects]]
   from = "/*"

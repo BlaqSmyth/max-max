@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { ObjectStorageService } from "./objectStorage";
+import { uploadFileToSupabase, isSupabaseConfigured } from "./supabaseStorage";
 import { insertProductSchema } from "@shared/schema";
 import { 
   adminAuthMiddleware, 
@@ -177,8 +178,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           };
           const mimeType = mimeTypes[ext] || 'image/png';
           
-          // Upload to object storage
-          const imageUrl = await objectStorageService.uploadFile(imageBuffer, mimeType);
+          // Upload to object storage (Supabase or Replit)
+          const imageUrl = isSupabaseConfigured()
+            ? await uploadFileToSupabase(imageBuffer, mimeType)
+            : await objectStorageService.uploadFile(imageBuffer, mimeType);
           // Store with normalized filename (lowercase) for case-insensitive matching
           imageUrlMap.set(filename.toLowerCase(), imageUrl);
         }
@@ -339,10 +342,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "No file uploaded" });
       }
 
-      const imageUrl = await objectStorageService.uploadFile(
-        req.file.buffer,
-        req.file.mimetype
-      );
+      let imageUrl: string;
+      if (isSupabaseConfigured()) {
+        imageUrl = await uploadFileToSupabase(req.file.buffer, req.file.mimetype);
+      } else {
+        imageUrl = await objectStorageService.uploadFile(req.file.buffer, req.file.mimetype);
+      }
 
       res.json({ url: imageUrl });
     } catch (error) {

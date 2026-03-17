@@ -1,73 +1,37 @@
-import { randomBytes } from "crypto";
+import jwt from "jsonwebtoken";
 
-interface AdminSession {
-  token: string;
-  createdAt: number;
-  expiresAt: number;
+const JWT_SECRET = process.env.JWT_SECRET || process.env.SESSION_SECRET || "max-and-max-admin-secret-key";
+const TOKEN_EXPIRY = "24h";
+
+export function createSession(): string {
+  return jwt.sign({ role: "admin" }, JWT_SECRET, { expiresIn: TOKEN_EXPIRY });
 }
 
-class AdminAuthService {
-  private sessions: Map<string, AdminSession> = new Map();
-  private readonly SESSION_DURATION = 24 * 60 * 60 * 1000; // 24 hours
-
-  generateToken(): string {
-    return randomBytes(32).toString("hex");
-  }
-
-  createSession(): string {
-    const token = this.generateToken();
-    const now = Date.now();
-    
-    this.sessions.set(token, {
-      token,
-      createdAt: now,
-      expiresAt: now + this.SESSION_DURATION,
-    });
-
-    // Clean up expired sessions
-    this.cleanupExpiredSessions();
-
-    return token;
-  }
-
-  validateToken(token: string): boolean {
-    const session = this.sessions.get(token);
-    if (!session) return false;
-
-    if (Date.now() > session.expiresAt) {
-      this.sessions.delete(token);
-      return false;
-    }
-
-    return true;
-  }
-
-  revokeToken(token: string): void {
-    this.sessions.delete(token);
-  }
-
-  private cleanupExpiredSessions(): void {
-    const now = Date.now();
-    Array.from(this.sessions.entries()).forEach(([token, session]) => {
-      if (now > session.expiresAt) {
-        this.sessions.delete(token);
-      }
-    });
+export function validateToken(token: string): boolean {
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET) as any;
+    return decoded?.role === "admin";
+  } catch {
+    return false;
   }
 }
 
-export const adminAuthService = new AdminAuthService();
+export function revokeToken(_token: string): void {
+  // JWT tokens are stateless — logout is handled client-side by discarding the token
+}
+
+export const adminAuthService = { createSession, validateToken, revokeToken };
 
 export function adminAuthMiddleware(req: any, res: any, next: any) {
   const authHeader = req.headers.authorization;
-  
+
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return res.status(401).json({ error: "Unauthorized" });
   }
 
-  const token = authHeader.substring(7); // Remove "Bearer "
-  
-  if (!adminAuthService.validateToken(token)) {
+  const token = authHeader.substring(7);
+
+  if (!validateToken(token)) {
     return res.status(401).json({ error: "Invalid or expired token" });
   }
 

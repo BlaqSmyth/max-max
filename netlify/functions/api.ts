@@ -142,15 +142,45 @@ const SEED_PRODUCTS = [
   { name: "Risotto Rice 500g", description: "Arborio risotto rice for creamy Italian dishes", category: "ready-meals", price: "1.75", memberPrice: "1.55", image: "/attached_assets/generated_images/risotto_rice_500g.png", inStock: 1 },
 ];
 
+// Convert camelCase product object → snake_case DB row for Supabase inserts/updates
+function toDbRow(product: any) {
+  const row: any = {};
+  for (const key of ["id", "name", "description", "category", "price", "image"]) {
+    if (key in product) row[key] = product[key];
+  }
+  // memberPrice → member_price
+  if ("memberPrice" in product) row["member_price"] = product["memberPrice"] ?? null;
+  else if ("member_price" in product) row["member_price"] = product["member_price"] ?? null;
+  // inStock → in_stock
+  if ("inStock" in product) row["in_stock"] = product["inStock"] ?? 1;
+  else if ("in_stock" in product) row["in_stock"] = product["in_stock"] ?? 1;
+  return row;
+}
+
+// Convert snake_case DB row → camelCase for frontend
+function fromDbRow(row: any) {
+  if (!row) return row;
+  const out = { ...row };
+  out.memberPrice = row.member_price ?? row.memberPrice ?? null;
+  out.inStock = row.in_stock ?? row.inStock ?? 1;
+  delete out.member_price;
+  delete out.in_stock;
+  return out;
+}
+
 let seeded = false;
 
 async function ensureSeeded() {
   if (seeded) return;
   const sb = getSupabase();
-  const { count } = await sb.from("products").select("*", { count: "exact", head: true });
+  const { count, error: countError } = await sb.from("products").select("*", { count: "exact", head: true });
+  if (countError) { console.error("[seed] count error:", countError.message); return; }
   if (!count || count < 10) {
-    const rows = SEED_PRODUCTS.map(p => ({ id: randomUUID(), ...p }));
-    await sb.from("products").insert(rows);
+    console.log("[seed] Seeding", SEED_PRODUCTS.length, "products...");
+    const rows = SEED_PRODUCTS.map(p => toDbRow({ id: randomUUID(), ...p }));
+    const { error } = await sb.from("products").insert(rows);
+    if (error) { console.error("[seed] insert error:", error.message, error.details); return; }
+    console.log("[seed] Done.");
   }
   seeded = true;
 }
@@ -195,21 +225,30 @@ export const handler = async (event: any, _context: any) => {
 
   try {
     if (path === "/api/health") {
-      return json({ status: "ok", supabase: !!SUPABASE_URL, hasServiceKey: !!SUPABASE_SERVICE_KEY });
+      const { count } = await sb.from("products").select("*", { count: "exact", head: true });
+      return json({ status: "ok", supabase: !!SUPABASE_URL, hasServiceKey: !!SUPABASE_SERVICE_KEY, productCount: count ?? 0 });
+    }
+
+    if (path === "/api/admin/seed" && method === "POST") {
+      if (!adminCheck(event)) return json({ error: "Unauthorized" }, 401);
+      seeded = false; // force re-check
+      await ensureSeeded();
+      const { count } = await sb.from("products").select("*", { count: "exact", head: true });
+      return json({ seeded: true, productCount: count ?? 0 });
     }
 
     if (path === "/api/products" && method === "GET") {
       await ensureSeeded();
       const { data, error } = await sb.from("products").select("*");
       if (error) throw error;
-      return json(data);
+      return json((data || []).map(fromDbRow));
     }
 
     const productIdMatch = path.match(/^\/api\/products\/([^\/]+)$/);
     if (productIdMatch && method === "GET") {
       const { data, error } = await sb.from("products").select("*").eq("id", productIdMatch[1]).single();
       if (error) return json({ error: "Not found" }, 404);
-      return json(data);
+      return json(fromDbRow(data));
     }
 
     if (path === "/api/admin/login" && method === "POST") {
@@ -233,17 +272,17 @@ export const handler = async (event: any, _context: any) => {
       if (!adminCheck(event)) return json({ error: "Unauthorized" }, 401);
       const body = getBody(event);
       const id = randomUUID();
-      const { data, error } = await sb.from("products").insert({ id, ...body }).select().single();
+      const { data, error } = await sb.from("products").insert(toDbRow({ id, ...body })).select().single();
       if (error) throw error;
-      return json(data, 201);
+      return json(fromDbRow(data), 201);
     }
 
     if (productIdMatch && method === "PUT") {
       if (!adminCheck(event)) return json({ error: "Unauthorized" }, 401);
       const body = getBody(event);
-      const { data, error } = await sb.from("products").update(body).eq("id", productIdMatch[1]).select().single();
+      const { data, error } = await sb.from("products").update(toDbRow(body)).eq("id", productIdMatch[1]).select().single();
       if (error) return json({ error: "Not found" }, 404);
-      return json(data);
+      return json(fromDbRow(data));
     }
 
     if (productIdMatch && method === "DELETE") {
@@ -268,8 +307,8 @@ export const handler = async (event: any, _context: any) => {
       const records = parseCsv(buffer.toString("utf-8"), { columns: true, skip_empty_lines: true });
       const inserted: any[] = [];
       for (const row of records as any[]) {
-        const { data } = await sb.from("products").insert({ id: randomUUID(), name: row.name, description: row.description || null, category: row.category, price: row.price, memberPrice: row.memberPrice || null, image: row.image || "/attached_assets/placeholder.png", inStock: Number(row.inStock ?? 1) }).select().single();
-        if (data) inserted.push(data);
+        const { data } = await sb.from("products").insert(toDbRow({ id: randomUUID(), name: row.name, description: row.description || null, category: row.category, price: row.price, memberPrice: row.memberPrice || row.member_price || null, image: row.image || "/attached_assets/placeholder.png", inStock: Number(row.inStock ?? row.in_stock ?? 1) })).select().single();
+        if (data) inserted.push(fromDbRow(data));
       }
       return json({ created: inserted.length, products: inserted });
     }

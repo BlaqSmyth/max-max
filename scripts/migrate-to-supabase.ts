@@ -64,7 +64,7 @@ async function main() {
   // 1. Fetch all products from Replit database
   console.log("1. Fetching products from Replit database...");
   const products = await sql`
-    SELECT id, name, description, category, price, "memberPrice" as member_price, image, "inStock" as in_stock
+    SELECT id, name, description, category, price, member_price, image, in_stock
     FROM products
     ORDER BY name
   `;
@@ -112,14 +112,14 @@ async function main() {
     }
 
     rows.push({
-      id: p.id,
-      name: p.name,
-      description: p.description || null,
-      category: p.category,
-      price: p.price,
-      member_price: p.member_price || null,
+      id: p.id as string,
+      name: p.name as string,
+      description: (p.description as string) || null,
+      category: p.category as string,
+      price: p.price as string,
+      member_price: (p.member_price as string) || null,
       image: imageUrl || "",
-      in_stock: p.in_stock ?? 1,
+      in_stock: (p.in_stock as number) ?? 1,
     });
   }
 

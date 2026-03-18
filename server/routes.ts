@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { ObjectStorageService } from "./objectStorage";
 import { uploadFileToSupabase, isSupabaseConfigured } from "./supabaseStorage";
-import { insertProductSchema } from "@shared/schema";
+import { insertProductSchema } from "../shared/schema";
 import { 
   adminAuthMiddleware, 
   adminAuthService, 

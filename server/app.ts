@@ -38,12 +38,24 @@ export async function createApp() {
     next();
   });
 
-  await seedProducts();
+  // Health check endpoint to verify function is running
+  app.get("/api/health", (_req, res) => {
+    res.json({ status: "ok", env: process.env.NODE_ENV, hasDb: !!process.env.DATABASE_URL });
+  });
+
+  // Seed products — non-fatal if it fails
+  try {
+    await seedProducts();
+  } catch (err) {
+    console.error("Seed products failed (non-fatal):", err);
+  }
+
   await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
+    console.error("Express error:", err);
     res.status(status).json({ message });
   });
 

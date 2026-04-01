@@ -84,9 +84,6 @@ export default function AdminLogin() {
             >
               {loading ? "Logging in..." : "Login"}
             </Button>
-            <p className="text-sm text-muted-foreground text-center">
-              Default password: admin123
-            </p>
           </form>
         </CardContent>
       </Card>

@@ -30,7 +30,6 @@ const CATEGORY_LABELS: Record<string, string> = {
   household: "Household",
   meat: "Meat",
   produce: "Produce",
-  "ready-meals": "Ready Meals",
   treats: "Treats",
 };
 

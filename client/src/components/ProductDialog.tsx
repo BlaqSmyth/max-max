@@ -38,7 +38,6 @@ const categories = [
   "household",
   "meat",
   "produce",
-  "ready-meals",
   "treats",
 ];
 

@@ -1,4 +1,4 @@
-import { LayoutGrid, Package, Milk, Croissant, Apple, Salad, Wine, Candy, Cookie, Snowflake, Sparkles, Home, ChevronDown, Beef, Cake, Droplet, PackageOpen, Coffee, ShoppingBag } from "lucide-react";
+import { LayoutGrid, Apple, Wine, Candy, Cookie, Snowflake, Home, ChevronDown, Beef, Cake, Droplet, GlassWater, Croissant } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import {
@@ -9,17 +9,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const mainCategories = [
-  { name: "My orders", icon: Package, id: "orders" },
-  { name: "Fresh milk", icon: Milk, id: "milk" },
-  { name: "Bread", icon: Croissant, id: "bread" },
-  { name: "Fresh fruit", icon: Apple, id: "fruit" },
-  { name: "Fresh vegetables", icon: Salad, id: "vegetables" },
-  { name: "Soft Drinks", icon: Wine, id: "beverages" },
-  { name: "Treats, Candy and Chocolate", icon: Candy, id: "treats" },
-  { name: "Crisps", icon: Cookie, id: "crisps" },
+  { name: "Fresh Produce", icon: Apple, id: "produce" },
+  { name: "Meat & Fish", icon: Beef, id: "meat" },
+  { name: "Bakery", icon: Croissant, id: "bakery" },
+  { name: "Dairy", icon: Droplet, id: "dairy" },
+  { name: "Soft Drinks", icon: GlassWater, id: "beverages" },
+  { name: "Treats & Chocolate", icon: Candy, id: "treats" },
+  { name: "Crisps & Snacks", icon: Cookie, id: "crisps" },
   { name: "Frozen Food", icon: Snowflake, id: "frozen" },
-  { name: "Health & Beauty", icon: Sparkles, id: "health-beauty" },
   { name: "Household", icon: Home, id: "household" },
+  { name: "Alcohol", icon: Wine, id: "alcohol" },
 ];
 
 const aislesDropdownCategories = [
@@ -28,14 +27,12 @@ const aislesDropdownCategories = [
   { name: "Meat & Fish", icon: Beef, id: "meat" },
   { name: "Bakery", icon: Cake, id: "bakery" },
   { name: "Dairy", icon: Droplet, id: "dairy" },
-  { name: "Ready Meals", icon: PackageOpen, id: "ready-meals" },
-  { name: "Soft Drinks", icon: Wine, id: "beverages" },
+  { name: "Soft Drinks", icon: GlassWater, id: "beverages" },
+  { name: "Treats & Chocolate", icon: Candy, id: "treats" },
+  { name: "Crisps & Snacks", icon: Cookie, id: "crisps" },
   { name: "Frozen Food", icon: Snowflake, id: "frozen" },
-  { name: "Snacks", icon: Cookie, id: "snacks" },
-  { name: "Breakfast", icon: Coffee, id: "breakfast" },
   { name: "Household", icon: Home, id: "household" },
-  { name: "Health & Beauty", icon: Sparkles, id: "health-beauty" },
-  { name: "Other", icon: ShoppingBag, id: "other" },
+  { name: "Alcohol", icon: Wine, id: "alcohol" },
 ];
 
 interface CategoryNavProps {
@@ -82,7 +79,7 @@ export default function CategoryNav({ activeCategory, onCategoryClick }: Categor
             {mainCategories.map((category) => {
               const Icon = category.icon;
               const isActive = activeCategory === category.id;
-              
+
               return (
                 <Button
                   key={category.id}

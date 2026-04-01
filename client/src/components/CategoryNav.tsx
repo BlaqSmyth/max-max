@@ -10,7 +10,7 @@ import {
 
 const mainCategories = [
   { name: "Fresh Produce", icon: Apple, id: "produce" },
-  { name: "Meat & Fish", icon: Beef, id: "meat" },
+  { name: "Alcohol", icon: Wine, id: "alcohol" },
   { name: "Bakery", icon: Croissant, id: "bakery" },
   { name: "Dairy", icon: Droplet, id: "dairy" },
   { name: "Soft Drinks", icon: GlassWater, id: "beverages" },
@@ -18,13 +18,13 @@ const mainCategories = [
   { name: "Crisps & Snacks", icon: Cookie, id: "crisps" },
   { name: "Frozen Food", icon: Snowflake, id: "frozen" },
   { name: "Household", icon: Home, id: "household" },
-  { name: "Alcohol", icon: Wine, id: "alcohol" },
+  { name: "Meat & Fish", icon: Beef, id: "meat" },
 ];
 
 const aislesDropdownCategories = [
   { name: "All Products", icon: LayoutGrid, id: "all" },
   { name: "Fresh Produce", icon: Apple, id: "produce" },
-  { name: "Meat & Fish", icon: Beef, id: "meat" },
+  { name: "Alcohol", icon: Wine, id: "alcohol" },
   { name: "Bakery", icon: Cake, id: "bakery" },
   { name: "Dairy", icon: Droplet, id: "dairy" },
   { name: "Soft Drinks", icon: GlassWater, id: "beverages" },
@@ -32,7 +32,7 @@ const aislesDropdownCategories = [
   { name: "Crisps & Snacks", icon: Cookie, id: "crisps" },
   { name: "Frozen Food", icon: Snowflake, id: "frozen" },
   { name: "Household", icon: Home, id: "household" },
-  { name: "Alcohol", icon: Wine, id: "alcohol" },
+  { name: "Meat & Fish", icon: Beef, id: "meat" },
 ];
 
 interface CategoryNavProps {

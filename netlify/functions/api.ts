@@ -268,6 +268,60 @@ export const handler = async (event: any, _context: any) => {
       return json({ authenticated: adminCheck(event) });
     }
 
+    // Admin product routes (alias for /api/products with auth required)
+    if (path === "/api/admin/products" && method === "GET") {
+      if (!adminCheck(event)) return json({ error: "Unauthorized" }, 401);
+      const { data, error } = await sb.from("products").select("*").order("name");
+      if (error) throw error;
+      return json((data || []).map(fromDbRow));
+    }
+
+    if (path === "/api/admin/products" && method === "POST") {
+      if (!adminCheck(event)) return json({ error: "Unauthorized" }, 401);
+      const body = getBody(event);
+      const id = randomUUID();
+      const { data, error } = await sb.from("products").insert(toDbRow({ id, ...body })).select().single();
+      if (error) throw error;
+      return json(fromDbRow(data), 201);
+    }
+
+    const adminProductIdMatch = path.match(/^\/api\/admin\/products\/([^\/]+)$/);
+    if (adminProductIdMatch && method === "PUT") {
+      if (!adminCheck(event)) return json({ error: "Unauthorized" }, 401);
+      const body = getBody(event);
+      const { data, error } = await sb.from("products").update(toDbRow(body)).eq("id", adminProductIdMatch[1]).select().single();
+      if (error) return json({ error: "Not found" }, 404);
+      return json(fromDbRow(data));
+    }
+
+    if (adminProductIdMatch && method === "DELETE") {
+      if (!adminCheck(event)) return json({ error: "Unauthorized" }, 401);
+      const { error } = await sb.from("products").delete().eq("id", adminProductIdMatch[1]);
+      if (error) return json({ error: "Not found" }, 404);
+      return { statusCode: 204, body: "" };
+    }
+
+    if (path === "/api/admin/products/bulk" && method === "POST") {
+      if (!adminCheck(event)) return json({ error: "Unauthorized" }, 401);
+      const buffer = event.isBase64Encoded ? Buffer.from(event.body, "base64") : Buffer.from(event.body || "", "utf-8");
+      const records = parseCsv(buffer.toString("utf-8"), { columns: true, skip_empty_lines: true });
+      const inserted: any[] = [];
+      for (const row of records as any[]) {
+        const { data } = await sb.from("products").insert(toDbRow({ id: randomUUID(), name: row.name, description: row.description || null, category: row.category, price: row.price, memberPrice: row.memberPrice || row.member_price || null, image: row.image || "", inStock: Number(row.inStock ?? row.in_stock ?? 1) })).select().single();
+        if (data) inserted.push(fromDbRow(data));
+      }
+      return json({ created: inserted.length, products: inserted });
+    }
+
+    if (path === "/api/admin/upload" && method === "POST") {
+      if (!adminCheck(event)) return json({ error: "Unauthorized" }, 401);
+      if (!isSupabaseConfigured()) return json({ error: "Storage not configured" }, 503);
+      const contentType = (event.headers?.["content-type"] || event.headers?.["Content-Type"] || "").split(";")[0];
+      const buffer = event.isBase64Encoded ? Buffer.from(event.body, "base64") : Buffer.from(event.body || "", "utf-8");
+      const imageUrl = await uploadFileToSupabase(buffer, contentType || "image/jpeg");
+      return json({ url: imageUrl });
+    }
+
     if (path === "/api/products" && method === "POST") {
       if (!adminCheck(event)) return json({ error: "Unauthorized" }, 401);
       const body = getBody(event);

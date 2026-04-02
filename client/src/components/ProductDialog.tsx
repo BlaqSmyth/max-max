@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { queryClient, apiRequest } from "@/lib/queryClient";
+import { queryClient } from "@/lib/queryClient";
 import { type Product } from "@shared/schema";
 import {
   Dialog,
@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Image as ImageIcon } from "lucide-react";
+import { Image as ImageIcon, AlertCircle } from "lucide-react";
 
 interface ProductDialogProps {
   product: Product | null;
@@ -56,20 +56,22 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>("");
   const [uploading, setUploading] = useState(false);
+  const [inlineError, setInlineError] = useState<string>("");
 
   useEffect(() => {
     if (!open) return;
+    setInlineError("");
     if (product) {
       setFormData({
         name: product.name,
         description: product.description || "",
         category: product.category,
-        price: product.price,
-        memberPrice: product.memberPrice || "",
+        price: String(product.price),
+        memberPrice: product.memberPrice ? String(product.memberPrice) : "",
         image: product.image,
-        inStock: product.inStock.toString(),
+        inStock: String(product.inStock),
       });
-      setImagePreview(product.image.includes("placeholder") ? "" : product.image);
+      setImagePreview(product.image && !product.image.includes("placeholder") ? product.image : "");
     } else {
       setFormData({
         name: "",
@@ -93,7 +95,6 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
         : "/api/admin/products";
       const method = product ? "PUT" : "POST";
 
-      // Prepare payload with proper validation
       const payload: any = {
         name: data.name.trim(),
         description: data.description.trim(),
@@ -103,10 +104,11 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
         inStock: parseInt(data.inStock, 10),
       };
 
-      // Only include memberPrice if it has a value
       if (data.memberPrice && data.memberPrice.trim()) {
         payload.memberPrice = data.memberPrice.trim();
       }
+
+      console.log("[ProductDialog] Saving product:", method, url, payload);
 
       const response = await fetch(url, {
         method,
@@ -117,8 +119,13 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
         body: JSON.stringify(payload),
       });
 
-      if (!response.ok) throw new Error("Failed to save product");
-      return response.json();
+      const responseText = await response.text();
+      console.log("[ProductDialog] Save response:", response.status, responseText);
+
+      if (!response.ok) {
+        throw new Error(`Save failed (${response.status}): ${responseText}`);
+      }
+      return JSON.parse(responseText);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/products"] });
@@ -129,12 +136,9 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
       });
       onOpenChange(false);
     },
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to save product",
-        variant: "destructive",
-      });
+    onError: (err: any) => {
+      console.error("[ProductDialog] Save error:", err);
+      setInlineError(err?.message || "Failed to save product. Please try again.");
     },
   });
 
@@ -150,48 +154,41 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
     }
   };
 
-  const validateFormData = (data: typeof formData): string | null => {
-    // Validate price format
-    const priceRegex = /^\d+(\.\d{1,2})?$/;
-    if (!priceRegex.test(data.price.trim())) {
-      return "Price must be a valid number with up to 2 decimal places (e.g., 2.99)";
+  const handleSave = async () => {
+    setInlineError("");
+
+    const name = formData.name.trim();
+    const price = formData.price.trim();
+
+    if (!name) {
+      setInlineError("Product name is required.");
+      return;
     }
 
-    // Validate member price format if provided
-    if (data.memberPrice && data.memberPrice.trim()) {
-      if (!priceRegex.test(data.memberPrice.trim())) {
-        return "Member price must be a valid number with up to 2 decimal places (e.g., 2.49)";
+    const priceRegex = /^\d+(\.\d{1,2})?$/;
+    if (!priceRegex.test(price)) {
+      setInlineError("Price must be a valid number e.g. 2.99");
+      return;
+    }
+
+    if (formData.memberPrice && formData.memberPrice.trim()) {
+      if (!priceRegex.test(formData.memberPrice.trim())) {
+        setInlineError("Member price must be a valid number e.g. 2.49");
+        return;
       }
     }
 
-    // Validate stock is a positive integer
-    const stock = parseInt(data.inStock, 10);
-    if (isNaN(stock) || stock < 0 || !Number.isInteger(stock)) {
-      return "Stock must be a positive whole number";
-    }
-
-    return null;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Validate form data before proceeding
-    const validationError = validateFormData(formData);
-    if (validationError) {
-      toast({
-        title: "Validation Error",
-        description: validationError,
-        variant: "destructive",
-      });
+    const stock = parseInt(formData.inStock, 10);
+    if (isNaN(stock) || stock < 0) {
+      setInlineError("Stock must be a whole number (0 or more).");
       return;
     }
-    
-    // If user selected a new image file, upload it first
+
     if (imageFile) {
       setUploading(true);
       try {
         const token = localStorage.getItem("admin_token");
+        console.log("[ProductDialog] Uploading image:", imageFile.name, imageFile.type, imageFile.size, "bytes");
 
         const response = await fetch("/api/admin/upload", {
           method: "POST",
@@ -202,37 +199,37 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
           body: imageFile,
         });
 
+        const responseText = await response.text();
+        console.log("[ProductDialog] Upload response:", response.status, responseText);
+
         if (!response.ok) {
-          throw new Error("Upload failed");
+          throw new Error(`Upload failed (${response.status}): ${responseText}`);
         }
 
-        const { url } = await response.json();
-        // Update formData with the uploaded image URL
-        const updatedFormData = { ...formData, image: url };
+        const parsed = JSON.parse(responseText);
+        if (!parsed.url) {
+          throw new Error("Upload succeeded but no URL returned");
+        }
+
+        const updatedFormData = { ...formData, image: parsed.url };
         setFormData(updatedFormData);
         saveMutation.mutate(updatedFormData);
-      } catch (error) {
-        toast({
-          title: "Error",
-          description: "Failed to upload image",
-          variant: "destructive",
-        });
+      } catch (err: any) {
+        console.error("[ProductDialog] Upload error:", err);
+        setInlineError(err?.message || "Failed to upload image. Please try again.");
       } finally {
         setUploading(false);
       }
     } else {
-      // No new image selected, check if we have an existing image URL
       if (!formData.image) {
-        toast({
-          title: "Error",
-          description: "Please select an image",
-          variant: "destructive",
-        });
+        setInlineError("Please select a product image.");
         return;
       }
       saveMutation.mutate(formData);
     }
   };
+
+  const isBusy = uploading || saveMutation.isPending;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -242,9 +239,10 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
             {product ? "Edit Product" : "Add New Product"}
           </DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
+
+        <div className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="image">Product Image</Label>
+            <Label>Product Image</Label>
             <div className="flex flex-col gap-4">
               {imagePreview && (
                 <div className="relative w-full h-48 bg-white dark:bg-muted rounded-lg overflow-hidden p-4">
@@ -291,7 +289,6 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
                 setFormData({ ...formData, name: e.target.value })
               }
               placeholder="e.g. Coca Cola 2L Bottle"
-              required
               data-testid="input-product-name"
             />
           </div>
@@ -337,13 +334,11 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
                 id="price"
                 type="text"
                 inputMode="decimal"
-                pattern="^\d+(\.\d{1,2})?$"
                 value={formData.price}
                 onChange={(e) =>
                   setFormData({ ...formData, price: e.target.value })
                 }
                 placeholder="2.99"
-                required
                 data-testid="input-product-price"
               />
             </div>
@@ -353,7 +348,6 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
                 id="memberPrice"
                 type="text"
                 inputMode="decimal"
-                pattern="^\d+(\.\d{1,2})?$"
                 value={formData.memberPrice}
                 onChange={(e) =>
                   setFormData({ ...formData, memberPrice: e.target.value })
@@ -368,29 +362,36 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
                 id="inStock"
                 type="text"
                 inputMode="numeric"
-                pattern="^\d+$"
                 value={formData.inStock}
                 onChange={(e) =>
                   setFormData({ ...formData, inStock: e.target.value })
                 }
-                required
                 data-testid="input-product-stock"
               />
             </div>
           </div>
 
-          <div className="flex justify-end gap-2 pt-4">
+          {inlineError && (
+            <div className="flex items-start gap-2 rounded-md bg-destructive/10 border border-destructive/30 p-3 text-sm text-destructive">
+              <AlertCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />
+              <span>{inlineError}</span>
+            </div>
+          )}
+
+          <div className="flex justify-end gap-2 pt-2">
             <Button
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
+              disabled={isBusy}
               data-testid="button-cancel"
             >
               Cancel
             </Button>
             <Button
-              type="submit"
-              disabled={saveMutation.isPending || uploading}
+              type="button"
+              onClick={handleSave}
+              disabled={isBusy}
               data-testid="button-save-product"
             >
               {uploading
@@ -400,7 +401,7 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
                 : "Save Product"}
             </Button>
           </div>
-        </form>
+        </div>
       </DialogContent>
     </Dialog>
   );

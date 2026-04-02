@@ -151,8 +151,13 @@ export default function HomePage() {
       <CategoryNav
         activeCategory={selectedCategory}
         onCategoryClick={(category) => {
-          console.log(`Selected category: ${category}`);
           setSelectedCategory(category);
+          const section = document.getElementById("products-section");
+          if (section) {
+            const offset = 90;
+            const top = section.getBoundingClientRect().top + window.scrollY - offset;
+            window.scrollTo({ top, behavior: "smooth" });
+          }
         }}
       />
 

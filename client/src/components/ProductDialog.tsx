@@ -192,15 +192,14 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
       setUploading(true);
       try {
         const token = localStorage.getItem("admin_token");
-        const uploadFormData = new FormData();
-        uploadFormData.append("image", imageFile);
 
         const response = await fetch("/api/admin/upload", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
+            "Content-Type": imageFile.type || "image/jpeg",
           },
-          body: uploadFormData,
+          body: imageFile,
         });
 
         if (!response.ok) {

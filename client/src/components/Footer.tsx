@@ -54,7 +54,7 @@ export default function Footer() {
 
         <div className="mt-8 border-t pt-8 text-center text-sm text-muted-foreground">
           <p data-testid="text-footer-copyright">
-            © 2025 Max & Max. All rights reserved. | Privacy Policy | Terms of Service
+            © 2025 Max & Max Trading as Lifestyle Express. All rights reserved. | Privacy Policy | Terms of Service
           </p>
         </div>
       </div>

@@ -184,6 +184,11 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
       return;
     }
 
+    if (!imageFile && !formData.image && !product) {
+      setInlineError("Please select a product image.");
+      return;
+    }
+
     if (imageFile) {
       setUploading(true);
       try {
@@ -221,10 +226,6 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
         setUploading(false);
       }
     } else {
-      if (!formData.image) {
-        setInlineError("Please select a product image.");
-        return;
-      }
       saveMutation.mutate(formData);
     }
   };

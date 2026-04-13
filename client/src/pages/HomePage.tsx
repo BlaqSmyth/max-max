@@ -3,6 +3,7 @@ import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useCart } from "@/contexts/CartContext";
 import Header from "@/components/Header";
+import InfoTicker from "@/components/InfoTicker";
 import CategoryNav from "@/components/CategoryNav";
 import HeroSection from "@/components/HeroSection";
 import ProductCard from "@/components/ProductCard";
@@ -127,6 +128,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <InfoTicker />
       <Header
         cartItemCount={cartItemCount}
         onCartClick={() => setIsCartOpen(true)}

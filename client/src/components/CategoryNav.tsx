@@ -14,7 +14,7 @@ const mainCategories = [
   { name: "Bakery", icon: Croissant, id: "bakery" },
   { name: "Dairy & Chilled", icon: Droplet, id: "dairy" },
   { name: "Soft Drinks", icon: GlassWater, id: "beverages" },
-  { name: "Ambients & Sweets", icon: Candy, id: "treats" },
+  { name: "Ambients & sweets/chocolates", icon: Candy, id: "treats" },
   { name: "Crisps & Snacks", icon: Cookie, id: "crisps" },
   { name: "Biscuits", icon: Cookie, id: "biscuits" },
   { name: "Cereals", icon: Wheat, id: "cereals" },

@@ -1,4 +1,4 @@
-import { LayoutGrid, Apple, Wine, Candy, Cookie, Snowflake, Home, ChevronDown, Beef, Cake, Droplet, GlassWater, Croissant } from "lucide-react";
+import { LayoutGrid, Apple, Wine, Candy, Cookie, Snowflake, Home, ChevronDown, Beef, Cake, Droplet, GlassWater, Croissant, Wheat, Cigarette, Globe, Baby, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import {
@@ -12,13 +12,19 @@ const mainCategories = [
   { name: "Fresh Produce", icon: Apple, id: "produce" },
   { name: "Alcohol", icon: Wine, id: "alcohol" },
   { name: "Bakery", icon: Croissant, id: "bakery" },
-  { name: "Dairy", icon: Droplet, id: "dairy" },
+  { name: "Dairy & Chilled", icon: Droplet, id: "dairy" },
   { name: "Soft Drinks", icon: GlassWater, id: "beverages" },
-  { name: "Treats & Chocolate", icon: Candy, id: "treats" },
+  { name: "Ambients & Sweets", icon: Candy, id: "treats" },
   { name: "Crisps & Snacks", icon: Cookie, id: "crisps" },
-  { name: "Frozen Food", icon: Snowflake, id: "frozen" },
+  { name: "Biscuits", icon: Cookie, id: "biscuits" },
+  { name: "Cereals", icon: Wheat, id: "cereals" },
+  { name: "Frozen Foods", icon: Snowflake, id: "frozen" },
   { name: "Household", icon: Home, id: "household" },
   { name: "Meat & Fish", icon: Beef, id: "meat" },
+  { name: "World Foods", icon: Globe, id: "world-foods" },
+  { name: "Babies & Toiletries", icon: Baby, id: "babies" },
+  { name: "Charcoal", icon: Flame, id: "charcoal" },
+  { name: "Tobacco", icon: Cigarette, id: "tobacco" },
 ];
 
 const aislesDropdownCategories = [
@@ -26,13 +32,19 @@ const aislesDropdownCategories = [
   { name: "Fresh Produce", icon: Apple, id: "produce" },
   { name: "Alcohol", icon: Wine, id: "alcohol" },
   { name: "Bakery", icon: Cake, id: "bakery" },
-  { name: "Dairy", icon: Droplet, id: "dairy" },
+  { name: "Dairy & Chilled Food", icon: Droplet, id: "dairy" },
   { name: "Soft Drinks", icon: GlassWater, id: "beverages" },
-  { name: "Treats & Chocolate", icon: Candy, id: "treats" },
+  { name: "Ambients & Sweets/Chocolates", icon: Candy, id: "treats" },
   { name: "Crisps & Snacks", icon: Cookie, id: "crisps" },
-  { name: "Frozen Food", icon: Snowflake, id: "frozen" },
+  { name: "Biscuits", icon: Cookie, id: "biscuits" },
+  { name: "Cereals", icon: Wheat, id: "cereals" },
+  { name: "Frozen Foods", icon: Snowflake, id: "frozen" },
   { name: "Household", icon: Home, id: "household" },
   { name: "Meat & Fish", icon: Beef, id: "meat" },
+  { name: "Asia & African Grocery", icon: Globe, id: "world-foods" },
+  { name: "Babies & Toiletries", icon: Baby, id: "babies" },
+  { name: "Charcoal", icon: Flame, id: "charcoal" },
+  { name: "Cigarettes & Tobacco", icon: Cigarette, id: "tobacco" },
 ];
 
 interface CategoryNavProps {
@@ -59,7 +71,7 @@ export default function CategoryNav({ activeCategory, onCategoryClick }: Categor
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-56">
+              <DropdownMenuContent align="start" className="w-64">
                 {aislesDropdownCategories.map((category) => {
                   const Icon = category.icon;
                   return (

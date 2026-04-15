@@ -28,17 +28,23 @@ interface ProductDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-const categories = [
-  "alcohol",
-  "bakery",
-  "beverages",
-  "crisps",
-  "dairy",
-  "frozen",
-  "household",
-  "meat",
-  "produce",
-  "treats",
+const CATEGORY_OPTIONS: { id: string; label: string }[] = [
+  { id: "alcohol", label: "Alcohol" },
+  { id: "babies", label: "Babies & Toiletries" },
+  { id: "bakery", label: "Bakery" },
+  { id: "beverages", label: "Soft Drinks" },
+  { id: "biscuits", label: "Biscuits" },
+  { id: "cereals", label: "Cereals" },
+  { id: "charcoal", label: "Charcoal" },
+  { id: "crisps", label: "Crisps & Snacks" },
+  { id: "dairy", label: "Dairy & Chilled Food" },
+  { id: "frozen", label: "Frozen Foods" },
+  { id: "household", label: "Household" },
+  { id: "meat", label: "Meat & Fish" },
+  { id: "produce", label: "Fresh Produce" },
+  { id: "tobacco", label: "Cigarettes & Tobacco" },
+  { id: "treats", label: "Ambients & Sweets/Chocolates" },
+  { id: "world-foods", label: "Asia & African Grocery" },
 ];
 
 export function ProductDialog({ product, open, onOpenChange }: ProductDialogProps) {
@@ -319,9 +325,9 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {categories.map((category) => (
-                  <SelectItem key={category} value={category}>
-                    {category.charAt(0).toUpperCase() + category.slice(1)}
+                {CATEGORY_OPTIONS.map((category) => (
+                  <SelectItem key={category.id} value={category.id}>
+                    {category.label}
                   </SelectItem>
                 ))}
               </SelectContent>

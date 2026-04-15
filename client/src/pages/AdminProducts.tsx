@@ -22,15 +22,21 @@ import { useLocation } from "wouter";
 
 const CATEGORY_LABELS: Record<string, string> = {
   alcohol: "Alcohol",
+  babies: "Babies & Toiletries",
   bakery: "Bakery",
-  beverages: "Beverages",
-  crisps: "Crisps",
-  dairy: "Dairy",
-  frozen: "Frozen",
+  beverages: "Soft Drinks",
+  biscuits: "Biscuits",
+  cereals: "Cereals",
+  charcoal: "Charcoal",
+  crisps: "Crisps & Snacks",
+  dairy: "Dairy & Chilled Food",
+  frozen: "Frozen Foods",
   household: "Household",
-  meat: "Meat",
-  produce: "Produce",
-  treats: "Treats",
+  meat: "Meat & Fish",
+  produce: "Fresh Produce",
+  tobacco: "Cigarettes & Tobacco",
+  treats: "Ambients & Sweets/Chocolates",
+  "world-foods": "Asia & African Grocery",
 };
 
 export default function AdminProducts() {

@@ -1,4 +1,4 @@
-import { LayoutGrid, Apple, Wine, Candy, Cookie, Snowflake, Home, ChevronDown, Beef, Cake, Droplet, GlassWater, Croissant, Wheat, Cigarette, Globe, Baby, Flame } from "lucide-react";
+import { LayoutGrid, Apple, Wine, Candy, Cookie, Snowflake, Home, ChevronDown, Beef, Cake, Droplet, GlassWater, Croissant, Wheat, Cigarette, Globe, Baby, Flame, PawPrint } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import {
@@ -25,6 +25,7 @@ const mainCategories = [
   { name: "Babies & Toiletries", icon: Baby, id: "babies" },
   { name: "Charcoal", icon: Flame, id: "charcoal" },
   { name: "Tobacco", icon: Cigarette, id: "tobacco" },
+  { name: "Pet Foods", icon: PawPrint, id: "pet-foods" },
 ];
 
 const aislesDropdownCategories = [
@@ -45,6 +46,7 @@ const aislesDropdownCategories = [
   { name: "Babies & Toiletries", icon: Baby, id: "babies" },
   { name: "Charcoal", icon: Flame, id: "charcoal" },
   { name: "Cigarettes & Tobacco", icon: Cigarette, id: "tobacco" },
+  { name: "Pet Foods", icon: PawPrint, id: "pet-foods" },
 ];
 
 interface CategoryNavProps {

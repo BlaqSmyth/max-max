@@ -37,6 +37,7 @@ const CATEGORY_LABELS: Record<string, string> = {
   tobacco: "Cigarettes & Tobacco",
   treats: "Ambients & Sweets/Chocolates",
   "world-foods": "Asia & African Grocery",
+  "pet-foods": "Pet Foods",
 };
 
 export default function AdminProducts() {

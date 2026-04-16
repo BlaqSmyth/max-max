@@ -45,6 +45,7 @@ const CATEGORY_OPTIONS: { id: string; label: string }[] = [
   { id: "tobacco", label: "Cigarettes & Tobacco" },
   { id: "treats", label: "Ambients & Sweets/Chocolates" },
   { id: "world-foods", label: "Asia & African Grocery" },
+  { id: "pet-foods", label: "Pet Foods" },
 ];
 
 export function ProductDialog({ product, open, onOpenChange }: ProductDialogProps) {

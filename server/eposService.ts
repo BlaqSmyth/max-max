@@ -82,23 +82,26 @@ export interface EposSalePayload {
 // Map EPOS category names to our website category IDs
 const CATEGORY_MAP: Record<string, string> = {
   // Alcohol
+  "ALCOHOL": "alcohol",
   "WINES SPIRITS BEERS": "alcohol",
   "WINE": "alcohol",
   "WINES": "alcohol",
   "BEER": "alcohol",
   "BEERS": "alcohol",
   "SPIRITS": "alcohol",
-  "ALCOHOL": "alcohol",
   "LAGER": "alcohol",
   "ALE": "alcohol",
   "CIDER": "alcohol",
-  // Produce
+  // Produce / Fruit & Veg
   "PRODUCE": "produce",
   "FRESH PRODUCE": "produce",
   "FRUIT & VEG": "produce",
   "FRUIT AND VEG": "produce",
   "FRUIT": "produce",
+  "FRUITS": "produce",
   "VEGETABLES": "produce",
+  "FRUIT VEG": "produce",
+  "FRUIT & VEGETABLES": "produce",
   "VEG": "produce",
   "SALAD": "produce",
   // Bakery
@@ -106,6 +109,7 @@ const CATEGORY_MAP: Record<string, string> = {
   "BREAD": "bakery",
   "CAKES": "bakery",
   "PASTRIES": "bakery",
+  "SANDWICHES": "bakery",
   // Dairy & Chilled
   "DAIRY": "dairy",
   "CHILLED": "dairy",
@@ -114,12 +118,17 @@ const CATEGORY_MAP: Record<string, string> = {
   "EGGS": "dairy",
   "YOGURT": "dairy",
   "BUTTER": "dairy",
+  "GHEE": "dairy",
+  "TIN MILK": "dairy",
+  "MILK TOKEN": "dairy",
   // Beverages
   "BEVERAGES": "beverages",
+  "SOFTDRINKS": "beverages",
   "SOFT DRINKS": "beverages",
   "DRINKS": "beverages",
   "JUICE": "beverages",
   "WATER": "beverages",
+  "FLAVOURED WATER": "beverages",
   "ENERGY DRINKS": "beverages",
   "COFFEE": "beverages",
   "TEA": "beverages",
@@ -127,26 +136,47 @@ const CATEGORY_MAP: Record<string, string> = {
   "FROZEN": "frozen",
   "FROZEN FOODS": "frozen",
   "FROZEN FOOD": "frozen",
-  // Household
-  "HOUSEHOLD": "household",
-  "CLEANING": "household",
-  "LAUNDRY": "household",
-  "HOMECARE": "household",
+  "FROZEN FISH": "frozen",
+  "ICE CREAMS": "frozen",
   // Meat & Fish
   "MEAT": "meat",
   "FISH": "meat",
   "MEAT & FISH": "meat",
   "POULTRY": "meat",
   "SEAFOOD": "meat",
-  // Ambients & Sweets
+  "BUTCHER WEIGHT": "meat",
+  "MEAT SCALE": "meat",
+  "TIN FISH": "meat",
+  // Household & Cleaning
+  "HOUSEHOLD": "household",
+  "CLEANING": "household",
+  "LAUNDRY": "household",
+  "HOMECARE": "household",
+  "ACCESSORIES": "household",
+  "STATIONERY": "household",
+  "TOYS": "household",
+  "MISC": "household",
+  "CALLING CARD": "household",
+  "OYSTER CARD": "household",
+  "PAY POINT": "household",
+  "LOTTERY": "household",
+  "HOT PRODUCTS": "household",
+  // Ambients / Sweets / Chocolates
+  "CHOCOLATES": "treats",
   "CONFECTIONERY": "treats",
+  "CONFECTIONERRY": "treats",
   "CHOCOLATE": "treats",
   "SWEETS": "treats",
   "CANDY": "treats",
   "AMBIENTS": "treats",
-  // Crisps
-  "CRISPS": "crisps",
+  "SWEET AND DESSERT": "treats",
+  "JAM": "treats",
+  "HONEY": "treats",
+  "DATES": "treats",
+  "NUTS": "treats",
+  // Crisps & Snacks
   "SNACKS": "crisps",
+  "CRISPS": "crisps",
   "CRISPS & SNACKS": "crisps",
   // Biscuits
   "BISCUITS": "biscuits",
@@ -162,20 +192,43 @@ const CATEGORY_MAP: Record<string, string> = {
   "CIGARETTES & TOBACCO": "tobacco",
   "CIGARS": "tobacco",
   "VAPING": "tobacco",
-  // World Foods
+  "SCRATCH CARD": "tobacco",
+  // World Foods (international/ethnic groceries)
   "WORLD FOODS": "world-foods",
+  "ARABIC GROCERY": "world-foods",
+  "GROCERY": "world-foods",
   "ASIAN": "world-foods",
   "AFRICAN": "world-foods",
   "INTERNATIONAL": "world-foods",
   "ETHNIC": "world-foods",
-  // Babies & Toiletries
+  "SPICES": "world-foods",
+  "SAUCES": "world-foods",
+  "RICE": "world-foods",
+  "FLOUR": "world-foods",
+  "DRY FOODS": "world-foods",
+  "LENTILS": "world-foods",
+  "CAN FOODS": "world-foods",
+  "NOODLES": "world-foods",
+  "PASTA": "world-foods",
+  "OIL": "world-foods",
+  "OLIVE": "world-foods",
+  "PICKLE": "world-foods",
+  "SOUP": "world-foods",
+  "VINEGAR": "world-foods",
+  // Babies, Health & Beauty, Toiletries
   "BABIES": "babies",
   "BABY": "babies",
+  "BABY CARE": "babies",
+  "BABY FOOD": "babies",
   "TOILETRIES": "babies",
   "PERSONAL CARE": "babies",
   "HEALTH & BEAUTY": "babies",
-  // Charcoal
+  "PHARMACY": "babies",
+  "MEDICIN/SYRUP": "babies",
+  "HEALTH PRODUCTS": "babies",
+  // Charcoal / BBQ
   "CHARCOAL": "charcoal",
+  "WOOD COAL": "charcoal",
   "BBQ": "charcoal",
   // Pet Foods
   "PET": "pet-foods",
@@ -186,9 +239,9 @@ const CATEGORY_MAP: Record<string, string> = {
 
 export function mapEposCategory(product: EposProduct): string {
   const candidates = [
-    product.subcategoryname,
-    product.Category_Name2,
     product.Category_Name1,
+    product.Category_Name2,
+    product.subcategoryname,
     product.Category_Name3,
   ];
 
@@ -197,7 +250,7 @@ export function mapEposCategory(product: EposProduct): string {
     const upper = cat.trim().toUpperCase();
     if (CATEGORY_MAP[upper]) return CATEGORY_MAP[upper];
   }
-  return "household";
+  return "world-foods";
 }
 
 export async function fetchEposProducts(modifiedDate?: string): Promise<EposProduct[]> {

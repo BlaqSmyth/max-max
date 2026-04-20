@@ -239,7 +239,7 @@ export const handler = async (event: any, _context: any) => {
 
     if (path === "/api/products" && method === "GET") {
       await ensureSeeded();
-      const { data, error } = await sb.from("products").select("*");
+      const { data, error } = await sb.from("products").select("*").range(0, 49999);
       if (error) throw error;
       return json((data || []).map(fromDbRow));
     }
@@ -271,7 +271,7 @@ export const handler = async (event: any, _context: any) => {
     // Admin product routes (alias for /api/products with auth required)
     if (path === "/api/admin/products" && method === "GET") {
       if (!adminCheck(event)) return json({ error: "Unauthorized" }, 401);
-      const { data, error } = await sb.from("products").select("*").order("name");
+      const { data, error } = await sb.from("products").select("*").order("name").range(0, 49999);
       if (error) throw error;
       return json((data || []).map(fromDbRow));
     }

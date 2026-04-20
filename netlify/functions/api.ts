@@ -168,6 +168,23 @@ function fromDbRow(row: any) {
   return out;
 }
 
+async function fetchAllProducts(sb: ReturnType<typeof getSupabase>, orderBy?: string) {
+  const PAGE = 1000;
+  let all: any[] = [];
+  let from = 0;
+  while (true) {
+    let query = sb.from("products").select("*").range(from, from + PAGE - 1);
+    if (orderBy) query = query.order(orderBy);
+    const { data, error } = await query;
+    if (error) throw error;
+    if (!data || data.length === 0) break;
+    all = all.concat(data);
+    if (data.length < PAGE) break;
+    from += PAGE;
+  }
+  return all;
+}
+
 let seeded = false;
 
 async function ensureSeeded() {
@@ -239,9 +256,8 @@ export const handler = async (event: any, _context: any) => {
 
     if (path === "/api/products" && method === "GET") {
       await ensureSeeded();
-      const { data, error } = await sb.from("products").select("*").range(0, 49999);
-      if (error) throw error;
-      return json((data || []).map(fromDbRow));
+      const data = await fetchAllProducts(sb);
+      return json(data.map(fromDbRow));
     }
 
     const productIdMatch = path.match(/^\/api\/products\/([^\/]+)$/);
@@ -271,9 +287,8 @@ export const handler = async (event: any, _context: any) => {
     // Admin product routes (alias for /api/products with auth required)
     if (path === "/api/admin/products" && method === "GET") {
       if (!adminCheck(event)) return json({ error: "Unauthorized" }, 401);
-      const { data, error } = await sb.from("products").select("*").order("name").range(0, 49999);
-      if (error) throw error;
-      return json((data || []).map(fromDbRow));
+      const data = await fetchAllProducts(sb, "name");
+      return json(data.map(fromDbRow));
     }
 
     if (path === "/api/admin/products" && method === "POST") {

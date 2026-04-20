@@ -1,7 +1,7 @@
 import { type User, type InsertUser, type Product, type InsertProduct, users, products } from "../shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
@@ -10,10 +10,14 @@ export interface IStorage {
   
   getAllProducts(): Promise<Product[]>;
   getProduct(id: string): Promise<Product | undefined>;
+  getProductByEposCode(eposCode: string): Promise<Product | undefined>;
   createProduct(product: InsertProduct): Promise<Product>;
   createProducts(products: InsertProduct[]): Promise<Product[]>;
   updateProduct(id: string, product: Partial<InsertProduct>): Promise<Product | undefined>;
   deleteProduct(id: string): Promise<boolean>;
+  upsertEposProduct(eposCode: string, data: InsertProduct): Promise<Product>;
+  updateStockByEposCode(eposCode: string, inStock: number): Promise<void>;
+  setAllProductsOutOfStock(): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -81,6 +85,49 @@ export class DatabaseStorage implements IStorage {
   async deleteProduct(id: string): Promise<boolean> {
     const result = await db.delete(products).where(eq(products.id, id)).returning();
     return result.length > 0;
+  }
+
+  async getProductByEposCode(eposCode: string): Promise<Product | undefined> {
+    const [product] = await db.select().from(products).where(eq(products.eposCode, eposCode));
+    return product;
+  }
+
+  async upsertEposProduct(eposCode: string, data: InsertProduct): Promise<Product> {
+    const existing = await this.getProductByEposCode(eposCode);
+    if (existing) {
+      const [updated] = await db.update(products)
+        .set({
+          name: data.name,
+          description: data.description,
+          category: data.category,
+          price: data.price.toString(),
+          memberPrice: data.memberPrice?.toString() ?? null,
+          inStock: data.inStock,
+          eposCode,
+        })
+        .where(eq(products.eposCode, eposCode))
+        .returning();
+      return updated;
+    } else {
+      const id = randomUUID();
+      const [created] = await db.insert(products).values({
+        id,
+        ...data,
+        image: data.image || "",
+        eposCode,
+      }).returning();
+      return created;
+    }
+  }
+
+  async updateStockByEposCode(eposCode: string, inStock: number): Promise<void> {
+    await db.update(products)
+      .set({ inStock })
+      .where(eq(products.eposCode, eposCode));
+  }
+
+  async setAllProductsOutOfStock(): Promise<void> {
+    await db.update(products).set({ inStock: 0 });
   }
 }
 

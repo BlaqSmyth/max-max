@@ -18,6 +18,7 @@ export const products = pgTable("products", {
   memberPrice: decimal("member_price", { precision: 10, scale: 2 }),
   image: text("image").notNull(),
   inStock: integer("in_stock").notNull().default(1),
+  eposCode: text("epos_code"),
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({

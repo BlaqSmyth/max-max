@@ -14,6 +14,14 @@ import express from "express";
 import path from "path";
 import AdmZip from "adm-zip";
 import { parse } from "csv-parse/sync";
+import { 
+  fetchEposProducts, 
+  fetchEposStock, 
+  postEposSale, 
+  testEposConnection,
+  mapEposCategory,
+  type EposSalePayload
+} from "./eposService";
 
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -364,6 +372,148 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching products:", error);
       res.status(500).json({ error: "Failed to fetch products" });
+    }
+  });
+
+  // EPOS: Test connection status
+  app.get("/api/admin/epos/status", adminAuthMiddleware, async (req, res) => {
+    try {
+      const connected = await testEposConnection();
+      res.json({ connected, host: process.env.EPOS_HOST });
+    } catch (error) {
+      res.json({ connected: false, error: String(error) });
+    }
+  });
+
+  // EPOS: Sync all products from EPOS into website database
+  app.post("/api/admin/epos/sync-products", adminAuthMiddleware, async (req, res) => {
+    try {
+      const modifiedDate = (req.query.modifiedDate as string) || "2000-01-01";
+      const eposProducts = await fetchEposProducts(modifiedDate);
+
+      if (eposProducts.length === 0) {
+        return res.json({ synced: 0, skipped: 0, message: "No products returned from EPOS" });
+      }
+
+      let synced = 0;
+      let skipped = 0;
+
+      for (const ep of eposProducts) {
+        if (ep.Is_Deleted) { skipped++; continue; }
+        if (!ep.Central_Product_Code) { skipped++; continue; }
+
+        const category = mapEposCategory(ep);
+        const price = parseFloat(ep.SellingPrice) || 0;
+        if (price <= 0) { skipped++; continue; }
+
+        await storage.upsertEposProduct(ep.Central_Product_Code, {
+          name: ep.Product_Name || ep.Product_Description || "Unknown Product",
+          description: ep.Product_Description || "",
+          category,
+          price: price.toFixed(2),
+          memberPrice: null,
+          image: "",
+          inStock: ep.Physical_Qty > 0 ? 1 : 0,
+        });
+        synced++;
+      }
+
+      res.json({ synced, skipped, total: eposProducts.length });
+    } catch (error) {
+      console.error("EPOS product sync error:", error);
+      res.status(500).json({ error: String(error) });
+    }
+  });
+
+  // EPOS: Sync stock levels from EPOS
+  app.post("/api/admin/epos/sync-stock", adminAuthMiddleware, async (req, res) => {
+    try {
+      const stockItems = await fetchEposStock();
+
+      // Mark all EPOS-linked products out of stock first
+      await storage.setAllProductsOutOfStock();
+
+      // Then set in-stock for those with stock > 0
+      let updated = 0;
+      for (const item of stockItems) {
+        const count = parseInt(item.StockCount, 10);
+        if (item.ProductCode && count > 0) {
+          await storage.updateStockByEposCode(item.ProductCode, 1);
+          updated++;
+        }
+      }
+
+      res.json({ updated, total: stockItems.length });
+    } catch (error) {
+      console.error("EPOS stock sync error:", error);
+      res.status(500).json({ error: String(error) });
+    }
+  });
+
+  // Public: Place order (posts to EPOS Sales API)
+  app.post("/api/orders", async (req, res) => {
+    try {
+      const { customer, address, items, total, deliveryCost, paymentMethod } = req.body;
+
+      const nameParts = (customer.name || "Customer").split(" ");
+      const firstName = nameParts[0] || "Customer";
+      const lastName = nameParts.slice(1).join(" ") || "";
+      const orderId = Date.now();
+      const webRef = `WEB-${orderId}`;
+      const totalItems = items.reduce((sum: number, i: any) => sum + i.quantity, 0);
+
+      const payload: EposSalePayload = {
+        Sales: {
+          Order_Id: orderId,
+          Order_date: new Date().toISOString().replace("T", " ").slice(0, 19),
+          Customer_name: firstName,
+          Customer_Lastname: lastName,
+          HouseNo: address.houseNo || "",
+          Road: address.road || "",
+          City: address.city || "",
+          County: address.county || "",
+          Postcode: address.postcode || "",
+          CountryName: "UK",
+          Delivery_HouseNo: address.houseNo || "",
+          Delivery_Road: address.road || "",
+          Delivery_City: address.city || "",
+          Delivery_County: address.county || "",
+          Delivery_Postcode: address.postcode || "",
+          Delivery_Country: "UK",
+          Phone: customer.phone || "",
+          Email: customer.email || "",
+          GrandTotal: total.toString(),
+          Delivery_Cost: deliveryCost?.toString() || "0",
+          Vat_Cost: "0",
+          NumberOfItems: totalItems.toString(),
+          WebOrder_Ref: webRef,
+        },
+        Sales_Details: items.map((item: any) => ({
+          ItemID: item.eposCode || item.id,
+          Quantity: item.quantity,
+          Product_Name: item.name,
+          UnitPrice: item.price.toString(),
+          TotalPrice: (item.price * item.quantity).toFixed(2),
+          VatPercentage: "20",
+          DiscountValue: "",
+        })),
+        Payments: {
+          Paidby: paymentMethod || "Card",
+          Amount: total.toString(),
+        },
+      };
+
+      let eposResult = null;
+      try {
+        eposResult = await postEposSale(payload);
+      } catch (eposErr) {
+        console.warn("EPOS sale post failed (order still accepted):", eposErr);
+      }
+
+      res.json({ success: true, orderId, webRef, eposResult });
+    } catch (error) {
+      console.error("Order error:", error);
+      res.status(500).json({ error: "Failed to process order" });
     }
   });
 

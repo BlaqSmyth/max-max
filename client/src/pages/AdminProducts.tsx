@@ -13,7 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus, Pencil, Trash2, Search, ImageOff } from "lucide-react";
+import { Plus, Pencil, Trash2, Search, ImageOff, RefreshCw, Wifi, WifiOff } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { ProductDialog } from "@/components/ProductDialog";
@@ -48,6 +48,58 @@ export default function AdminProducts() {
   const [isBulkUploadOpen, setIsBulkUploadOpen] = useState(false);
   const { toast } = useToast();
   const [, setLocation] = useLocation();
+  const [eposStatus, setEposStatus] = useState<"idle" | "checking" | "connected" | "disconnected">("idle");
+  const [eposSyncMsg, setEposSyncMsg] = useState<string>("");
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  const getToken = () => localStorage.getItem("admin_token");
+
+  const checkEposConnection = async () => {
+    setEposStatus("checking");
+    try {
+      const res = await fetch("/api/admin/epos/status", { headers: { Authorization: `Bearer ${getToken()}` } });
+      const data = await res.json();
+      setEposStatus(data.connected ? "connected" : "disconnected");
+    } catch {
+      setEposStatus("disconnected");
+    }
+  };
+
+  const syncEposProducts = async () => {
+    setIsSyncing(true);
+    setEposSyncMsg("Syncing products from EPOS...");
+    try {
+      const res = await fetch("/api/admin/epos/sync-products", { method: "POST", headers: { Authorization: `Bearer ${getToken()}` } });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/products"] });
+      setEposSyncMsg(`Done — ${data.synced} products synced, ${data.skipped} skipped.`);
+      toast({ title: "Products Synced", description: `${data.synced} products imported from EPOS.` });
+    } catch (err: any) {
+      setEposSyncMsg(`Error: ${err.message}`);
+      toast({ title: "Sync Failed", description: err.message, variant: "destructive" });
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
+  const syncEposStock = async () => {
+    setIsSyncing(true);
+    setEposSyncMsg("Syncing stock levels from EPOS...");
+    try {
+      const res = await fetch("/api/admin/epos/sync-stock", { method: "POST", headers: { Authorization: `Bearer ${getToken()}` } });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/products"] });
+      setEposSyncMsg(`Done — ${data.updated} stock levels updated.`);
+      toast({ title: "Stock Synced", description: `${data.updated} products updated from EPOS.` });
+    } catch (err: any) {
+      setEposSyncMsg(`Error: ${err.message}`);
+      toast({ title: "Stock Sync Failed", description: err.message, variant: "destructive" });
+    } finally {
+      setIsSyncing(false);
+    }
+  };
 
   const { data: products = [], isLoading } = useQuery<Product[]>({
     queryKey: ["/api/admin/products"],
@@ -144,9 +196,9 @@ export default function AdminProducts() {
       <div className="flex items-center justify-between flex-wrap gap-2">
         <h2 className="text-3xl font-bold" data-testid="text-page-title">Products</h2>
         <div className="flex gap-2">
-          <Button 
+          <Button
             variant="outline"
-            onClick={() => setIsBulkUploadOpen(true)} 
+            onClick={() => setIsBulkUploadOpen(true)}
             data-testid="button-bulk-upload"
           >
             <Plus className="w-4 h-4 mr-2" />
@@ -158,6 +210,45 @@ export default function AdminProducts() {
           </Button>
         </div>
       </div>
+
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-base">
+            <RefreshCw className="h-4 w-4" />
+            Epos Direct Sync
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-wrap items-center gap-3">
+            <Button variant="outline" size="sm" onClick={checkEposConnection} disabled={eposStatus === "checking"} data-testid="button-epos-check">
+              {eposStatus === "checking" ? (
+                <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+              ) : eposStatus === "connected" ? (
+                <Wifi className="h-4 w-4 mr-2 text-green-600" />
+              ) : eposStatus === "disconnected" ? (
+                <WifiOff className="h-4 w-4 mr-2 text-destructive" />
+              ) : (
+                <Wifi className="h-4 w-4 mr-2" />
+              )}
+              {eposStatus === "checking" ? "Checking..." : eposStatus === "connected" ? "Connected" : eposStatus === "disconnected" ? "Disconnected" : "Check Connection"}
+            </Button>
+
+            <Button size="sm" onClick={syncEposProducts} disabled={isSyncing} data-testid="button-epos-sync-products">
+              <RefreshCw className={`h-4 w-4 mr-2 ${isSyncing ? "animate-spin" : ""}`} />
+              Sync Products from EPOS
+            </Button>
+
+            <Button variant="outline" size="sm" onClick={syncEposStock} disabled={isSyncing} data-testid="button-epos-sync-stock">
+              <RefreshCw className={`h-4 w-4 mr-2 ${isSyncing ? "animate-spin" : ""}`} />
+              Sync Stock Levels
+            </Button>
+
+            {eposSyncMsg && (
+              <span className="text-sm text-muted-foreground">{eposSyncMsg}</span>
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="flex flex-wrap gap-2" data-testid="category-filter-bar">
         <Button

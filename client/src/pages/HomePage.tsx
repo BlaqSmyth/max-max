@@ -79,6 +79,15 @@ export default function HomePage() {
     setLocation("/checkout");
   };
 
+  // Derive available categories from products, sorted by count descending
+  const availableCategories = useMemo(() => {
+    const counts: Record<string, number> = {};
+    products.forEach(p => { counts[p.category] = (counts[p.category] || 0) + 1; });
+    return Object.entries(counts)
+      .sort((a, b) => b[1] - a[1])
+      .map(([id]) => id);
+  }, [products]);
+
   // Memoized filtered and sorted products
   const filteredProducts = useMemo(() => {
     let filtered = selectedCategory === "all" 
@@ -152,6 +161,7 @@ export default function HomePage() {
       
       <CategoryNav
         activeCategory={selectedCategory}
+        availableCategories={availableCategories}
         onCategoryClick={(category) => {
           setSelectedCategory(category);
           const section = document.getElementById("products-section");

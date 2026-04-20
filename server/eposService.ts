@@ -79,178 +79,59 @@ export interface EposSalePayload {
   };
 }
 
-// Map EPOS category names to our website category IDs
-const CATEGORY_MAP: Record<string, string> = {
-  // Alcohol
-  "ALCOHOL": "alcohol",
-  "WINES SPIRITS BEERS": "alcohol",
-  "WINE": "alcohol",
-  "WINES": "alcohol",
-  "BEER": "alcohol",
-  "BEERS": "alcohol",
-  "SPIRITS": "alcohol",
-  "LAGER": "alcohol",
-  "ALE": "alcohol",
-  "CIDER": "alcohol",
-  // Produce / Fruit & Veg
-  "PRODUCE": "produce",
-  "FRESH PRODUCE": "produce",
-  "FRUIT & VEG": "produce",
-  "FRUIT AND VEG": "produce",
-  "FRUIT": "produce",
-  "FRUITS": "produce",
-  "VEGETABLES": "produce",
-  "FRUIT VEG": "produce",
-  "FRUIT & VEGETABLES": "produce",
-  "VEG": "produce",
-  "SALAD": "produce",
-  // Bakery
-  "BAKERY": "bakery",
-  "BREAD": "bakery",
-  "CAKES": "bakery",
-  "PASTRIES": "bakery",
-  "SANDWICHES": "bakery",
-  // Dairy & Chilled
-  "DAIRY": "dairy",
-  "CHILLED": "dairy",
-  "MILK": "dairy",
-  "CHEESE": "dairy",
-  "EGGS": "dairy",
-  "YOGURT": "dairy",
-  "BUTTER": "dairy",
-  "GHEE": "dairy",
-  "TIN MILK": "dairy",
-  "MILK TOKEN": "dairy",
-  // Beverages
-  "BEVERAGES": "beverages",
-  "SOFTDRINKS": "beverages",
-  "SOFT DRINKS": "beverages",
-  "DRINKS": "beverages",
-  "JUICE": "beverages",
-  "WATER": "beverages",
-  "FLAVOURED WATER": "beverages",
-  "ENERGY DRINKS": "beverages",
-  "COFFEE": "beverages",
-  "TEA": "beverages",
-  // Frozen
-  "FROZEN": "frozen",
-  "FROZEN FOODS": "frozen",
-  "FROZEN FOOD": "frozen",
-  "FROZEN FISH": "frozen",
-  "ICE CREAMS": "frozen",
-  // Meat & Fish
-  "MEAT": "meat",
-  "FISH": "meat",
-  "MEAT & FISH": "meat",
-  "POULTRY": "meat",
-  "SEAFOOD": "meat",
-  "BUTCHER WEIGHT": "meat",
-  "MEAT SCALE": "meat",
-  "TIN FISH": "meat",
-  // Household & Cleaning
-  "HOUSEHOLD": "household",
-  "CLEANING": "household",
-  "LAUNDRY": "household",
-  "HOMECARE": "household",
-  "ACCESSORIES": "household",
-  "STATIONERY": "household",
-  "TOYS": "household",
-  "MISC": "household",
-  "CALLING CARD": "household",
-  "OYSTER CARD": "household",
-  "PAY POINT": "household",
-  "LOTTERY": "household",
-  "HOT PRODUCTS": "household",
-  // Ambients / Sweets / Chocolates
-  "CHOCOLATES": "treats",
-  "CONFECTIONERY": "treats",
-  "CONFECTIONERRY": "treats",
-  "CHOCOLATE": "treats",
-  "SWEETS": "treats",
-  "CANDY": "treats",
-  "AMBIENTS": "treats",
-  "SWEET AND DESSERT": "treats",
-  "JAM": "treats",
-  "HONEY": "treats",
-  "DATES": "treats",
-  "NUTS": "treats",
-  // Crisps & Snacks
-  "SNACKS": "crisps",
-  "CRISPS": "crisps",
-  "CRISPS & SNACKS": "crisps",
-  // Biscuits
-  "BISCUITS": "biscuits",
-  "COOKIES": "biscuits",
-  // Cereals
-  "CEREALS": "cereals",
-  "CEREAL": "cereals",
-  "BREAKFAST": "cereals",
-  "BREAKFAST CEREALS": "cereals",
-  // Tobacco
-  "TOBACCO": "tobacco",
-  "CIGARETTES": "tobacco",
-  "CIGARETTES & TOBACCO": "tobacco",
-  "CIGARS": "tobacco",
-  "VAPING": "tobacco",
-  "SCRATCH CARD": "tobacco",
-  // World Foods (international/ethnic groceries)
-  "WORLD FOODS": "world-foods",
-  "ARABIC GROCERY": "world-foods",
-  "GROCERY": "world-foods",
-  "ASIAN": "world-foods",
-  "AFRICAN": "world-foods",
-  "INTERNATIONAL": "world-foods",
-  "ETHNIC": "world-foods",
-  "SPICES": "world-foods",
-  "SAUCES": "world-foods",
-  "RICE": "world-foods",
-  "FLOUR": "world-foods",
-  "DRY FOODS": "world-foods",
-  "LENTILS": "world-foods",
-  "CAN FOODS": "world-foods",
-  "NOODLES": "world-foods",
-  "PASTA": "world-foods",
-  "OIL": "world-foods",
-  "OLIVE": "world-foods",
-  "PICKLE": "world-foods",
-  "SOUP": "world-foods",
-  "VINEGAR": "world-foods",
-  // Babies, Health & Beauty, Toiletries
-  "BABIES": "babies",
-  "BABY": "babies",
-  "BABY CARE": "babies",
-  "BABY FOOD": "babies",
-  "TOILETRIES": "babies",
-  "PERSONAL CARE": "babies",
-  "HEALTH & BEAUTY": "babies",
-  "PHARMACY": "babies",
-  "MEDICIN/SYRUP": "babies",
-  "HEALTH PRODUCTS": "babies",
-  // Charcoal / BBQ
-  "CHARCOAL": "charcoal",
-  "WOOD COAL": "charcoal",
-  "BBQ": "charcoal",
-  // Pet Foods
-  "PET": "pet-foods",
-  "PET FOOD": "pet-foods",
-  "PET FOODS": "pet-foods",
-  "PETS": "pet-foods",
+// Service/till items that are not real products — mapped to "misc" and hidden from the website
+const MISC_CATEGORIES = new Set([
+  "MILK TOKEN", "MEAT SCALE", "BUTCHER WEIGHT", "OYSTER CARD",
+  "PAY POINT", "CALLING CARD", "LOTTERY", "HOT PRODUCTS", "Scratch Card",
+  "SCRATCH CARD", "Misc",
+]);
+
+// Explicit overrides where the EPOS name needs normalising to a canonical slug
+const SLUG_OVERRIDES: Record<string, string> = {
+  "FRUIT & VEGETABLES": "fruit-veg",
+  "FRUIT VEG":          "fruit-veg",
+  "FRUITS":             "fruit-veg",
+  "SOFTDRINKS":         "soft-drinks",
+  "FROZEN FOODS":       "frozen-foods",
+  "FROZEN FISH":        "frozen-fish",
+  "ARABIC GROCERY":     "arabic-grocery",
+  "DRY FOODS":          "dry-foods",
+  "CAN FOODS":          "canned-foods",
+  "SWEET AND DESSERT":  "sweets-desserts",
+  "HEALTH & BEAUTY":    "health-beauty",
+  "CONFECTIONERRY":     "confectionery",
+  "FLAVOURED WATER":    "flavoured-water",
+  "MEDICIN/SYRUP":      "medicine",
+  "TIN FISH":           "tin-fish",
+  "TIN MILK":           "dairy",
+  "WOOD COAL":          "charcoal",
+  "BABY CARE":          "baby-care",
+  "BABY FOOD":          "baby-food",
+  "ICE CREAMS":         "ice-cream",
+  "SANDWICHES":         "bakery",
+  "NUTS":               "nuts-dried-fruits",
+  "DATES":              "nuts-dried-fruits",
+  "Health Products":    "health-products",
 };
 
-export function mapEposCategory(product: EposProduct): string {
-  const candidates = [
-    product.Category_Name1,
-    product.Category_Name2,
-    product.subcategoryname,
-    product.Category_Name3,
-  ];
+function toEposSlug(cat: string): string {
+  const trimmed = cat.trim();
+  if (MISC_CATEGORIES.has(trimmed)) return "misc";
+  if (SLUG_OVERRIDES[trimmed]) return SLUG_OVERRIDES[trimmed];
+  return trimmed
+    .toLowerCase()
+    .replace(/[&/]+/g, "-")
+    .replace(/[^a-z0-9-]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+}
 
-  for (const cat of candidates) {
-    if (!cat) continue;
-    const upper = cat.trim().toUpperCase();
-    if (CATEGORY_MAP[upper]) return CATEGORY_MAP[upper];
-  }
-  return "world-foods";
+export function mapEposCategory(product: EposProduct): string {
+  const primary = product.Category_Name1?.trim();
+  if (primary) return toEposSlug(primary);
+  const fallback = product.Category_Name2?.trim() || product.subcategoryname?.trim();
+  if (fallback) return toEposSlug(fallback);
+  return "misc";
 }
 
 export async function fetchEposProducts(modifiedDate?: string): Promise<EposProduct[]> {

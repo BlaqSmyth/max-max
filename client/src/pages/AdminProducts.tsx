@@ -13,7 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus, Pencil, Trash2, Search, ImageOff, RefreshCw, Wifi, WifiOff } from "lucide-react";
+import { Plus, Pencil, Trash2, Search, ImageOff, RefreshCw, CheckCircle, AlertCircle, Clock } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { ProductDialog } from "@/components/ProductDialog";
@@ -21,24 +21,94 @@ import { BulkUploadDialog } from "@/components/BulkUploadDialog";
 import { useLocation } from "wouter";
 
 const CATEGORY_LABELS: Record<string, string> = {
-  alcohol: "Alcohol",
-  babies: "Babies & Toiletries",
-  bakery: "Bakery",
-  beverages: "Soft Drinks",
-  biscuits: "Biscuits",
-  cereals: "Cereals",
-  charcoal: "Charcoal",
-  crisps: "Crisps & Snacks",
-  dairy: "Dairy & Chilled Food",
-  frozen: "Frozen Foods",
-  household: "Household",
-  meat: "Meat & Fish",
-  produce: "Fresh Produce",
-  tobacco: "Cigarettes & Tobacco",
-  treats: "Ambients & Sweets/Chocolates",
-  "world-foods": "Asia & African Grocery",
-  "pet-foods": "Pet Foods",
+  "accessories":      "Accessories",
+  "alcohol":          "Alcohol",
+  "arabic-grocery":   "Arabic & African Grocery",
+  "baby-care":        "Baby Care",
+  "baby-food":        "Baby Food",
+  "bakery":           "Bakery",
+  "biscuits":         "Biscuits",
+  "canned-foods":     "Canned Foods",
+  "charcoal":         "Charcoal",
+  "chocolates":       "Chocolates",
+  "confectionery":    "Confectionery",
+  "dairy":            "Dairy & Chilled Food",
+  "dates":            "Dates",
+  "dry-foods":        "Dry Foods",
+  "flavoured-water":  "Flavoured Water",
+  "flour":            "Flour",
+  "frozen-fish":      "Frozen Fish",
+  "frozen-foods":     "Frozen Foods",
+  "fruit-veg":        "Fruit & Veg",
+  "ghee":             "Ghee & Butter",
+  "grocery":          "Grocery",
+  "health-beauty":    "Health & Beauty",
+  "health-products":  "Health Products",
+  "honey":            "Honey",
+  "household":        "Household",
+  "ice-cream":        "Ice Cream",
+  "jam":              "Jams & Spreads",
+  "lentils":          "Lentils & Pulses",
+  "meat":             "Meat & Fish",
+  "medicine":         "Medicine & Syrups",
+  "misc":             "Other / Misc",
+  "noodles":          "Noodles",
+  "nuts-dried-fruits":"Nuts & Dried Fruits",
+  "oil":              "Cooking Oil",
+  "olive":            "Olives",
+  "pasta":            "Pasta",
+  "pharmacy":         "Pharmacy",
+  "pickle":           "Pickles",
+  "rice":             "Rice",
+  "sauces":           "Sauces & Condiments",
+  "snacks":           "Snacks",
+  "soft-drinks":      "Soft Drinks",
+  "soup":             "Soup",
+  "spices":           "Spices",
+  "stationery":       "Stationery",
+  "sweets-desserts":  "Sweets & Desserts",
+  "tea":              "Tea & Coffee",
+  "tin-fish":         "Tinned Fish",
+  "tobacco":          "Cigarettes & Tobacco",
+  "toiletries":       "Toiletries",
+  "toys":             "Toys",
+  "vegetables":       "Vegetables",
+  "vinegar":          "Vinegar",
+  "water":            "Water",
 };
+
+interface SyncTypeStatus {
+  status: "idle" | "pending" | "running" | "ok" | "error";
+  last_run: string | null;
+  count: number;
+  error: string | null;
+  requested: boolean;
+  schedule: string;
+}
+
+interface SyncStatus {
+  products: SyncTypeStatus;
+  stock: SyncTypeStatus;
+}
+
+function formatLastRun(lastRun: string | null): string {
+  if (!lastRun) return "Never synced";
+  const diff = Date.now() - new Date(lastRun).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return "Just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  return `${Math.floor(hours / 24)}d ago`;
+}
+
+function SyncStatusBadge({ status }: { status: SyncTypeStatus["status"] }) {
+  if (status === "ok") return <span className="flex items-center gap-1 text-xs text-green-600"><CheckCircle className="h-3 w-3" /> Synced</span>;
+  if (status === "running") return <span className="flex items-center gap-1 text-xs text-blue-600"><RefreshCw className="h-3 w-3 animate-spin" /> Syncing...</span>;
+  if (status === "pending") return <span className="flex items-center gap-1 text-xs text-amber-600"><Clock className="h-3 w-3" /> Queued</span>;
+  if (status === "error") return <span className="flex items-center gap-1 text-xs text-destructive"><AlertCircle className="h-3 w-3" /> Error</span>;
+  return <span className="text-xs text-muted-foreground">Not run yet</span>;
+}
 
 export default function AdminProducts() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -48,58 +118,44 @@ export default function AdminProducts() {
   const [isBulkUploadOpen, setIsBulkUploadOpen] = useState(false);
   const { toast } = useToast();
   const [, setLocation] = useLocation();
-  const [eposStatus, setEposStatus] = useState<"idle" | "checking" | "connected" | "disconnected">("idle");
-  const [eposSyncMsg, setEposSyncMsg] = useState<string>("");
-  const [isSyncing, setIsSyncing] = useState(false);
 
   const getToken = () => localStorage.getItem("admin_token");
 
-  const checkEposConnection = async () => {
-    setEposStatus("checking");
+  const { data: syncStatus } = useQuery<SyncStatus>({
+    queryKey: ["/api/admin/epos/status"],
+    queryFn: async () => {
+      const res = await fetch("/api/admin/epos/status", {
+        headers: { Authorization: `Bearer ${getToken()}` },
+      });
+      if (!res.ok) throw new Error("Failed");
+      return res.json();
+    },
+    refetchInterval: (query) => {
+      const d = query.state.data;
+      const active = d && (["pending","running"].includes(d.products.status) || ["pending","running"].includes(d.stock.status));
+      return active ? 4000 : 20000;
+    },
+    retry: false,
+  });
+
+  const queueSync = async (type: "products" | "stock") => {
     try {
-      const res = await fetch("/api/admin/epos/status", { headers: { Authorization: `Bearer ${getToken()}` } });
+      const endpoint = type === "products" ? "/api/admin/epos/sync-products" : "/api/admin/epos/sync-stock";
+      const res = await fetch(endpoint, { method: "POST", headers: { Authorization: `Bearer ${getToken()}` } });
       const data = await res.json();
-      setEposStatus(data.connected ? "connected" : "disconnected");
-    } catch {
-      setEposStatus("disconnected");
+      if (data.error) throw new Error(data.error);
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/epos/status"] });
+      toast({
+        title: type === "products" ? "Product Sync Queued" : "Stock Sync Queued",
+        description: "The sync will start within a minute automatically.",
+      });
+    } catch (err: any) {
+      toast({ title: "Failed to queue sync", description: err.message, variant: "destructive" });
     }
   };
 
-  const syncEposProducts = async () => {
-    setIsSyncing(true);
-    setEposSyncMsg("Syncing products from EPOS...");
-    try {
-      const res = await fetch("/api/admin/epos/sync-products", { method: "POST", headers: { Authorization: `Bearer ${getToken()}` } });
-      const data = await res.json();
-      if (data.error) throw new Error(data.error);
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/products"] });
-      setEposSyncMsg(`Done — ${data.synced} products synced, ${data.skipped} skipped.`);
-      toast({ title: "Products Synced", description: `${data.synced} products imported from EPOS.` });
-    } catch (err: any) {
-      setEposSyncMsg(`Error: ${err.message}`);
-      toast({ title: "Sync Failed", description: err.message, variant: "destructive" });
-    } finally {
-      setIsSyncing(false);
-    }
-  };
-
-  const syncEposStock = async () => {
-    setIsSyncing(true);
-    setEposSyncMsg("Syncing stock levels from EPOS...");
-    try {
-      const res = await fetch("/api/admin/epos/sync-stock", { method: "POST", headers: { Authorization: `Bearer ${getToken()}` } });
-      const data = await res.json();
-      if (data.error) throw new Error(data.error);
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/products"] });
-      setEposSyncMsg(`Done — ${data.updated} stock levels updated.`);
-      toast({ title: "Stock Synced", description: `${data.updated} products updated from EPOS.` });
-    } catch (err: any) {
-      setEposSyncMsg(`Error: ${err.message}`);
-      toast({ title: "Stock Sync Failed", description: err.message, variant: "destructive" });
-    } finally {
-      setIsSyncing(false);
-    }
-  };
+  const isSyncingProducts = syncStatus?.products.status === "running" || syncStatus?.products.status === "pending";
+  const isSyncingStock    = syncStatus?.stock.status    === "running" || syncStatus?.stock.status    === "pending";
 
   const { data: products = [], isLoading } = useQuery<Product[]>({
     queryKey: ["/api/admin/products"],
@@ -219,34 +275,44 @@ export default function AdminProducts() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-wrap items-center gap-3">
-            <Button variant="outline" size="sm" onClick={checkEposConnection} disabled={eposStatus === "checking"} data-testid="button-epos-check">
-              {eposStatus === "checking" ? (
-                <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-              ) : eposStatus === "connected" ? (
-                <Wifi className="h-4 w-4 mr-2 text-green-600" />
-              ) : eposStatus === "disconnected" ? (
-                <WifiOff className="h-4 w-4 mr-2 text-destructive" />
-              ) : (
-                <Wifi className="h-4 w-4 mr-2" />
-              )}
-              {eposStatus === "checking" ? "Checking..." : eposStatus === "connected" ? "Connected" : eposStatus === "disconnected" ? "Disconnected" : "Check Connection"}
-            </Button>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <div className="rounded-md border p-3 space-y-2">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-sm font-medium">Products</span>
+                <SyncStatusBadge status={syncStatus?.products.status ?? "idle"} />
+              </div>
+              <div className="text-xs text-muted-foreground space-y-0.5">
+                <div>Last sync: {formatLastRun(syncStatus?.products.last_run ?? null)}</div>
+                {syncStatus?.products.count ? <div>{syncStatus.products.count.toLocaleString()} products in database</div> : null}
+                {syncStatus?.products.error ? <div className="text-destructive">{syncStatus.products.error}</div> : null}
+                <div className="text-muted-foreground/60">Auto-sync: {syncStatus?.products.schedule ?? "every 24 hours"}</div>
+              </div>
+              <Button size="sm" className="w-full" onClick={() => queueSync("products")} disabled={isSyncingProducts} data-testid="button-epos-sync-products">
+                <RefreshCw className={`h-4 w-4 mr-2 ${isSyncingProducts ? "animate-spin" : ""}`} />
+                {isSyncingProducts ? (syncStatus?.products.status === "pending" ? "Queued..." : "Syncing...") : "Sync Products Now"}
+              </Button>
+            </div>
 
-            <Button size="sm" onClick={syncEposProducts} disabled={isSyncing} data-testid="button-epos-sync-products">
-              <RefreshCw className={`h-4 w-4 mr-2 ${isSyncing ? "animate-spin" : ""}`} />
-              Sync Products from EPOS
-            </Button>
-
-            <Button variant="outline" size="sm" onClick={syncEposStock} disabled={isSyncing} data-testid="button-epos-sync-stock">
-              <RefreshCw className={`h-4 w-4 mr-2 ${isSyncing ? "animate-spin" : ""}`} />
-              Sync Stock Levels
-            </Button>
-
-            {eposSyncMsg && (
-              <span className="text-sm text-muted-foreground">{eposSyncMsg}</span>
-            )}
+            <div className="rounded-md border p-3 space-y-2">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-sm font-medium">Stock Levels</span>
+                <SyncStatusBadge status={syncStatus?.stock.status ?? "idle"} />
+              </div>
+              <div className="text-xs text-muted-foreground space-y-0.5">
+                <div>Last sync: {formatLastRun(syncStatus?.stock.last_run ?? null)}</div>
+                {syncStatus?.stock.count ? <div>{syncStatus.stock.count.toLocaleString()} items updated</div> : null}
+                {syncStatus?.stock.error ? <div className="text-destructive">{syncStatus.stock.error}</div> : null}
+                <div className="text-muted-foreground/60">Auto-sync: {syncStatus?.stock.schedule ?? "every hour"}</div>
+              </div>
+              <Button variant="outline" size="sm" className="w-full" onClick={() => queueSync("stock")} disabled={isSyncingStock} data-testid="button-epos-sync-stock">
+                <RefreshCw className={`h-4 w-4 mr-2 ${isSyncingStock ? "animate-spin" : ""}`} />
+                {isSyncingStock ? (syncStatus?.stock.status === "pending" ? "Queued..." : "Syncing...") : "Sync Stock Now"}
+              </Button>
+            </div>
           </div>
+          <p className="text-xs text-muted-foreground">
+            Syncs run automatically in the background. Click the buttons above to trigger an immediate sync.
+          </p>
         </CardContent>
       </Card>
 

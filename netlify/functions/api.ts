@@ -316,6 +316,57 @@ export const handler = async (event: any, _context: any) => {
       return { statusCode: 204, body: "" };
     }
 
+    // ── EPOS Sync routes ────────────────────────────────────────────────
+    const SYNC_BUCKET = "product-images";
+    const SYNC_PATH   = "metadata/sync-status.json";
+
+    async function readSyncStatus() {
+      try {
+        const r = await fetch(`${SUPABASE_URL}/storage/v1/object/public/${SYNC_BUCKET}/${SYNC_PATH}`, { cache: "no-store" } as any);
+        if (!r.ok) return null;
+        return await r.json();
+      } catch { return null; }
+    }
+
+    async function writeSyncStatus(data: any) {
+      await fetch(`${SUPABASE_URL}/storage/v1/object/${SYNC_BUCKET}/${SYNC_PATH}`, {
+        method: "POST",
+        headers: {
+          apikey: SUPABASE_SERVICE_KEY,
+          Authorization: `Bearer ${SUPABASE_SERVICE_KEY}`,
+          "Content-Type": "application/json",
+          "x-upsert": "true",
+        },
+        body: JSON.stringify(data, null, 2),
+      });
+    }
+
+    if (path === "/api/admin/epos/status" && method === "GET") {
+      if (!adminCheck(event)) return json({ error: "Unauthorized" }, 401);
+      const status = await readSyncStatus();
+      return json(status || {
+        products: { status: "idle", last_run: null, count: 0, error: null, requested: false, schedule: "every 24 hours" },
+        stock:    { status: "idle", last_run: null, count: 0, error: null, requested: false, schedule: "every hour" },
+      });
+    }
+
+    if (path === "/api/admin/epos/sync-products" && method === "POST") {
+      if (!adminCheck(event)) return json({ error: "Unauthorized" }, 401);
+      const current = await readSyncStatus() || { products: {}, stock: {} };
+      current.products = { ...current.products, requested: true, status: "pending" };
+      await writeSyncStatus(current);
+      return json({ queued: true, message: "Product sync queued — the server will pick this up within a minute." });
+    }
+
+    if (path === "/api/admin/epos/sync-stock" && method === "POST") {
+      if (!adminCheck(event)) return json({ error: "Unauthorized" }, 401);
+      const current = await readSyncStatus() || { products: {}, stock: {} };
+      current.stock = { ...current.stock, requested: true, status: "pending" };
+      await writeSyncStatus(current);
+      return json({ queued: true, message: "Stock sync queued — the server will pick this up within a minute." });
+    }
+    // ────────────────────────────────────────────────────────────────────
+
     if (path === "/api/admin/products/bulk" && method === "POST") {
       if (!adminCheck(event)) return json({ error: "Unauthorized" }, 401);
       const buffer = event.isBase64Encoded ? Buffer.from(event.body, "base64") : Buffer.from(event.body || "", "utf-8");

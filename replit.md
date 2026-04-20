@@ -19,6 +19,15 @@ Preferred communication style: Simple, everyday language.
 - **API Design**: RESTful API (`/api` prefix), centralized route registration, request/response logging, and JSON body parsing.
 - **Storage Layer**: Abstracted `IStorage` interface with an in-memory development implementation and a Drizzle ORM-backed database implementation.
 
+### EPOS Integration & Sync Scheduler
+- **Architecture**: Replit server connects to Epos Direct API (http://86.29.20.217/MAXAPI) — Netlify cannot reach this IP. Replit runs the scheduler; Netlify reads/writes a status flag via Supabase Storage.
+- **Sync Status**: Stored as `metadata/sync-status.json` in the `product-images` Supabase Storage bucket. Both Replit (read/write) and Netlify (read/write flag only) share this file.
+- **Auto-sync Schedule**: Products sync every 24 hours, stock levels every 1 hour. Triggered 10 seconds after server start, then every 60 seconds the tick checks for queued requests.
+- **Admin-triggered Sync**: Admin UI calls `POST /api/admin/epos/sync-products` or `/api/admin/epos/sync-stock` on Netlify, which sets `requested: true` in the status file. Replit picks this up within 1 minute.
+- **Key Files**: `server/syncScheduler.ts` (scheduler), `server/eposService.ts` (EPOS API client), `netlify/functions/api.ts` (Netlify EPOS routes), `client/src/pages/AdminProducts.tsx` (admin UI with live polling).
+- **Image Preservation**: Before every product sync, existing product images are fetched from Supabase so manually-uploaded images are never overwritten.
+- **Categories**: 16,825 EPOS products use native EPOS category slugs (grocery, alcohol, chocolates, soft-drinks, spices, arabic-grocery, etc.). 311 manually-added products with images are preserved with remapped category slugs.
+
 ### Data Architecture
 - **Database Schema**: Defined in `shared/schema.ts`, includes `Users` (id, username, password) and `Products` (id, name, description, category, price, memberPrice, image, inStock).
 - **Type Safety**: Shared schema between frontend and backend, type-safe models using Drizzle ORM, and Zod for API boundary validation.

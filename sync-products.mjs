@@ -106,20 +106,39 @@ async function upsertBatch(rows) {
 async function main() {
   const eposProducts = await fetchEposProducts();
 
+  // Fetch existing product images so we don't overwrite custom ones
+  console.log("Fetching existing product images from Supabase...");
+  const existingImages = {};
+  let imgOffset = 0;
+  while (true) {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/products?select=id,image&limit=1000&offset=${imgOffset}`, {
+      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
+    });
+    const data = await r.json();
+    if (!Array.isArray(data) || data.length === 0) break;
+    data.forEach(p => { if (p.image) existingImages[p.id] = p.image; });
+    if (data.length < 1000) break;
+    imgOffset += 1000;
+  }
+  console.log(`  Found images for ${Object.keys(existingImages).length} existing products`);
+
   // Convert to our product schema
   const rows = eposProducts
     .filter(p => p.Central_Product_Code && !p.Is_Deleted)
     .map(p => {
       const price = parseFloat(p.SellingPrice) || 0;
       const stock = typeof p.Physical_Qty === "number" ? p.Physical_Qty : 0;
+      const id = `epos-${p.Central_Product_Code}`;
+      // Preserve any existing custom image; only use placeholder for new products
+      const image = existingImages[id] || "/placeholder-product.png";
       return {
-        id: `epos-${p.Central_Product_Code}`,
+        id,
         name: p.Product_Name || p.SupplierProductDescription || "Unknown Product",
         description: p.Product_Description || null,
         category: mapCategory(p),
         price: price.toFixed(2),
         member_price: null,
-        image: "/placeholder-product.png",
+        image,
         in_stock: stock > 0 ? 1 : 0,
       };
     });

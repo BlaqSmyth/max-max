@@ -43,6 +43,7 @@ export const CATEGORY_DISPLAY: Record<string, { name: string; icon: LucideIcon }
   "noodles":          { name: "Noodles",              icon: Package },
   "toiletries":       { name: "Toiletries",           icon: Baby },
   "ghee":             { name: "Ghee & Butter",        icon: Droplet },
+  "meat":             { name: "Meat & Fish",           icon: Beef },
   "frozen-fish":      { name: "Frozen Fish",          icon: Fish },
   "flavoured-water":  { name: "Flavoured Water",      icon: GlassWater },
   "pasta":            { name: "Pasta",                icon: Package },

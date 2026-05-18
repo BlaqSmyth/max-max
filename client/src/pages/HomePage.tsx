@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useCart } from "@/contexts/CartContext";
 import Header from "@/components/Header";
 import InfoTicker from "@/components/InfoTicker";
-import CategoryNav from "@/components/CategoryNav";
+import CategoryNav, { CATEGORY_DISPLAY } from "@/components/CategoryNav";
 import HeroSection from "@/components/HeroSection";
 import ProductCard from "@/components/ProductCard";
 import DeliveryOptions from "@/components/DeliveryOptions";
@@ -81,11 +81,13 @@ export default function HomePage() {
 
   // Derive available categories from products, sorted by count descending
   const availableCategories = useMemo(() => {
-    const counts: Record<string, number> = {};
-    products.forEach(p => { counts[p.category] = (counts[p.category] || 0) + 1; });
-    return Object.entries(counts)
-      .sort((a, b) => b[1] - a[1])
-      .map(([id]) => id);
+    const seen = new Set<string>();
+    products.forEach(p => seen.add(p.category));
+    return Array.from(seen).sort((a, b) => {
+      const nameA = (CATEGORY_DISPLAY[a]?.name ?? a).toLowerCase();
+      const nameB = (CATEGORY_DISPLAY[b]?.name ?? b).toLowerCase();
+      return nameA.localeCompare(nameB);
+    });
   }, [products]);
 
   // Memoized filtered and sorted products

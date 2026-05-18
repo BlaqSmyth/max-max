@@ -182,7 +182,7 @@ async function tick() {
   const s = await readSyncStatus();
   let changed = false;
 
-  const doProducts = s.products.requested || (now - lastProductSync >= PRODUCT_INTERVAL);
+  const doProducts = false; // Product sync disabled — inventory managed manually
   const doStock    = s.stock.requested    || (now - lastStockSync   >= STOCK_INTERVAL);
 
   if (doProducts && s.products.status !== "running") {

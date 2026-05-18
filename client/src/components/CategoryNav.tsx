@@ -1,7 +1,7 @@
 import {
   LayoutGrid, Apple, Wine, Candy, Cookie, Snowflake, Home, ChevronDown,
   Beef, Cake, Droplet, GlassWater, Croissant, Wheat, Cigarette, Globe,
-  Baby, Flame, Package, Heart, Fish, ShoppingCart, Coffee, Leaf, Soup
+  Baby, Flame, Package, Heart, Fish, ShoppingCart, Coffee, Leaf, Soup, Wind
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
@@ -66,6 +66,7 @@ export const CATEGORY_DISPLAY: Record<string, { name: string; icon: LucideIcon }
   "fruit-veg":        { name: "Fruit & Veg",          icon: Apple },
   "vinegar":          { name: "Vinegar",              icon: Droplet },
   "stationery":       { name: "Stationery",           icon: Package },
+  "vape":             { name: "Vape",                  icon: Wind },
   "misc":             { name: "Other",                icon: Package },
 };
 

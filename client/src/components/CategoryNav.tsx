@@ -18,7 +18,7 @@ export const CATEGORY_DISPLAY: Record<string, { name: string; icon: LucideIcon }
   "wines":            { name: "Wines",                icon: Wine },
   "beers":            { name: "Beers",                icon: Beer },
   "cider":            { name: "Ciders",               icon: GlassWater },
-  "alcohol":          { name: "Spirits",              icon: Droplet },
+  "alcohol":          { name: "Alcohol Spirits",       icon: Droplet },
   "chocolates":       { name: "Chocolates",           icon: Candy },
   "soft-drinks":      { name: "Soft Drinks",          icon: GlassWater },
   "snacks":           { name: "Snacks",               icon: Cookie },

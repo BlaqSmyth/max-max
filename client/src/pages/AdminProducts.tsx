@@ -394,7 +394,6 @@ export default function AdminProducts() {
                   <TableHead>Name</TableHead>
                   <TableHead>Category</TableHead>
                   <TableHead>Price</TableHead>
-                  <TableHead>Member Price</TableHead>
                   <TableHead>Stock</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
@@ -429,9 +428,6 @@ export default function AdminProducts() {
                         </Badge>
                       </TableCell>
                       <TableCell data-testid={`text-price-${product.id}`}>£{product.price}</TableCell>
-                      <TableCell>
-                        {product.memberPrice ? `£${product.memberPrice}` : "-"}
-                      </TableCell>
                       <TableCell>{product.inStock}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">

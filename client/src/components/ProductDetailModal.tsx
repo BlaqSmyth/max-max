@@ -10,11 +10,9 @@ interface ProductDetailModalProps {
   name: string;
   description: string;
   price: number;
-  memberPrice?: number;
   image: string;
   category: string;
   inStock?: boolean;
-  isMember?: boolean;
   isOpen: boolean;
   onClose: () => void;
   onAddToCart?: (id: string, quantity: number) => void;
@@ -26,20 +24,15 @@ export default function ProductDetailModal({
   name,
   description,
   price,
-  memberPrice,
   image,
   category,
   inStock = true,
-  isMember = false,
   isOpen,
   onClose,
   onAddToCart,
   initialQuantity = 0,
 }: ProductDetailModalProps) {
   const [quantity, setQuantity] = useState(initialQuantity);
-
-  const displayPrice = isMember && memberPrice ? memberPrice : price;
-  const hasMemberDiscount = memberPrice && memberPrice < price;
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -98,15 +91,6 @@ export default function ProductDetailModal({
                     className="h-full w-full object-contain"
                     data-testid={`img-detail-${id}`}
                   />
-                  {hasMemberDiscount && isMember && (
-                    <Badge
-                      variant="secondary"
-                      className="absolute left-4 top-4"
-                      data-testid={`badge-member-detail-${id}`}
-                    >
-                      Member Price
-                    </Badge>
-                  )}
                 </div>
               </div>
 
@@ -138,21 +122,9 @@ export default function ProductDetailModal({
                 <Separator />
 
                 <div>
-                  <div className="flex items-baseline gap-3">
-                    <span className="text-3xl font-bold" data-testid={`text-detail-price-${id}`}>
-                      £{displayPrice.toFixed(2)}
-                    </span>
-                    {hasMemberDiscount && isMember && (
-                      <span className="text-lg text-muted-foreground line-through">
-                        £{price.toFixed(2)}
-                      </span>
-                    )}
-                  </div>
-                  {hasMemberDiscount && isMember && (
-                    <p className="mt-1 text-sm text-primary">
-                      You save £{(price - (memberPrice || price)).toFixed(2)} with Member Price
-                    </p>
-                  )}
+                  <span className="text-3xl font-bold" data-testid={`text-detail-price-${id}`}>
+                    £{price.toFixed(2)}
+                  </span>
                 </div>
 
                 <Separator />

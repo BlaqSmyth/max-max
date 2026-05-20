@@ -1,8 +1,8 @@
 import { Facebook, Twitter, Instagram, Mail, Phone, MapPin } from "lucide-react";
 
 const footerLinks = {
-  "Shop": ["Browse All", "Fresh Produce", "Offers", "Member Prices"],
-  "Services": ["Home Delivery", "Click & Collect", "Store Finder", "Membership"],
+  "Shop": ["Browse All", "Fresh Produce", "Offers"],
+  "Services": ["Home Delivery", "Click & Collect", "Store Finder"],
   "Help": ["FAQs", "Track Order", "Returns"],
   "About": ["Our Story", "Careers", "Press", "Sustainability"],
 };

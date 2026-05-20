@@ -18,7 +18,6 @@ interface HeaderProps {
   cartItemCount?: number;
   onCartClick?: () => void;
   onMenuClick?: () => void;
-  isMember?: boolean;
   products?: SearchResult[];
   onProductSelect?: (productId: string) => void;
 }
@@ -27,7 +26,6 @@ export default function Header({
   cartItemCount = 0, 
   onCartClick,
   onMenuClick,
-  isMember = false,
   products = [],
   onProductSelect,
 }: HeaderProps) {
@@ -83,12 +81,6 @@ export default function Header({
               <MapPin className="h-4 w-4" />
               <span className="text-sm">Set location</span>
             </Button>
-
-            {isMember && (
-              <Badge variant="secondary" className="hidden lg:inline-flex" data-testid="badge-member">
-                Member
-              </Badge>
-            )}
 
             <Button
               variant="ghost"

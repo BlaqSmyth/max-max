@@ -125,7 +125,6 @@ export function BulkUploadDialog({ open, onOpenChange }: BulkUploadDialogProps) 
         else if (header === "description") product.description = value || null;
         else if (header === "category") product.category = value;
         else if (header === "price") product.price = value;
-        else if (header === "memberPrice") product.memberPrice = value || null;
         else if (header === "image") product.image = value;
         else if (header === "inStock") product.inStock = parseInt(value) || 1;
       });
@@ -222,10 +221,10 @@ export function BulkUploadDialog({ open, onOpenChange }: BulkUploadDialogProps) 
   };
 
   const downloadTemplate = () => {
-    const template = `name,description,category,price,memberPrice,image,inStock
-Mountain Dew,Refreshing citrus soda,beverages,2.50,2.25,,50
-Coca-Cola,Classic cola,beverages,1.99,1.79,coca-cola.png,75
-Example Product 3,With full URL,dairy,3.00,,https://example.com/image.png,30`;
+    const template = `name,description,category,price,image,inStock
+Mountain Dew,Refreshing citrus soda,beverages,2.50,,50
+Coca-Cola,Classic cola,beverages,1.99,coca-cola.png,75
+Example Product 3,With full URL,dairy,3.00,https://example.com/image.png,30`;
 
     const blob = new Blob([template], { type: "text/csv" });
     const url = window.URL.createObjectURL(blob);

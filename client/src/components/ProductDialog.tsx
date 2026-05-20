@@ -56,7 +56,6 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
     description: "",
     category: "beverages",
     price: "",
-    memberPrice: "",
     image: "",
     inStock: "1",
   });
@@ -74,7 +73,6 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
         description: product.description || "",
         category: product.category,
         price: String(product.price),
-        memberPrice: product.memberPrice ? String(product.memberPrice) : "",
         image: product.image,
         inStock: String(product.inStock),
       });
@@ -110,10 +108,6 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
         image: data.image,
         inStock: parseInt(data.inStock, 10),
       };
-
-      if (data.memberPrice && data.memberPrice.trim()) {
-        payload.memberPrice = data.memberPrice.trim();
-      }
 
       console.log("[ProductDialog] Saving product:", method, url, payload);
 
@@ -176,13 +170,6 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
     if (!priceRegex.test(price)) {
       setInlineError("Price must be a valid number e.g. 2.99");
       return;
-    }
-
-    if (formData.memberPrice && formData.memberPrice.trim()) {
-      if (!priceRegex.test(formData.memberPrice.trim())) {
-        setInlineError("Member price must be a valid number e.g. 2.49");
-        return;
-      }
     }
 
     const stock = parseInt(formData.inStock, 10);
@@ -335,7 +322,7 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
             </Select>
           </div>
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="price">Price (£)</Label>
               <Input
@@ -348,20 +335,6 @@ export function ProductDialog({ product, open, onOpenChange }: ProductDialogProp
                 }
                 placeholder="2.99"
                 data-testid="input-product-price"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="memberPrice">Member Price (£)</Label>
-              <Input
-                id="memberPrice"
-                type="text"
-                inputMode="decimal"
-                value={formData.memberPrice}
-                onChange={(e) =>
-                  setFormData({ ...formData, memberPrice: e.target.value })
-                }
-                placeholder="2.49"
-                data-testid="input-product-member-price"
               />
             </div>
             <div className="space-y-2">

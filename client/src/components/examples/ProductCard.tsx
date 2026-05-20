@@ -8,9 +8,7 @@ export default function ProductCardExample() {
         id="milk-1"
         name="Organic Whole Milk 2L"
         price={2.50}
-        memberPrice={2.25}
         image={milkImage}
-        isMember={true}
       />
     </div>
   );

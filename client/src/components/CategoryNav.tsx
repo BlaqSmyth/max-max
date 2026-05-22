@@ -21,7 +21,6 @@ export const CATEGORY_DISPLAY: Record<string, { name: string; icon: LucideIcon }
   "alcohol":          { name: "Alcohol Spirits",       icon: Droplet },
   "chocolates":       { name: "Chocolates",           icon: Candy },
   "soft-drinks":      { name: "Soft Drinks",          icon: GlassWater },
-  "beverages":        { name: "Soft Drinks",          icon: GlassWater },
   "snacks":           { name: "Snacks",               icon: Cookie },
   "spices":           { name: "Spices",               icon: Leaf },
   "arabic-grocery":   { name: "Arabic & African Grocery", icon: Globe },

@@ -63,7 +63,6 @@ const CATEGORY_LABELS: Record<string, string> = {
   "sauces":           "Sauces & Condiments",
   "snacks":           "Snacks",
   "soft-drinks":      "Soft Drinks",
-  "beverages":        "Soft Drinks",
   "soup":             "Soup",
   "spices":           "Spices",
   "stationery":       "Stationery",

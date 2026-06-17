@@ -230,7 +230,7 @@ export default function HomePage() {
                       name={product.name}
                       price={Number(product.price)}
                       image={product.image}
-                      inStock={product.inStock === 1}
+                      inStock={product.inStock > 0}
                       onAddToCart={handleAddToCart}
                       initialQuantity={getProductQuantity(product.id)}
                     />
@@ -273,7 +273,7 @@ export default function HomePage() {
           price={Number(selectedProduct.price)}
           image={selectedProduct.image}
           category={selectedProduct.category}
-          inStock={selectedProduct.inStock === 1}
+          inStock={selectedProduct.inStock > 0}
           isOpen={!!selectedProductId}
           onClose={() => setSelectedProductId(null)}
           onAddToCart={handleAddToCart}
